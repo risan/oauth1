@@ -50,4 +50,14 @@ abstract class Credentials implements CredentialsInterface {
     {
         return $this->secret;
     }
+
+    /**
+     * Case Credentials instance to string.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->identifier();
+    }
 }

@@ -27,4 +27,10 @@ class ClientCredentialsTest extends PHPUnit_Framework_TestCase {
     {
         $this->assertEquals('http://baz.qux', $this->clientCredentials->callbackUri());
     }
+
+    /** @test */
+    function client_credentials_not_exposing_secret_property_when_casting_to_string()
+    {
+        $this->assertEquals('foo', (string) $this->clientCredentials);
+    }
 }
