@@ -16,4 +16,11 @@ interface OAuth1ClientInterface {
      * @return OAuth1Client\Contracts\Credentials\TemporaryCredentialsInterface
      */
     public function temporaryCredentials();
+
+    /**
+     * Temporary credentials url.
+     *
+     * @return string
+     */
+    public function temporaryCredentialsUrl();
 }

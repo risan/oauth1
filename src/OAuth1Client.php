@@ -5,7 +5,7 @@ namespace OAuth1Client;
 use OAuth1Client\Contracts\OAuth1ClientInterface;
 use OAuth1Client\Credentials\TemporaryCredentials;
 
-class Client implements OAuth1ClientInterface {
+abstract class OAuth1Client implements OAuth1ClientInterface {
     /**
      * Http client instance.
      *
