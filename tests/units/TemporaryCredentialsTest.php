@@ -1,5 +1,6 @@
 <?php
 
+use GuzzleHttp\Client as HttpClient;
 use OAuth1Client\Credentials\TemporaryCredentials;
 
 class TemporaryCredentialsTest extends PHPUnit_Framework_TestCase {
@@ -8,6 +9,8 @@ class TemporaryCredentialsTest extends PHPUnit_Framework_TestCase {
     function setUp()
     {
         $this->temporaryCredentials = new TemporaryCredentials('foo', 'bar');
+
+        $this->httpClient = new HttpClient();
     }
 
     /** @test */
@@ -20,6 +23,20 @@ class TemporaryCredentialsTest extends PHPUnit_Framework_TestCase {
     function temporary_credentials_has_secret()
     {
         $this->assertEquals('bar', $this->temporaryCredentials->secret());
+    }
+
+    /** @test */
+    function temporary_credentials_can_be_instantiated_from_http_response()
+    {
+        $response = $this->httpClient->get('http://www.mocky.io/v2/567a64390f0000eb051aef7c');
+
+        $temporaryCredentials = TemporaryCredentials::fromHttpResponse($response);
+
+        $this->assertInstanceOf(TemporaryCredentials::class, $temporaryCredentials);
+
+        $this->assertEquals('foo', $temporaryCredentials->identifier());
+
+        $this->assertEquals('bar', $temporaryCredentials->secret());
     }
 
     /** @test */
