@@ -7,6 +7,7 @@ use OAuth1Client\Contracts\OAuth1ClientInterface;
 use OAuth1Client\Credentials\TemporaryCredentials;
 use OAuth1Client\Contracts\Signatures\SignatureInterface;
 use OAuth1Client\Contracts\Credentials\ClientCredentialsInterface;
+use OAuth1Client\Contracts\Credentials\TemporaryCredentialsInterface;
 
 abstract class OAuth1Client implements OAuth1ClientInterface {
     /**
@@ -167,5 +168,33 @@ abstract class OAuth1Client implements OAuth1ClientInterface {
         $parameters = http_build_query($parameters, '', ', ', PHP_QUERY_RFC3986);
 
         return "OAuth $parameters";
+    }
+
+    /**
+     * Request authorization.
+     *
+     * @param  OAuth1Client\Contracts\Credentials\TemporaryCredentialsInterface $temporaryCredentials
+     * @return void
+     */
+    public function authorize(TemporaryCredentialsInterface $temporaryCredentials)
+    {
+        header('Location: ' . $this->buildAuthorizationUrl($temporaryCredentials));
+
+        exit();
+    }
+
+    /**
+     * Build authorization url.
+     *
+     * @param  OAuth1Client\Contracts\Credentials\TemporaryCredentialsInterface $temporaryCredentials
+     * @return string
+     */
+    public function buildAuthorizationUrl(TemporaryCredentialsInterface $temporaryCredentials)
+    {
+        $query = http_build_query([
+            'oauth_token' => $temporaryCredentials->identifier()
+        ]);
+
+        return $this->authorizationUrl() . '?' . $query;
     }
 }

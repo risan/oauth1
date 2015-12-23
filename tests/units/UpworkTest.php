@@ -5,6 +5,7 @@ use OAuth1Client\OAuth1Client;
 use OAuth1Client\Contracts\UpworkInterface;
 use OAuth1Client\Credentials\ClientCredentials;
 use OAuth1Client\Contracts\HttpClientInterface;
+use OAuth1Client\Credentials\TemporaryCredentials;
 use OAuth1Client\Contracts\Signatures\SignatureInterface;
 use OAuth1Client\Contracts\Credentials\TemporaryCredentialsInterface;
 
@@ -13,15 +14,23 @@ class UpworkTest extends PHPUnit_Framework_TestCase {
 
     protected $clientCredentials;
 
+    protected $temporaryCredentials;
+
     protected $temporaryCredentialsUrl;
+
+    protected $authorizationUrl;
 
     function setUp()
     {
         $this->clientCredentials = new ClientCredentials('foo', 'bar');
 
+        $this->temporaryCredentials = new TemporaryCredentials('baz', 'qux');
+
         $this->client = new Upwork($this->clientCredentials);
 
         $this->temporaryCredentialsUrl = 'https://www.upwork.com/api/auth/v1/oauth/token/request';
+
+        $this->authorizationUrl = 'https://www.upwork.com/services/api/auth';
     }
 
     /** @test */
@@ -107,6 +116,20 @@ class UpworkTest extends PHPUnit_Framework_TestCase {
 
         $this->assertInstanceOf(TemporaryCredentialsInterface::class, $upwork->temporaryCredentials());
     }
+
+    /** @test */
+    function upwork_has_authorization_url()
+    {
+        return $this->assertEquals($this->authorizationUrl, $this->client->authorizationUrl());
+    }
+
+    /** @test */
+    function upwork_can_build_authorization_url()
+    {
+        $expected = $this->authorizationUrl . "?oauth_token=baz";
+
+        return $this->assertEquals($expected, $this->client->buildAuthorizationUrl($this->temporaryCredentials));
+    }
 }
 
 class UpworkMock extends OAuth1Client implements UpworkInterface {
@@ -116,6 +139,16 @@ class UpworkMock extends OAuth1Client implements UpworkInterface {
      * @return string
      */
     public function temporaryCredentialsUrl()
+    {
+        return 'http://www.mocky.io/v2/567a64390f0000eb051aef7c';
+    }
+
+    /**
+     * Authorization url.
+     *
+     * @return string
+     */
+    public function authorizationUrl()
     {
         return 'http://www.mocky.io/v2/567a64390f0000eb051aef7c';
     }
