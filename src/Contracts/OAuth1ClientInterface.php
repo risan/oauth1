@@ -2,9 +2,13 @@
 
 namespace OAuth1Client\Contracts;
 
-use OAuth1Client\Contracts\Credentials\TemporaryCredentialsInterface;
+use OAuth1Client\Contracts\OAuth1Flows\AuthorizationFlowInterface;
+use OAuth1Client\Contracts\OAuth1Flows\TokenCredentialsFlowInterface;
+use OAuth1Client\Contracts\OAuth1Flows\TemporaryCredentialsFlowInterface;
 
-interface OAuth1ClientInterface {
+interface OAuth1ClientInterface extends TemporaryCredentialsFlowInterface,
+                                        AuthorizationFlowInterface,
+                                        TokenCredentialsFlowInterface {
     /**
      * Get http client instance.
      *
@@ -48,27 +52,6 @@ interface OAuth1ClientInterface {
     public function version();
 
     /**
-     * Get temporary credentials.
-     *
-     * @return OAuth1Client\Contracts\Credentials\TemporaryCredentialsInterface
-     */
-    public function temporaryCredentials();
-
-    /**
-     * Temporary credentials url.
-     *
-     * @return string
-     */
-    public function temporaryCredentialsUrl();
-
-    /**
-     * Temporary credentials header.
-     *
-     * @return array
-     */
-    public function temporaryCredentialsHeaders();
-
-    /**
      * Base protocol parameters.
      *
      * @return array
@@ -82,34 +65,4 @@ interface OAuth1ClientInterface {
      * @return string
      */
     public function authorizationHeaders(array $parameters);
-
-    /**
-     * Request authorization.
-     *
-     * @param  OAuth1Client\Contracts\Credentials\TemporaryCredentialsInterface $temporaryCredentials
-     * @return void
-     */
-    public function authorize(TemporaryCredentialsInterface $temporaryCredentials);
-
-    /**
-     * Build authorization url.
-     *
-     * @param  OAuth1Client\Contracts\Credentials\TemporaryCredentialsInterface $temporaryCredentials
-     * @return string
-     */
-    public function buildAuthorizationUrl(TemporaryCredentialsInterface $temporaryCredentials);
-
-    /**
-     * Authorization url.
-     *
-     * @return string
-     */
-    public function authorizationUrl();
-
-    /**
-     * Access token credentials url.
-     *
-     * @return string
-     */
-    public function tokenCredentialsUrl();
 }
