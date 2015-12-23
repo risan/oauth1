@@ -124,18 +124,28 @@ abstract class OAuth1Client implements OAuth1ClientInterface {
         return TemporaryCredentials::fromHttpResponse($response);
     }
 
-    protected function temporaryCredentialsHeaders()
+    /**
+     * Temporary credentials header.
+     *
+     * @return array
+     */
+    public function temporaryCredentialsHeaders()
     {
         $parameters = $this->baseProtocolParameters();
 
         $parameters['oauth_signature'] = $this->signature()->sign($this->temporaryCredentialsUrl(), $parameters);
 
         return [
-            'Authorization' => $this->authorizationHeader($parameters)
+            'Authorization' => $this->authorizationHeaders($parameters)
         ];
     }
 
-    protected function baseProtocolParameters()
+    /**
+     * Base protocol parameters.
+     *
+     * @return array
+     */
+    public function baseProtocolParameters()
     {
         return [
             'oauth_consumer_key' => $this->clientCredentials()->identifier(),
@@ -146,7 +156,13 @@ abstract class OAuth1Client implements OAuth1ClientInterface {
         ];
     }
 
-    protected function authorizationHeader(array $parameters)
+    /**
+     * Build authorization headers.
+     *
+     * @param  array  $parameters
+     * @return string
+     */
+    public function authorizationHeaders(array $parameters)
     {
         $parameters = http_build_query($parameters, '', ', ', PHP_QUERY_RFC3986);
 

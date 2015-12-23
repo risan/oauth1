@@ -1,6 +1,8 @@
 <?php
 
 use OAuth1Client\Upwork;
+use OAuth1Client\OAuth1Client;
+use OAuth1Client\Contracts\UpworkInterface;
 use OAuth1Client\Credentials\ClientCredentials;
 use OAuth1Client\Contracts\HttpClientInterface;
 use OAuth1Client\Contracts\Signatures\SignatureInterface;
@@ -73,8 +75,48 @@ class UpworkTest extends PHPUnit_Framework_TestCase {
     }
 
     /** @test */
+    function upwork_has_base_protocol_parameters()
+    {
+        $parameters = $this->client->baseProtocolParameters();
+
+        $this->assertArrayHasKey('oauth_consumer_key', $parameters);
+        $this->assertArrayHasKey('oauth_nonce', $parameters);
+        $this->assertArrayHasKey('oauth_signature_method', $parameters);
+        $this->assertArrayHasKey('oauth_timestamp', $parameters);
+        $this->assertArrayHasKey('oauth_version', $parameters);
+    }
+
+    /** @test */
+    function upwork_can_generate_authorization_headers()
+    {
+        $parameters = ['foo' => 'bar'];
+
+        $this->assertEquals('OAuth foo=bar', $this->client->authorizationHeaders($parameters));
+    }
+
+    /** @test */
+    function upwork_can_generate_temporary_credentials_headers()
+    {
+        $this->assertArrayHasKey('Authorization', $this->client->temporaryCredentialsHeaders());
+    }
+
+    /** @test */
     function upwork_can_create_temporary_credentials()
     {
-        $this->assertInstanceOf(TemporaryCredentialsInterface::class, $this->client->temporaryCredentials());
+        $upwork = new UpworkMock($this->clientCredentials);
+
+        $this->assertInstanceOf(TemporaryCredentialsInterface::class, $upwork->temporaryCredentials());
+    }
+}
+
+class UpworkMock extends OAuth1Client implements UpworkInterface {
+    /**
+     * Temporary credentials url.
+     *
+     * @return string
+     */
+    public function temporaryCredentialsUrl()
+    {
+        return 'http://www.mocky.io/v2/567a64390f0000eb051aef7c';
     }
 }

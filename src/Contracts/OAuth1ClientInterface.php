@@ -58,4 +58,26 @@ interface OAuth1ClientInterface {
      * @return string
      */
     public function temporaryCredentialsUrl();
+
+    /**
+     * Temporary credentials header.
+     *
+     * @return array
+     */
+    public function temporaryCredentialsHeaders();
+
+    /**
+     * Base protocol parameters.
+     *
+     * @return array
+     */
+    public function baseProtocolParameters();
+
+    /**
+     * Build authorization headers.
+     *
+     * @param  array  $parameters
+     * @return string
+     */
+    public function authorizationHeaders(array $parameters);
 }
