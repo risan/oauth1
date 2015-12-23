@@ -3,13 +3,17 @@
 namespace OAuth1Client;
 
 use OAuth1Client\Signatures\HMACSHA1Signature;
+use OAuth1Client\OAuth1Flows\AuthorizationFlow;
 use OAuth1Client\Contracts\OAuth1ClientInterface;
-use OAuth1Client\Credentials\TemporaryCredentials;
+use OAuth1Client\OAuth1Flows\TemporaryCredentialsFlow;
 use OAuth1Client\Contracts\Signatures\SignatureInterface;
 use OAuth1Client\Contracts\Credentials\ClientCredentialsInterface;
-use OAuth1Client\Contracts\Credentials\TemporaryCredentialsInterface;
 
 abstract class OAuth1Client implements OAuth1ClientInterface {
+
+    use TemporaryCredentialsFlow,
+        AuthorizationFlow;
+
     /**
      * Http client instance.
      *
@@ -112,36 +116,6 @@ abstract class OAuth1Client implements OAuth1ClientInterface {
     }
 
     /**
-     * Get temporary credentials.
-     *
-     * @return OAuth1Client\Contracts\Credentials\TemporaryCredentialsInterface
-     */
-    public function temporaryCredentials()
-    {
-        $response = $this->httpClient()->post($this->temporaryCredentialsUrl(), [
-            'headers' => $this->temporaryCredentialsHeaders()
-        ]);
-
-        return TemporaryCredentials::fromHttpResponse($response);
-    }
-
-    /**
-     * Temporary credentials header.
-     *
-     * @return array
-     */
-    public function temporaryCredentialsHeaders()
-    {
-        $parameters = $this->baseProtocolParameters();
-
-        $parameters['oauth_signature'] = $this->signature()->sign($this->temporaryCredentialsUrl(), $parameters);
-
-        return [
-            'Authorization' => $this->authorizationHeaders($parameters)
-        ];
-    }
-
-    /**
      * Base protocol parameters.
      *
      * @return array
@@ -168,33 +142,5 @@ abstract class OAuth1Client implements OAuth1ClientInterface {
         $parameters = http_build_query($parameters, '', ', ', PHP_QUERY_RFC3986);
 
         return "OAuth $parameters";
-    }
-
-    /**
-     * Request authorization.
-     *
-     * @param  OAuth1Client\Contracts\Credentials\TemporaryCredentialsInterface $temporaryCredentials
-     * @return void
-     */
-    public function authorize(TemporaryCredentialsInterface $temporaryCredentials)
-    {
-        header('Location: ' . $this->buildAuthorizationUrl($temporaryCredentials));
-
-        exit();
-    }
-
-    /**
-     * Build authorization url.
-     *
-     * @param  OAuth1Client\Contracts\Credentials\TemporaryCredentialsInterface $temporaryCredentials
-     * @return string
-     */
-    public function buildAuthorizationUrl(TemporaryCredentialsInterface $temporaryCredentials)
-    {
-        $query = http_build_query([
-            'oauth_token' => $temporaryCredentials->identifier()
-        ]);
-
-        return $this->authorizationUrl() . '?' . $query;
     }
 }
