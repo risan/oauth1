@@ -24,4 +24,14 @@ class Upwork extends OAuth1Client implements UpworkInterface {
     {
         return 'https://www.upwork.com/services/api/auth';
     }
+
+    /**
+     * Access token credentials url.
+     *
+     * @return string
+     */
+    public function tokenCredentialsUrl()
+    {
+        return 'https://www.upwork.com/api/auth/v1/oauth/token/access';
+    }
 }

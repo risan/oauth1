@@ -105,4 +105,11 @@ interface OAuth1ClientInterface {
      * @return string
      */
     public function authorizationUrl();
+
+    /**
+     * Access token credentials url.
+     *
+     * @return string
+     */
+    public function tokenCredentialsUrl();
 }

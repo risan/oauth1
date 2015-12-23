@@ -18,6 +18,8 @@ class UpworkTest extends PHPUnit_Framework_TestCase {
 
     protected $temporaryCredentialsUrl;
 
+    protected $tokenCredentialsUrl;
+
     protected $authorizationUrl;
 
     function setUp()
@@ -31,6 +33,8 @@ class UpworkTest extends PHPUnit_Framework_TestCase {
         $this->temporaryCredentialsUrl = 'https://www.upwork.com/api/auth/v1/oauth/token/request';
 
         $this->authorizationUrl = 'https://www.upwork.com/services/api/auth';
+
+        $this->tokenCredentialsUrl = 'https://www.upwork.com/api/auth/v1/oauth/token/access';
     }
 
     /** @test */
@@ -130,6 +134,12 @@ class UpworkTest extends PHPUnit_Framework_TestCase {
 
         return $this->assertEquals($expected, $this->client->buildAuthorizationUrl($this->temporaryCredentials));
     }
+
+    /** @test */
+    function upwork_has_token_credentials_url()
+    {
+        return $this->assertEquals($this->tokenCredentialsUrl, $this->client->tokenCredentialsUrl());
+    }
 }
 
 class UpworkMock extends OAuth1Client implements UpworkInterface {
@@ -149,6 +159,16 @@ class UpworkMock extends OAuth1Client implements UpworkInterface {
      * @return string
      */
     public function authorizationUrl()
+    {
+        return 'http://www.mocky.io/v2/567a64390f0000eb051aef7c';
+    }
+
+    /**
+     * Access token credentials url.
+     *
+     * @return string
+     */
+    public function tokenCredentialsUrl()
     {
         return 'http://www.mocky.io/v2/567a64390f0000eb051aef7c';
     }
