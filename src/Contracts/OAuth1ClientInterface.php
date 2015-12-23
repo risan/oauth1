@@ -11,6 +11,41 @@ interface OAuth1ClientInterface {
     public function httpClient();
 
     /**
+     * Get client credential.
+     *
+     * @return OAuth1Client\Contracts\Credentials\ClientCredentialsInterface
+     */
+    public function clientCredentials();
+
+    /**
+     * Get signature.
+     *
+     * @return OAuth1Client\Contracts\Signatures\SignatureInterface
+     */
+    public function signature();
+
+    /**
+     * Generate random nonce.
+     *
+     * @return string
+     */
+    public function nonce();
+
+    /**
+     * Get current timestamp.
+     *
+     * @return int
+     */
+    public function timestamp();
+
+    /**
+     * Get OAuth version.
+     *
+     * @return string
+     */
+    public function version();
+
+    /**
      * Get temporary credentials.
      *
      * @return OAuth1Client\Contracts\Credentials\TemporaryCredentialsInterface

@@ -7,7 +7,7 @@ class ClientCredentialsTest extends PHPUnit_Framework_TestCase {
 
     function setUp()
     {
-        $this->clientCredentials = new ClientCredentials('foo', 'bar', 'http://baz.qux');
+        $this->clientCredentials = new ClientCredentials('foo', 'bar');
     }
 
     /** @test */
@@ -20,12 +20,6 @@ class ClientCredentialsTest extends PHPUnit_Framework_TestCase {
     function client_credentials_has_secret()
     {
         $this->assertEquals('bar', $this->clientCredentials->secret());
-    }
-
-    /** @test */
-    function client_credentials_has_callback_uri()
-    {
-        $this->assertEquals('http://baz.qux', $this->clientCredentials->callbackUri());
     }
 
     /** @test */

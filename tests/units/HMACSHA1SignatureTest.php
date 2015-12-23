@@ -10,7 +10,7 @@ class HMACSHA1SignatureTest extends PHPUnit_Framework_TestCase {
 
     function setUp()
     {
-        $this->clientCredentials = new ClientCredentials('foo', 'bar', 'http://foo.bar');
+        $this->clientCredentials = new ClientCredentials('foo', 'bar');
 
         $this->signature = new HMACSHA1Signature($this->clientCredentials);
     }
