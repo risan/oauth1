@@ -26,7 +26,7 @@ class Upwork extends OAuth1Client implements UpworkInterface {
     }
 
     /**
-     * Access token credentials url.
+     * Token credentials url.
      *
      * @return string
      */

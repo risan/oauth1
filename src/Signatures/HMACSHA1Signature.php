@@ -42,6 +42,8 @@ class HMACSHA1Signature extends Signature implements HMACSHA1SignatureInterface 
      */
     public function baseString($uri, array $parameters = [], $httpVerb = 'POST')
     {
+        ksort($parameters);
+
         $parameters = http_build_query($parameters, '', '&', PHP_QUERY_RFC3986);
 
         return sprintf("%s&%s&%s", $httpVerb, rawurlencode($uri), rawurlencode($parameters));

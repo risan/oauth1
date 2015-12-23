@@ -5,6 +5,7 @@ namespace OAuth1Client;
 use OAuth1Client\Signatures\HMACSHA1Signature;
 use OAuth1Client\OAuth1Flows\AuthorizationFlow;
 use OAuth1Client\Contracts\OAuth1ClientInterface;
+use OAuth1Client\OAuth1Flows\TokenCredentialsFlow;
 use OAuth1Client\OAuth1Flows\TemporaryCredentialsFlow;
 use OAuth1Client\Contracts\Signatures\SignatureInterface;
 use OAuth1Client\Contracts\Credentials\ClientCredentialsInterface;
@@ -12,7 +13,8 @@ use OAuth1Client\Contracts\Credentials\ClientCredentialsInterface;
 abstract class OAuth1Client implements OAuth1ClientInterface {
 
     use TemporaryCredentialsFlow,
-        AuthorizationFlow;
+        AuthorizationFlow,
+        TokenCredentialsFlow;
 
     /**
      * Http client instance.
