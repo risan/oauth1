@@ -119,7 +119,10 @@ interface GrantedFlowInterface {
     /**
      * Get granted request headers.
      *
+     * @param OAuth1\Contracts\Tokens\AccessTokenInterface $accessToken
+     * @param string $url
+     * @param string $httpVerb
      * @return array
      */
-    public function grantedRequestHeaders();
+    public function grantedRequestHeaders(AccessTokenInterface $accessToken, $url, $httpVerb);
 }

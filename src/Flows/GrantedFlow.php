@@ -2,9 +2,17 @@
 
 namespace OAuth1\Flows;
 
+use InvalidArgumentException;
 use OAuth1\Contracts\Tokens\AccessTokenInterface;
 
 trait GrantedFlow {
+    /**
+     * Granted access token.
+     *
+     * @var OAuth1\Contracts\Tokens\AccessTokenInterface
+     */
+    protected $grantedAccessToken;
+
     /**
      * Get resource base url.
      *
@@ -12,7 +20,7 @@ trait GrantedFlow {
      */
     public function resourceBaseUrl()
     {
-
+        return $this->config()->resourceBaseUrl();
     }
 
     /**
@@ -23,7 +31,9 @@ trait GrantedFlow {
      */
     public function setResourceBaseUrl($url)
     {
+        $this->config()->setResourceBaseUrl($url);
 
+        return $this;
     }
 
     /**
@@ -34,7 +44,11 @@ trait GrantedFlow {
      */
     public function resourceUrl($url)
     {
+        if (is_null($this->resourceBaseUrl())) {
+            return $url;
+        }
 
+        return $this->resourceBaseUrl() . $url;
     }
 
     /**
@@ -47,7 +61,17 @@ trait GrantedFlow {
      */
     public function request($method, $url, $options = [])
     {
+        if (! $this->grantedAccessToken() instanceof AccessTokenInterface) {
+            throw new InvalidArgumentException('No access token has been set.');
+        }
 
+        $resourceUrl = $this->resourceUrl($url);
+
+        $headers = [
+            'headers' => $this->grantedRequestHeaders($this->grantedAccessToken(), $resourceUrl, $method)
+        ];
+
+        return $this->httpClient()->request($method, $resourceUrl, array_merge($options, $headers));
     }
 
     /**
@@ -59,7 +83,7 @@ trait GrantedFlow {
      */
     public function get($url, $options = [])
     {
-
+        return $this->request('GET', $url, $options);
     }
 
     /**
@@ -71,7 +95,7 @@ trait GrantedFlow {
      */
     public function post($url, $options = [])
     {
-
+        return $this->request('POST', $url, $options);
     }
 
     /**
@@ -83,7 +107,7 @@ trait GrantedFlow {
      */
     public function put($url, $options = [])
     {
-
+        return $this->request('PUT', $url, $options);
     }
 
     /**
@@ -95,7 +119,7 @@ trait GrantedFlow {
      */
     public function patch($url, $options = [])
     {
-
+        return $this->request('PATCH', $url, $options);
     }
 
     /**
@@ -107,7 +131,7 @@ trait GrantedFlow {
      */
     public function delete($url, $options = [])
     {
-
+        return $this->request('DELETE', $url, $options);
     }
 
     /**
@@ -119,7 +143,7 @@ trait GrantedFlow {
      */
     public function head($url, $options = [])
     {
-
+        return $this->request('HEAD', $url, $options);
     }
 
     /**
@@ -131,7 +155,7 @@ trait GrantedFlow {
      */
     public function options($url, $options = [])
     {
-
+        return $this->request('OPTIONS', $url, $options);
     }
 
     /**
@@ -141,7 +165,7 @@ trait GrantedFlow {
      */
     public function grantedAccessToken()
     {
-
+        return $this->grantedAccessToken;
     }
 
     /**
@@ -152,16 +176,28 @@ trait GrantedFlow {
      */
     public function setGrantedAccessToken(AccessTokenInterface $accessToken)
     {
+        $this->grantedAccessToken = $accessToken;
 
+        return $this;
     }
 
     /**
      * Get granted request headers.
      *
+     * @param OAuth1\Contracts\Tokens\AccessTokenInterface $accessToken
+     * @param string $url
+     * @param string $httpVerb
      * @return array
      */
-    public function grantedRequestHeaders()
+    public function grantedRequestHeaders(AccessTokenInterface $accessToken, $url, $httpVerb)
     {
+        $parameters = $this->baseProtocolParameters();
 
+        $parameters['oauth_token'] = $accessToken->key();
+        $parameters['oauth_signature'] = $this->signer()->setTokenSecret($accessToken->secret())->sign($url, $parameters, $httpVerb);
+
+        return [
+            'Authorization' => $this->authorizationHeaders($parameters)
+        ];
     }
 }
