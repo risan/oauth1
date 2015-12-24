@@ -10,10 +10,11 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
         $this->config = new Config(
             'key',
             'secret',
-            'http://callback.foo',
             'http://requesttoken.foo',
             'http://authorization.foo',
-            'http://accesstoken.foo'
+            'http://accesstoken.foo',
+            'http://callback.foo',
+            'http://resource.foo'
         );
     }
 
@@ -27,12 +28,6 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
     function config_has_consumer_secret()
     {
         $this->assertEquals('secret', $this->config->consumerSecret());
-    }
-
-    /** @test */
-    function config_has_callback_url()
-    {
-        $this->assertEquals('http://callback.foo', $this->config->callbackUrl());
     }
 
     /** @test */
@@ -54,15 +49,28 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
     }
 
     /** @test */
+    function config_has_callback_url()
+    {
+        $this->assertEquals('http://callback.foo', $this->config->callbackUrl());
+    }
+
+    /** @test */
+    function config_has_resource_base_url()
+    {
+        $this->assertEquals('http://resource.foo', $this->config->resourceBaseUrl());
+    }
+
+    /** @test */
     function config_can_be_created_from_array()
     {
         $params = [
             'consumer_key' => 'key',
             'consumer_secret' => 'secret',
-            'callback_url' => 'http://callback.foo',
             'request_token_url' => 'http://requesttoken.foo',
             'authorization_url' => 'http://authorization.foo',
-            'access_token_url' => 'http://accesstoken.foo'
+            'access_token_url' => 'http://accesstoken.foo',
+            'callback_url' => 'http://callback.foo',
+            'resource_base_url' => 'http://resource.foo'
         ];
 
         $config = Config::fromArray($params);
@@ -70,10 +78,11 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
         $this->assertInstanceOf(Config::class, $config);
         $this->assertEquals('key', $config->consumerKey());
         $this->assertEquals('secret', $config->consumerSecret());
-        $this->assertEquals('http://callback.foo', $config->callbackUrl());
         $this->assertEquals('http://requesttoken.foo', $config->requestTokenUrl());
         $this->assertEquals('http://authorization.foo', $config->authorizationUrl());
         $this->assertEquals('http://accesstoken.foo', $config->accessTokenUrl());
+        $this->assertEquals('http://callback.foo', $config->callbackUrl());
+        $this->assertEquals('http://resource.foo', $config->resourceBaseUrl());
     }
 
     /**
@@ -84,10 +93,11 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
     {
         Config::fromArray([
             'consumer_secret' => 'secret',
-            'callback_url' => 'http://callback.foo',
             'request_token_url' => 'http://requesttoken.foo',
             'authorization_url' => 'http://authorization.foo',
-            'access_token_url' => 'http://accesstoken.foo'
+            'access_token_url' => 'http://accesstoken.foo',
+            'callback_url' => 'http://callback.foo',
+            'resource_base_url' => 'http://resource.foo'
         ]);
     }
 
@@ -99,10 +109,11 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
     {
         Config::fromArray([
             'consumer_key' => 'key',
-            'callback_url' => 'http://callback.foo',
             'request_token_url' => 'http://requesttoken.foo',
             'authorization_url' => 'http://authorization.foo',
-            'access_token_url' => 'http://accesstoken.foo'
+            'access_token_url' => 'http://accesstoken.foo',
+            'callback_url' => 'http://callback.foo',
+            'resource_base_url' => 'http://resource.foo'
         ]);
     }
 
@@ -115,9 +126,10 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
         Config::fromArray([
             'consumer_key' => 'key',
             'consumer_secret' => 'secret',
-            'callback_url' => 'http://callback.foo',
             'authorization_url' => 'http://authorization.foo',
-            'access_token_url' => 'http://accesstoken.foo'
+            'access_token_url' => 'http://accesstoken.foo',
+            'callback_url' => 'http://callback.foo',
+            'resource_base_url' => 'http://resource.foo'
         ]);
     }
 
@@ -130,9 +142,10 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
         Config::fromArray([
             'consumer_key' => 'key',
             'consumer_secret' => 'secret',
-            'callback_url' => 'http://callback.foo',
             'request_token_url' => 'http://requesttoken.foo',
-            'access_token_url' => 'http://accesstoken.foo'
+            'access_token_url' => 'http://accesstoken.foo',
+            'callback_url' => 'http://callback.foo',
+            'resource_base_url' => 'http://resource.foo'
         ]);
     }
 
@@ -145,9 +158,10 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
         Config::fromArray([
             'consumer_key' => 'key',
             'consumer_secret' => 'secret',
-            'callback_url' => 'http://callback.foo',
             'request_token_url' => 'http://requesttoken.foo',
-            'authorization_url' => 'http://authorization.foo'
+            'authorization_url' => 'http://authorization.foo',
+            'callback_url' => 'http://callback.foo',
+            'resource_base_url' => 'http://resource.foo'
         ]);
     }
 
@@ -159,10 +173,27 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
             'consumer_secret' => 'secret',
             'request_token_url' => 'http://requesttoken.foo',
             'authorization_url' => 'http://authorization.foo',
-            'access_token_url' => 'http://accesstoken.foo'
+            'access_token_url' => 'http://accesstoken.foo',
+            'resource_base_url' => 'http://resource.foo'
         ]);
 
         $this->assertInstanceOf(Config::class, $config);
         $this->assertEmpty($config->callbackUrl());
+    }
+
+    /** @test */
+    function config_created_without_resource_base_url()
+    {
+        $config = Config::fromArray([
+            'consumer_key' => 'key',
+            'consumer_secret' => 'secret',
+            'request_token_url' => 'http://requesttoken.foo',
+            'authorization_url' => 'http://authorization.foo',
+            'access_token_url' => 'http://accesstoken.foo',
+            'callback_url' => 'http://callback.foo'
+        ]);
+
+        $this->assertInstanceOf(Config::class, $config);
+        $this->assertEmpty($config->resourceBaseUrl());
     }
 }

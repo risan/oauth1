@@ -46,6 +46,13 @@ interface ConfigInterface {
     public function accessTokenUrl();
 
     /**
+     * Get resource base url.
+     *
+     * @return string|null
+     */
+    public function resourceBaseUrl();
+
+    /**
      * Create an instance from array.
      *
      * @param array $config

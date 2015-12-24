@@ -21,13 +21,6 @@ class Config implements ConfigInterface {
     protected $consumerSecret;
 
     /**
-     * OAuth callback url.
-     *
-     * @var string|null
-     */
-    protected $callbackUrl;
-
-    /**
      * OAuth request token url.
      *
      * @var string
@@ -49,23 +42,39 @@ class Config implements ConfigInterface {
     protected $accessTokenUrl;
 
     /**
+     * OAuth callback url.
+     *
+     * @var string|null
+     */
+    protected $callbackUrl;
+
+    /**
+     * Resource base url.
+     *
+     * @return string|null
+     */
+    protected $resourceBaseUrl;
+
+    /**
      * Create a new instance of Config.
      *
      * @param string        $consumerKey
      * @param string        $consumerSecret
-     * @param string|null   $callbackUrl
      * @param string        $requestTokenUrl
      * @param string        $authorizationUrl
      * @param string        $accessTokenUrl
+     * @param string|null   $callbackUrl
+     * @param string|null   $resourceBaseUrl
      */
-    public function __construct($consumerKey, $consumerSecret, $callbackUrl, $requestTokenUrl, $authorizationUrl, $accessTokenUrl)
+    public function __construct($consumerKey, $consumerSecret, $requestTokenUrl, $authorizationUrl, $accessTokenUrl, $callbackUrl = null, $resourceBaseUrl = null)
     {
         $this->consumerKey = $consumerKey;
         $this->consumerSecret = $consumerSecret;
-        $this->callbackUrl = $callbackUrl;
         $this->requestTokenUrl = $requestTokenUrl;
         $this->authorizationUrl = $authorizationUrl;
         $this->accessTokenUrl = $accessTokenUrl;
+        $this->callbackUrl = $callbackUrl;
+        $this->resourceBaseUrl = $resourceBaseUrl;
     }
 
     /**
@@ -86,16 +95,6 @@ class Config implements ConfigInterface {
     public function consumerSecret()
     {
         return $this->consumerSecret;
-    }
-
-    /**
-     * Get OAuth callback url.
-     *
-     * @return string|null
-     */
-    public function callbackUrl()
-    {
-        return $this->callbackUrl;
     }
 
     /**
@@ -129,6 +128,26 @@ class Config implements ConfigInterface {
     }
 
     /**
+     * Get OAuth callback url.
+     *
+     * @return string|null
+     */
+    public function callbackUrl()
+    {
+        return $this->callbackUrl;
+    }
+
+    /**
+     * Ge resource base url.
+     *
+     * @return string|null
+     */
+    public function resourceBaseUrl()
+    {
+        return $this->resourceBaseUrl;
+    }
+
+    /**
      * Create an instance from array.
      *
      * @param array $config
@@ -150,14 +169,16 @@ class Config implements ConfigInterface {
         }
 
         $callbackUrl = isset($config['callback_url']) ? $config['callback_url'] : null;
+        $resourceBaseUrl = isset($config['resource_base_url']) ? $config['resource_base_url'] : null;
 
         return new static(
             $config['consumer_key'],
             $config['consumer_secret'],
-            $callbackUrl,
             $config['request_token_url'],
             $config['authorization_url'],
-            $config['access_token_url']
+            $config['access_token_url'],
+            $callbackUrl,
+            $resourceBaseUrl
         );
     }
 }
