@@ -68,7 +68,7 @@ trait GrantedFlow {
         $resourceUrl = $this->resourceUrl($url);
 
         $headers = [
-            'headers' => $this->grantedRequestHeaders($this->grantedAccessToken(), $resourceUrl, $method)
+            'headers' => $this->grantedRequestHeaders($this->grantedAccessToken(), $resourceUrl, $method, $options)
         ];
 
         return $this->httpClient()->request($method, $resourceUrl, array_merge($options, $headers));
@@ -187,11 +187,16 @@ trait GrantedFlow {
      * @param OAuth1\Contracts\Tokens\AccessTokenInterface $accessToken
      * @param string $url
      * @param string $httpVerb
+     * @param array  $options
      * @return array
      */
-    public function grantedRequestHeaders(AccessTokenInterface $accessToken, $url, $httpVerb)
+    public function grantedRequestHeaders(AccessTokenInterface $accessToken, $url, $httpVerb, $options = [])
     {
         $parameters = $this->baseProtocolParameters();
+
+        if (isset($options['query'])) {
+            $parameters = array_merge($parameters, $options['query']);
+        }
 
         $parameters['oauth_token'] = $accessToken->key();
         $parameters['oauth_signature'] = $this->signer()->setTokenSecret($accessToken->secret())->sign($url, $parameters, $httpVerb);
