@@ -2,11 +2,13 @@
 
 namespace OAuth1\Contracts;
 
+use OAuth1\Contracts\Flows\GrantedFlowInterface;
 use OAuth1\Contracts\Flows\AccessTokenFlowInterface;
 use OAuth1\Contracts\Flows\RequestTokenFlowInterface;
 use OAuth1\Contracts\Flows\AuthorizationFlowInterface;
 
-interface OAuth1ClientInterface extends AccessTokenFlowInterface,
+interface OAuth1ClientInterface extends GrantedFlowInterface,
+                                        AccessTokenFlowInterface,
                                         RequestTokenFlowInterface,
                                         AuthorizationFlowInterface {
     /**

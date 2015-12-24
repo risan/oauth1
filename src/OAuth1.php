@@ -4,6 +4,7 @@ namespace OAuth1;
 
 use OAuth1\Config;
 use InvalidArgumentException;
+use OAuth1\Flows\GrantedFlow;
 use OAuth1\Flows\AccessTokenFlow;
 use OAuth1\Signers\HmacSha1Signer;
 use OAuth1\Flows\RequestTokenFlow;
@@ -14,7 +15,8 @@ use OAuth1\Contracts\Signers\SignerInterface;
 
 class OAuth1 implements OAuth1ClientInterface {
 
-    use AccessTokenFlow,
+    use GrantedFlow,
+        AccessTokenFlow,
         RequestTokenFlow,
         AuthorizationFlow;
 
