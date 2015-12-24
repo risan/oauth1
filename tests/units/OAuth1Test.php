@@ -18,10 +18,11 @@ class OAuth1Test extends PHPUnit_Framework_TestCase {
         $this->config = [
             'consumer_key' => 'key',
             'consumer_secret' => 'secret',
-            'callback_url' => 'http://callback.foo',
             'request_token_url' => 'http://www.mocky.io/v2/567a64390f0000eb051aef7c',
             'authorization_url' => 'http://authorization.foo',
-            'access_token_url' => 'http://www.mocky.io/v2/567a64390f0000eb051aef7c'
+            'access_token_url' => 'http://www.mocky.io/v2/567a64390f0000eb051aef7c',
+            'callback_url' => 'http://callback.foo',
+            'resource_base_url' => 'http://www.mocky.io/v2/'
         ];
 
         $this->oauth1 = new OAuth1($this->config);
