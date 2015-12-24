@@ -1,41 +1,33 @@
 <?php
 
-namespace OAuth1Client;
+namespace OAuth1;
 
-use OAuth1Client\Signatures\HMACSHA1Signature;
-use OAuth1Client\OAuth1Flows\AuthorizationFlow;
-use OAuth1Client\Contracts\OAuth1ClientInterface;
-use OAuth1Client\OAuth1Flows\TokenCredentialsFlow;
-use OAuth1Client\OAuth1Flows\TemporaryCredentialsFlow;
-use OAuth1Client\Contracts\Signatures\SignatureInterface;
-use OAuth1Client\Contracts\Credentials\ClientCredentialsInterface;
+use OAuth1\Flows\AccessTokenFlow;
+use OAuth1\Signers\HmacSha1Signer;
+use OAuth1\Flows\RequestTokenFlow;
+use OAuth1\Flows\AuthorizationFlow;
+use OAuth1\Contracts\ConfigInterface;
+use OAuth1\Contracts\OAuth1ClientInterface;
 
-abstract class OAuth1Client implements OAuth1ClientInterface {
+class Generic implements OAuth1ClientInterface {
 
-    use TemporaryCredentialsFlow,
-        AuthorizationFlow,
-        TokenCredentialsFlow;
+    use AccessTokenFlow,
+        RequestTokenFlow,
+        AuthorizationFlow;
 
     /**
      * Http client instance.
      *
-     * @var OAuth1Client\Contracts\OAuth1ClientInterface
+     * @return OAuth1\Contracts\HttpClientInterface
      */
     protected $httpClient;
 
     /**
-     * Client credentials instance.
+     * Client configuration.
      *
-     * @var OAuth1Client\Contracts\Credentials\ClientCredentialsInterface
+     * @var OAuth1\Contracts\ConfigInterface
      */
-    protected $clientCredentials;
-
-    /**
-     * Signature instance.
-     *
-     * @var OAuth1Client\Contracts\Signatures\SignatureInterface
-     */
-    protected $signature;
+    protected $config;
 
     /**
      * Create a new instance of OAuth1Client.
@@ -52,7 +44,7 @@ abstract class OAuth1Client implements OAuth1ClientInterface {
     /**
      * Get http client instance.
      *
-     * @return OAuth1Client\Contracts\HttpClientInterface
+     * @return OAuth1\Contracts\HttpClientInterface
      */
     public function httpClient()
     {
@@ -64,27 +56,27 @@ abstract class OAuth1Client implements OAuth1ClientInterface {
     }
 
     /**
-     * Get client credential.
+     * Get client configuration.
      *
-     * @return OAuth1Client\Contracts\Credentials\ClientCredentialsInterface
+     * @return OAuth1\Contracts\ConfigInterface
      */
-    public function clientCredentials()
+    public function config()
     {
-        return $this->clientCredentials;
+        return $this->config;
     }
 
     /**
-     * Get signature.
+     * Get signer.
      *
-     * @return OAuth1Client\Contracts\Signatures\SignatureInterface
+     * @return OAuth1\Contracts\Signers\SignerInterface
      */
-    public function signature()
+    public function signer()
     {
-        if (is_null($this->signature)) {
-            $this->signature = new HMACSHA1Signature($this->clientCredentials());
+        if (is_null($this->signer)) {
+            $this->signer = new HmacSha1Signer($this->config()->consumerSecret());
         }
 
-        return $this->signature;
+        return $this->signer;
     }
 
     /**
@@ -118,18 +110,18 @@ abstract class OAuth1Client implements OAuth1ClientInterface {
     }
 
     /**
-     * Base protocol parameters.
+     * Get OAuth base protocol parameters.
      *
      * @return array
      */
     public function baseProtocolParameters()
     {
         return [
-            'oauth_consumer_key' => $this->clientCredentials()->identifier(),
+            'oauth_consumer_key' => $this->config()->consumerKey(),
             'oauth_nonce' => $this->nonce(),
-            'oauth_signature_method' => $this->signature()->method(),
+            'oauth_signature_method' => $this->signer()->method(),
             'oauth_timestamp' => $this->timestamp(),
-            'oauth_version' => $this->version(),
+            'oauth_version' => $this->version()
         ];
     }
 

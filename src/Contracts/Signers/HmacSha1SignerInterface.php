@@ -1,8 +1,8 @@
 <?php
 
-namespace OAuth1Client\Contracts\Signatures;
+namespace OAuth1\Contracts\Signers;
 
-interface HMACSHA1SignatureInterface extends SignatureInterface {
+interface HmacSha1SignerInterface extends SignerInterface {
     /**
      * Construct HMAC-SHA1 signature base string.
      *
@@ -14,7 +14,7 @@ interface HMACSHA1SignatureInterface extends SignatureInterface {
     public function baseString($uri, array $parameters = [], $httpVerb = 'POST');
 
     /**
-     * Hash the given data with signature's key.
+     * Hash the given data with signer's key.
      *
      * @param  string $data
      * @return string

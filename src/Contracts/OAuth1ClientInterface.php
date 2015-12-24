@@ -1,34 +1,34 @@
 <?php
 
-namespace OAuth1Client\Contracts;
+namespace OAuth1\Contracts;
 
-use OAuth1Client\Contracts\OAuth1Flows\AuthorizationFlowInterface;
-use OAuth1Client\Contracts\OAuth1Flows\TokenCredentialsFlowInterface;
-use OAuth1Client\Contracts\OAuth1Flows\TemporaryCredentialsFlowInterface;
+use OAuth1\Contracts\Flows\AccessTokenFlowInterface;
+use OAuth1\Contracts\Flows\RequestTokenFlowInterface;
+use OAuth1\Contracts\Flows\AuthorizationFlowInterface;
 
-interface OAuth1ClientInterface extends TemporaryCredentialsFlowInterface,
-                                        AuthorizationFlowInterface,
-                                        TokenCredentialsFlowInterface {
+interface OAuth1ClientInterface extends AccessTokenFlowInterface,
+                                        RequestTokenFlowInterface,
+                                        AuthorizationFlowInterface {
     /**
      * Get http client instance.
      *
-     * @return OAuth1Client\Contracts\HttpClientInterface
+     * @return OAuth1\Contracts\HttpClientInterface
      */
     public function httpClient();
 
     /**
-     * Get client credential.
+     * Get client configuration.
      *
-     * @return OAuth1Client\Contracts\Credentials\ClientCredentialsInterface
+     * @return OAuth1\Contracts\ConfigInterface
      */
-    public function clientCredentials();
+    public function config();
 
     /**
-     * Get signature.
+     * Get signer.
      *
-     * @return OAuth1Client\Contracts\Signatures\SignatureInterface
+     * @return OAuth1\Contracts\Signers\SignerInterface
      */
-    public function signature();
+    public function signer();
 
     /**
      * Generate random nonce.
@@ -52,7 +52,7 @@ interface OAuth1ClientInterface extends TemporaryCredentialsFlowInterface,
     public function version();
 
     /**
-     * Base protocol parameters.
+     * Get OAuth base protocol parameters.
      *
      * @return array
      */

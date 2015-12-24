@@ -1,6 +1,6 @@
 <?php
 
-namespace OAuth1Client\Contracts;
+namespace OAuth1\Contracts;
 
 interface HttpClientInterface {
 }

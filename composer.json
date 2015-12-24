@@ -1,5 +1,5 @@
 {
-  "name": "risan/oauth1-client",
+  "name": "risan/oauth1",
   "type": "library",
   "description": "OAuth version 1.0 client library for PHP",
   "keywords": ["oauth", "oauth1", "authorization", "authentication"],
@@ -15,7 +15,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "OAuth1Client\\": "src/"
+      "OAuth1\\": "src/"
     }
   },
   "require": {

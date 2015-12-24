@@ -1,14 +1,12 @@
 <?php
 
-namespace OAuth1Client\Signatures;
+namespace OAuth1\Signers;
 
-use OAuth1Client\Contracts\Credentials\CredentialsInterface;
-use OAuth1Client\Contracts\Signatures\HMACSHA1SignatureInterface;
-use OAuth1Client\Contracts\Credentials\ClientCredentialsInterface;
+use OAuth1\Contracts\Signers\HmacSha1SignerInterface;
 
-class HMACSHA1Signature extends Signature implements HMACSHA1SignatureInterface {
+class HmacSha1Signer extends Signer implements HmacSha1SignerInterface {
     /**
-     * Get signature's method name.
+     * Get signer's method name.
      *
      * @return string
      */
@@ -50,7 +48,7 @@ class HMACSHA1Signature extends Signature implements HMACSHA1SignatureInterface 
     }
 
     /**
-     * Hash the given data with signature's key.
+     * Hash the given data with signer's key.
      *
      * @param  string $data
      * @return string

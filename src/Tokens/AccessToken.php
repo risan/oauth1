@@ -1,16 +1,16 @@
 <?php
 
-namespace OAuth1Client\Credentials;
+namespace OAuth1\Tokens;
 
 use Psr\Http\Message\ResponseInterface;
-use OAuth1Client\Contracts\Credentials\TokenCredentialsInterface;
+use OAuth1\Contracts\Tokens\AccessTokenInterface;
 
-class TokenCredentials extends Credentials implements TokenCredentialsInterface {
+class AccessToken extends Token implements AccessTokenInterface {
     /**
      * Create from HTTP response.
      *
      * @param  Psr\Http\Message\ResponseInterface $response
-     * @return OAuth1Client\Contracts\Credentials
+     * @return OAuth1\Contracts\Tokens\AccessTokenInterface
      */
     static public function fromHttpResponse(ResponseInterface $response)
     {
