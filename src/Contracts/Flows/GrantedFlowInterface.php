@@ -13,6 +13,14 @@ interface GrantedFlowInterface {
     public function resourceBaseUrl();
 
     /**
+     * Set resource base url.
+     *
+     * @param  string $url
+     * @return OAuth1\Contracts\GrantedFlowInterface
+     */
+    public function setResourceBaseUrl($url);
+
+    /**
      * Build resource url.
      *
      * @param  string $url

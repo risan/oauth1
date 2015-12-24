@@ -53,6 +53,14 @@ interface ConfigInterface {
     public function resourceBaseUrl();
 
     /**
+     * Set resource base url.
+     *
+     * @param  string $url
+     * @return OAuth\ConfigInterface
+     */
+    public function setResourceBaseUrl($url);
+
+    /**
      * Create an instance from array.
      *
      * @param array $config

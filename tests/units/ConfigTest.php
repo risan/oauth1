@@ -61,6 +61,13 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
     }
 
     /** @test */
+    function config_can_set_resource_base_url()
+    {
+        $this->assertInstanceOf(Config::class, $this->config->setResourceBaseUrl('http://resource.bar'));
+        $this->assertEquals('http://resource.bar', $this->config->resourceBaseUrl());
+    }
+
+    /** @test */
     function config_can_be_created_from_array()
     {
         $params = [

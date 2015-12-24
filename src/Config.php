@@ -148,6 +148,19 @@ class Config implements ConfigInterface {
     }
 
     /**
+     * Set resource base url.
+     *
+     * @param  string $url
+     * @return OAuth\ConfigInterface
+     */
+    public function setResourceBaseUrl($url)
+    {
+        $this->resourceBaseUrl = $url;
+
+        return $this;
+    }
+
+    /**
      * Create an instance from array.
      *
      * @param array $config
