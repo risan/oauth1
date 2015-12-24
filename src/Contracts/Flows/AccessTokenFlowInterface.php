@@ -2,7 +2,7 @@
 
 namespace OAuth1\Contracts\Flows;
 
-use OAuth1\Contracts\Token\RequestTokenInterface;
+use OAuth1\Contracts\Tokens\RequestTokenInterface;
 
 interface AccessTokenFlowInterface {
     /**
@@ -15,10 +15,10 @@ interface AccessTokenFlowInterface {
     /**
      * Get access token.
      *
-     * @param  OAuth1\Contracts\Token\RequestTokenInterface $requestToken
+     * @param  OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken
      * @param  string   $tokenKey
      * @param  string   $verifier
-     * @return OAuth1\Contracts\Token\AccessTokenInterface
+     * @return OAuth1\Contracts\Tokens\AccessTokenInterface
      */
     public function accessToken(RequestTokenInterface $requestToken, $tokenKey, $verifier);
 

@@ -12,6 +12,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
             'secret',
             'http://callback.foo',
             'http://requesttoken.foo',
+            'http://authorization.foo',
             'http://accesstoken.foo'
         );
     }
@@ -41,6 +42,12 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
     }
 
     /** @test */
+    function config_has_authorization_url()
+    {
+        $this->assertEquals('http://authorization.foo', $this->config->authorizationUrl());
+    }
+
+    /** @test */
     function config_has_access_token_url()
     {
         $this->assertEquals('http://accesstoken.foo', $this->config->accessTokenUrl());
@@ -54,6 +61,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
             'consumer_secret' => 'secret',
             'callback_url' => 'http://callback.foo',
             'request_token_url' => 'http://requesttoken.foo',
+            'authorization_url' => 'http://authorization.foo',
             'access_token_url' => 'http://accesstoken.foo'
         ];
 
@@ -64,6 +72,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals('secret', $config->consumerSecret());
         $this->assertEquals('http://callback.foo', $config->callbackUrl());
         $this->assertEquals('http://requesttoken.foo', $config->requestTokenUrl());
+        $this->assertEquals('http://authorization.foo', $config->authorizationUrl());
         $this->assertEquals('http://accesstoken.foo', $config->accessTokenUrl());
     }
 
@@ -77,6 +86,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
             'consumer_secret' => 'secret',
             'callback_url' => 'http://callback.foo',
             'request_token_url' => 'http://requesttoken.foo',
+            'authorization_url' => 'http://authorization.foo',
             'access_token_url' => 'http://accesstoken.foo'
         ]);
     }
@@ -91,6 +101,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
             'consumer_key' => 'key',
             'callback_url' => 'http://callback.foo',
             'request_token_url' => 'http://requesttoken.foo',
+            'authorization_url' => 'http://authorization.foo',
             'access_token_url' => 'http://accesstoken.foo'
         ]);
     }
@@ -105,6 +116,22 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
             'consumer_key' => 'key',
             'consumer_secret' => 'secret',
             'callback_url' => 'http://callback.foo',
+            'authorization_url' => 'http://authorization.foo',
+            'access_token_url' => 'http://accesstoken.foo'
+        ]);
+    }
+
+    /**
+     * @test
+     * @expectedException InvalidArgumentException
+     */
+    function config_without_authorization_url_throws_exception()
+    {
+        Config::fromArray([
+            'consumer_key' => 'key',
+            'consumer_secret' => 'secret',
+            'callback_url' => 'http://callback.foo',
+            'request_token_url' => 'http://requesttoken.foo',
             'access_token_url' => 'http://accesstoken.foo'
         ]);
     }
@@ -119,7 +146,8 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
             'consumer_key' => 'key',
             'consumer_secret' => 'secret',
             'callback_url' => 'http://callback.foo',
-            'request_token_url' => 'http://requesttoken.foo'
+            'request_token_url' => 'http://requesttoken.foo',
+            'authorization_url' => 'http://authorization.foo'
         ]);
     }
 
@@ -130,6 +158,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
             'consumer_key' => 'key',
             'consumer_secret' => 'secret',
             'request_token_url' => 'http://requesttoken.foo',
+            'authorization_url' => 'http://authorization.foo',
             'access_token_url' => 'http://accesstoken.foo'
         ]);
 

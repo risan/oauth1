@@ -35,6 +35,13 @@ class Config implements ConfigInterface {
     protected $requestTokenUrl;
 
     /**
+     * OAuth authorization url.
+     *
+     * @return string
+     */
+    protected $authorizationUrl;
+
+    /**
      * OAuth access token url.
      *
      * @var string
@@ -48,14 +55,16 @@ class Config implements ConfigInterface {
      * @param string        $consumerSecret
      * @param string|null   $callbackUrl
      * @param string        $requestTokenUrl
+     * @param string        $authorizationUrl
      * @param string        $accessTokenUrl
      */
-    public function __construct($consumerKey, $consumerSecret, $callbackUrl, $requestTokenUrl, $accessTokenUrl)
+    public function __construct($consumerKey, $consumerSecret, $callbackUrl, $requestTokenUrl, $authorizationUrl, $accessTokenUrl)
     {
         $this->consumerKey = $consumerKey;
         $this->consumerSecret = $consumerSecret;
         $this->callbackUrl = $callbackUrl;
         $this->requestTokenUrl = $requestTokenUrl;
+        $this->authorizationUrl = $authorizationUrl;
         $this->accessTokenUrl = $accessTokenUrl;
     }
 
@@ -100,6 +109,16 @@ class Config implements ConfigInterface {
     }
 
     /**
+     * Get OAuth authorization url.
+     *
+     * @return string
+     */
+    public function authorizationUrl()
+    {
+        return $this->authorizationUrl;
+    }
+
+    /**
      * Get OAuth access token url.
      *
      * @return string
@@ -120,12 +139,13 @@ class Config implements ConfigInterface {
             'consumer_key',
             'consumer_secret',
             'request_token_url',
+            'authorization_url',
             'access_token_url'
         ];
 
         foreach ($requiredParams as $param) {
             if (! isset($config[$param])) {
-                throw new InvalidArgumentException("Missing OAuth client configuration: $param.");
+                throw new InvalidArgumentException("Missing OAuth1 client configuration: $param.");
             }
         }
 
@@ -136,6 +156,7 @@ class Config implements ConfigInterface {
             $config['consumer_secret'],
             $callbackUrl,
             $config['request_token_url'],
+            $config['authorization_url'],
             $config['access_token_url']
         );
     }

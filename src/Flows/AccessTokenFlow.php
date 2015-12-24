@@ -20,10 +20,10 @@ trait AccessTokenFlow {
     /**
      * Get access token.
      *
-     * @param  OAuth1\Contracts\Token\RequestTokenInterface $requestToken
+     * @param  OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken
      * @param  string   $tokenKey
      * @param  string   $verifier
-     * @return OAuth1\Contracts\Token\AccessTokenInterface
+     * @return OAuth1\Contracts\Tokens\AccessTokenInterface
      */
     public function accessToken(RequestTokenInterface $requestToken, $tokenKey, $verifier)
     {
@@ -31,7 +31,7 @@ trait AccessTokenFlow {
             throw new InvalidArgumentException('The received oauth token does not match.');
         }
 
-        $response = $this->httpClient()->post($this->accessToken(), [
+        $response = $this->httpClient()->post($this->accessTokenUrl(), [
             'headers' => $this->accessTokenHeaders($requestToken, $verifier)
         ]);
 
@@ -59,8 +59,6 @@ trait AccessTokenFlow {
      */
     public function accessTokenHeaders(RequestTokenInterface $requestToken, $verifier)
     {
-        $this->signer()->setToken($requestToken);
-
         $parameters = $this->baseProtocolParameters();
 
         $parameters['oauth_token'] = $requestToken->key();

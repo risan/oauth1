@@ -2,14 +2,17 @@
 
 namespace OAuth1;
 
+use OAuth1\Config;
+use InvalidArgumentException;
 use OAuth1\Flows\AccessTokenFlow;
 use OAuth1\Signers\HmacSha1Signer;
 use OAuth1\Flows\RequestTokenFlow;
 use OAuth1\Flows\AuthorizationFlow;
 use OAuth1\Contracts\ConfigInterface;
 use OAuth1\Contracts\OAuth1ClientInterface;
+use OAuth1\Contracts\Signers\SignerInterface;
 
-class Generic implements OAuth1ClientInterface {
+class OAuth1 implements OAuth1ClientInterface {
 
     use AccessTokenFlow,
         RequestTokenFlow,
@@ -30,14 +33,27 @@ class Generic implements OAuth1ClientInterface {
     protected $config;
 
     /**
-     * Create a new instance of OAuth1Client.
+     * OAuth signer instance.
      *
-     * @param OAuth1Client\Contracts\Credentials\ClientCredentialsInterface $clientCredentials
-     * @param OAuth1Client\Contracts\Signatures\SignatureInterface|null     $signature
+     * @return OAuth1\Contracts\Signers\SignerInterface
      */
-    public function __construct(ClientCredentialsInterface $clientCredentials, SignatureInterface $signature = null)
+    protected $signer;
+
+    /**
+     * Create a new instance of Generic class.
+     *
+     * @param OAuth1\Contracts\ConfigInterface|null         $config
+     * @param OAuth1\Contracts\Signers\SignerInterface|null $signature
+     */
+    public function __construct($config, SignerInterface $signature = null)
     {
-        $this->clientCredentials = $clientCredentials;
+        if (is_array($config)) {
+            $config = Config::fromArray($config);
+        } elseif (! $config instanceof ConfigInterface) {
+            throw new InvalidArgumentException('OAuth1 client configuration must be a valid array or an instance of OAuth1\Config class.');
+        }
+
+        $this->config = $config;
         $this->signature = $signature;
     }
 
