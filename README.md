@@ -170,10 +170,102 @@ $twitter = new OAuth1\OAuth1([
 
 ## OAuth 1 Flow
 
+OAuth version 1 can be broken down into four distinct steps in order to access protected resources.
+
 ### Get Request Token
+
+Step 1 is to retrieve for a request token. A request token is used as a temporary credentials for generating authorization url. To retrieve a request token from your OAuth provider, simply call `requestToken()` method like so:
+
+```php
+$requestToken = $oauth1->requestToken();
+```
+
+This `requestToken()` method will return an instance of `OAuth`\Tokens\RequestToken` class which will be needed in the authorization step.
 
 ### Authorize Access
 
+Step 2 is to authorize access. Once you have the request token, the next step is to ask user's permission to grant access for your application. To redirect user to your OAuth provider's authorization page, you need to call `authorize()` method:
+
+```php
+$oauth1->authorize(OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken);
+```
+
+This method requires an argument which must confront the `RequestTokenInterface`. You may pass an instance of `OAuth1\Tokens\RequestToken` class that you get from the `requestToken()` previously.
+
+This method will not return anything, because it simpy redirects user to authorization page that is provided by your OAuth provider.
+
 ### Get Access Token
 
+Step 3 is to get an access token. Once the user has granted his/her permission, he/she will be redirected back to the configured callback url with the additional query string:
+
+* `oauth_token`
+* `oauth_verifier`
+
+You will need these returned two paramters to verify and request for access token from OAuth provider. To get an access token, you need to call `accessToken()` method:
+
+```php
+$accessToken = $oauth1->accessToken(OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken, $tokenKey, $verifier);
+```
+
+The `accessToken()` method requires an instance that implements `RequestTokenInterface`. You may pass the `OAuth1\Tokens\RequestToken` class instance which retrieved from step 2. The method is also required `$tokenKey` and `$verifier` arguments. This two arguments are retrieved from the query string like so:
+
+```php
+$accessToken = $oauth1->accessToken($requestToken, $_GET['oauth_token'], $_GET['oauth_verifier']);
+```
+
+The `accessToken()` method will return an instance of `OAuth1\Tokens\AccessToken` class. This `AccessToken` instance will then be used to access protected resources.
+
 ### Access Protected Resource
+
+Finally, the last step is to access protected resources! Once you've got the access token, you can start accessing protected resources. First you need to set the granted access token like so:
+
+```php
+$oauth1->setGrantedAccessToken(OAuth1\Contracts\Tokens\AccessTokenInterface $accessToken);
+```
+
+Once the access token is set, you can start sending HTTP request to the protected API endpoints using `request()` method:
+
+```php
+$response = $oauth->request($method, $url, array $options = []);
+```
+
+The `request()` method has three arguments:
+
+* `$method` (String)
+
+  This is the HTTP method to use: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `OPTIONS`, or `HEAD`.
+
+* `$url` (String)
+
+  This is the url or the path of the API endpoint. Note that we have the `resource_base_url` in configuration array, so you don't have to specify a full path url.
+
+* `$options` (Array) *Optional*
+
+  This is a requests options to send along with. You may see the full reference of requests options in [Guzzle requests options documentation](http://docs.guzzlephp.org/en/latest/request-options.html).
+
+The `request()` method will return an instance of `Psr\Http\Message\ResponseInterface`. You may read further about the retured response object in [Guzzle and PSR-7 documentation](http://docs.guzzlephp.org/en/latest/psr7.html#responses).
+
+You may also send HTTP request using various shorthand methods:
+
+```php
+// HTTP GET.
+$oauth->get($url, array $options = []);
+
+// HTTP POST.
+$oauth->post($url, array $options = []);
+
+// HTTP PUT.
+$oauth->put($url, array $options = []);
+
+// HTTP PATCH.
+$oauth->patch($url, array $options = []);
+
+// HTTP DELETE.
+$oauth->delete($url, array $options = []);
+
+// HTTP OPTIONS.
+$oauth->options($url, array $options = []);
+
+// HTTP HEAD.
+$oauth->head($url, array $options = []);
+```
