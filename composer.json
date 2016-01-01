@@ -2,7 +2,7 @@
   "name": "risan/oauth1",
   "type": "library",
   "description": "OAuth version 1.0 client library for PHP",
-  "keywords": ["oauth", "oauth1", "authorization", "authentication"],
+  "keywords": ["oauth", "oauth1", "authorization", "authentication", "twitter", "tumblr", "upwork"],
   "homepage": "https://github.com/risan/oauth1",
   "license": "MIT",
   "authors": [
