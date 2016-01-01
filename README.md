@@ -18,6 +18,10 @@ Simple, fluent and extensible OAuth 1 client library for PHP.
   * [Authorize Access](#authorize-access)
   * [Get Access Token](#get-access-token)
   * [Access Protected Resource](#access-protected-resource)
+* [Built In Providers](#built-in-providers)
+  * [Twitter](#twitter)
+  * [Tumblr](#tumblr)
+  * [Upwork](#upwork)
 
 ## Dependencies
 
@@ -39,7 +43,7 @@ Or you may also add `risan\oauth1` package into your `composer.json` file like s
 
 ```bash
 "require": {
-  "risan/oauth1": "~1.0"
+  "risan/oauth1": "~1.1"
 }
 ```
 
@@ -268,4 +272,74 @@ $oauth->options($url, array $options = []);
 
 // HTTP HEAD.
 $oauth->head($url, array $options = []);
+```
+
+## Built In Providers
+
+OAuth1 library has built in support for the following providers:
+
+* [Twitter](https://twitter.com/)
+* [Tumblr](https://tumblr.com/)
+* [Upwork](https://upwork.com/)
+
+With this providers, you only have to pass `consumer_key` and `consumer_secret` as a configuration array when creating a client instance.
+
+### Twitter
+
+You can uthe `Oauth1\Twitter` class to communicate with Twitter Rest API. To create an instance of this class:
+
+```php
+$twitter = new OAuth1\Twitter([
+    'consumer_key'    => 'YOUR_TWITTER_CONSUMER_KEY',
+    'consumer_secret' => 'YOUR_TWITTER_CONSUMER_SECRET',
+    'callback_url'    => 'YOUR_CALLBACK_URL' // Optional
+]);
+```
+
+Once, you've got the access token, you can use this Twitter client instance to retrieve protected resources. For example to retrieve current user's timeline:
+
+```php
+$twitter->setGrantedAccessToken($accessToken);
+
+$response = $twitter->get('statuses/user_timeline.json');
+```
+
+### Tumblr
+
+You can use the provided `Oauth1\Tumblr` class to communicate with Tumblr API. To instantiate it:
+
+```php
+$tumblr = new OAuth1\Tumblr([
+    'consumer_key'    => 'YOUR_TUMBLR_CONSUMER_KEY',
+    'consumer_secret' => 'YOUR_TUMBLR_CONSUMER_SECRET',
+    'callback_url'    => 'YOUR_CALLBACK_URL' // Optional
+]);
+```
+
+Once the user has granted the permission, you can set the given access token and perform a request to Tumblr API. For example, we can retrieve the Tumblr blog information like so:
+
+```php
+$tumblr->setGrantedAccessToken($accessToken);
+
+$response = $tumblr->get('blog/allthingseurope.tumblr.com/info');
+```
+
+### Upwork
+
+You can also use the `OAuth\Upwork` class to communicate with Upwork API. To instantiate the `Upwork` client:
+
+```php
+$upwork = new OAuth1\Upwork([
+    'consumer_key'    => 'YOUR_UPWORK_CONSUMER_KEY',
+    'consumer_secret' => 'YOUR_UPWORK_CONSUMER_SECRET',
+    'callback_url'    => 'YOUR_CALLBACK_URL' // Optional
+]);
+```
+
+Once you've got the access token, you may now easily access the Upwork API. For example, if we are about to retrieve the authenticated user information, we can do the following:
+
+```php
+$upwork->setGrantedAccessToken($accessToken);
+
+$response = $upwork->get('api/auth/v1/info.json');
 ```

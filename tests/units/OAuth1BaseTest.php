@@ -43,7 +43,7 @@ class OAuth1BaseTest extends PHPUnit_Framework_TestCase {
     }
 
     /** @test */
-    function uoauth1_can_generate_nonce()
+    function oauth1_can_generate_nonce()
     {
         $nonce = $this->oauth1->nonce();
 
