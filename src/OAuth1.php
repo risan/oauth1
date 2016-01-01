@@ -44,7 +44,7 @@ class OAuth1 implements OAuth1ClientInterface {
     /**
      * Create a new instance of Generic class.
      *
-     * @param OAuth1\Contracts\ConfigInterface|null         $config
+     * @param OAuth1\Contracts\ConfigInterface|array        $config
      * @param OAuth1\Contracts\Signers\SignerInterface|null $signature
      */
     public function __construct($config, SignerInterface $signature = null)
