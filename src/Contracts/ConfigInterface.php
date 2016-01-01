@@ -32,11 +32,11 @@ interface ConfigInterface {
     public function requestTokenUrl();
 
     /**
-     * Get OAuth authorization url.
+     * Get OAuth authorize url.
      *
      * @return string
      */
-    public function authorizationUrl();
+    public function authorizeUrl();
 
     /**
      * Get OAuth access token url.

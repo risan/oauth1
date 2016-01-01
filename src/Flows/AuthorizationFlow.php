@@ -6,13 +6,13 @@ use OAuth1\Contracts\Tokens\RequestTokenInterface;
 
 trait AuthorizationFlow {
     /**
-     * Authorization url.
+     * Authorize url.
      *
      * @return string
      */
-    public function authorizationUrl()
+    public function authorizeUrl()
     {
-        return $this->config()->authorizationUrl();
+        return $this->config()->authorizeUrl();
     }
 
     /**
@@ -40,6 +40,6 @@ trait AuthorizationFlow {
             'oauth_token' => $requestToken->key()
         ]);
 
-        return $this->authorizationUrl() . '?' . $query;
+        return $this->authorizeUrl() . '?' . $query;
     }
 }

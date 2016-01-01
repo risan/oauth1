@@ -14,7 +14,7 @@ class OAuth1AuthorizationFlowTest extends PHPUnit_Framework_TestCase {
             'consumer_key' => 'key',
             'consumer_secret' => 'secret',
             'request_token_url' => 'http://www.mocky.io/v2/567a64390f0000eb051aef7c',
-            'authorization_url' => 'http://authorization.foo',
+            'authorize_url' => 'http://authorize.foo',
             'access_token_url' => 'http://www.mocky.io/v2/567a64390f0000eb051aef7c',
             'callback_url' => 'http://callback.foo',
             'resource_base_url' => 'http://www.mocky.io/v2/'
@@ -26,15 +26,15 @@ class OAuth1AuthorizationFlowTest extends PHPUnit_Framework_TestCase {
     }
 
     /** @test */
-    function oauth1_has_authorization_url()
+    function oauth1_has_authorize_url()
     {
-        return $this->assertEquals($this->config['authorization_url'], $this->oauth1->authorizationUrl());
+        return $this->assertEquals($this->config['authorize_url'], $this->oauth1->authorizeUrl());
     }
 
     /** @test */
     function oauth1_can_build_authorization_url()
     {
-        $expected = $this->config['authorization_url'] . '?oauth_token=' . $this->requestToken->key();
+        $expected = $this->config['authorize_url'] . '?oauth_token=' . $this->requestToken->key();
 
         return $this->assertEquals($expected, $this->oauth1->buildAuthorizationUrl($this->requestToken));
     }

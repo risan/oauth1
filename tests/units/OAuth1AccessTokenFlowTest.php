@@ -15,7 +15,7 @@ class OAuth1AccessTokenFlowTest extends PHPUnit_Framework_TestCase {
             'consumer_key' => 'key',
             'consumer_secret' => 'secret',
             'request_token_url' => 'http://www.mocky.io/v2/567a64390f0000eb051aef7c',
-            'authorization_url' => 'http://authorization.foo',
+            'authorize_url' => 'http://authorize.foo',
             'access_token_url' => 'http://www.mocky.io/v2/567a64390f0000eb051aef7c',
             'callback_url' => 'http://callback.foo',
             'resource_base_url' => 'http://www.mocky.io/v2/'

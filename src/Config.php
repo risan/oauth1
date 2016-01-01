@@ -28,11 +28,11 @@ class Config implements ConfigInterface {
     protected $requestTokenUrl;
 
     /**
-     * OAuth authorization url.
+     * OAuth authorize url.
      *
      * @return string
      */
-    protected $authorizationUrl;
+    protected $authorizeUrl;
 
     /**
      * OAuth access token url.
@@ -61,17 +61,17 @@ class Config implements ConfigInterface {
      * @param string        $consumerKey
      * @param string        $consumerSecret
      * @param string        $requestTokenUrl
-     * @param string        $authorizationUrl
+     * @param string        $authorizeUrl
      * @param string        $accessTokenUrl
      * @param string|null   $callbackUrl
      * @param string|null   $resourceBaseUrl
      */
-    public function __construct($consumerKey, $consumerSecret, $requestTokenUrl, $authorizationUrl, $accessTokenUrl, $callbackUrl = null, $resourceBaseUrl = null)
+    public function __construct($consumerKey, $consumerSecret, $requestTokenUrl, $authorizeUrl, $accessTokenUrl, $callbackUrl = null, $resourceBaseUrl = null)
     {
         $this->consumerKey = $consumerKey;
         $this->consumerSecret = $consumerSecret;
         $this->requestTokenUrl = $requestTokenUrl;
-        $this->authorizationUrl = $authorizationUrl;
+        $this->authorizeUrl = $authorizeUrl;
         $this->accessTokenUrl = $accessTokenUrl;
         $this->callbackUrl = $callbackUrl;
         $this->resourceBaseUrl = $resourceBaseUrl;
@@ -108,13 +108,13 @@ class Config implements ConfigInterface {
     }
 
     /**
-     * Get OAuth authorization url.
+     * Get OAuth authorize url.
      *
      * @return string
      */
-    public function authorizationUrl()
+    public function authorizeUrl()
     {
-        return $this->authorizationUrl;
+        return $this->authorizeUrl;
     }
 
     /**
@@ -171,7 +171,7 @@ class Config implements ConfigInterface {
             'consumer_key',
             'consumer_secret',
             'request_token_url',
-            'authorization_url',
+            'authorize_url',
             'access_token_url'
         ];
 
@@ -188,7 +188,7 @@ class Config implements ConfigInterface {
             $config['consumer_key'],
             $config['consumer_secret'],
             $config['request_token_url'],
-            $config['authorization_url'],
+            $config['authorize_url'],
             $config['access_token_url'],
             $callbackUrl,
             $resourceBaseUrl

@@ -6,11 +6,11 @@ use OAuth1\Contracts\Tokens\RequestTokenInterface;
 
 interface AuthorizationFlowInterface {
     /**
-     * Authorization url.
+     * Authorize url.
      *
      * @return string
      */
-    public function authorizationUrl();
+    public function authorizeUrl();
 
     /**
      * Request authorization.
