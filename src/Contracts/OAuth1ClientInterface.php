@@ -7,10 +7,7 @@ use OAuth1\Contracts\Flows\AuthorizationFlowInterface;
 use OAuth1\Contracts\Flows\GrantedFlowInterface;
 use OAuth1\Contracts\Flows\RequestTokenFlowInterface;
 
-interface OAuth1ClientInterface extends GrantedFlowInterface,
-                                        AccessTokenFlowInterface,
-                                        RequestTokenFlowInterface,
-                                        AuthorizationFlowInterface
+interface OAuth1ClientInterface extends GrantedFlowInterface, AccessTokenFlowInterface, RequestTokenFlowInterface, AuthorizationFlowInterface
 {
     /**
      * Get http client instance.
