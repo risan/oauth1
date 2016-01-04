@@ -15,8 +15,8 @@ class Twitter extends OAuth1 implements OAuth1ClientInterface
     {
         $config = array_merge($config, [
             'request_token_url' => 'https://api.twitter.com/oauth/request_token',
-            'authorize_url'     => 'https://api.twitter.com/oauth/authorize',
-            'access_token_url'  => 'https://api.twitter.com/oauth/access_token',
+            'authorize_url' => 'https://api.twitter.com/oauth/authorize',
+            'access_token_url' => 'https://api.twitter.com/oauth/access_token',
             'resource_base_url' => 'https://api.twitter.com/1.1/',
         ]);
 
