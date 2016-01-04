@@ -4,7 +4,8 @@ namespace OAuth1\Signers;
 
 use OAuth1\Contracts\Signers\SignerInterface;
 
-abstract class Signer implements SignerInterface {
+abstract class Signer implements SignerInterface
+{
     /**
      * Signer's consumer secret.
      *
@@ -53,6 +54,7 @@ abstract class Signer implements SignerInterface {
      * Set signer's token secret.
      *
      * @param string $secret
+     *
      * @return OAuth1\Contracts\Signers\SignerInterface
      */
     public function setTokenSecret($secret)
@@ -69,9 +71,9 @@ abstract class Signer implements SignerInterface {
      */
     public function key()
     {
-        $key = rawurlencode($this->consumerSecret()) . '&';
+        $key = rawurlencode($this->consumerSecret()).'&';
 
-        if (! is_null($this->tokenSecret())) {
+        if (!is_null($this->tokenSecret())) {
             $key .= rawurlencode($this->tokenSecret());
         }
 

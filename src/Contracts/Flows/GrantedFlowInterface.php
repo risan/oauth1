@@ -4,7 +4,8 @@ namespace OAuth1\Contracts\Flows;
 
 use OAuth1\Contracts\Tokens\AccessTokenInterface;
 
-interface GrantedFlowInterface {
+interface GrantedFlowInterface
+{
     /**
      * Get resource base url.
      *
@@ -15,7 +16,8 @@ interface GrantedFlowInterface {
     /**
      * Set resource base url.
      *
-     * @param  string $url
+     * @param string $url
+     *
      * @return OAuth1\Contracts\GrantedFlowInterface
      */
     public function setResourceBaseUrl($url);
@@ -23,7 +25,8 @@ interface GrantedFlowInterface {
     /**
      * Build resource url.
      *
-     * @param  string $url
+     * @param string $url
+     *
      * @return string
      */
     public function resourceUrl($url);
@@ -31,9 +34,10 @@ interface GrantedFlowInterface {
     /**
      * Send HTTP request to protected resource.
      *
-     * @param  string $method
-     * @param  string $url
-     * @param  array  $options
+     * @param string $method
+     * @param string $url
+     * @param array  $options
+     *
      * @return Psr\Http\Message\ResponseInterface
      */
     public function request($method, $url, $options = []);
@@ -41,8 +45,9 @@ interface GrantedFlowInterface {
     /**
      * Send HTTP GET request to protected resource.
      *
-     * @param  string $url
-     * @param  array  $options
+     * @param string $url
+     * @param array  $options
+     *
      * @return Psr\Http\Message\ResponseInterface
      */
     public function get($url, $options = []);
@@ -50,8 +55,9 @@ interface GrantedFlowInterface {
     /**
      * Send POST DELETE request to protected resource.
      *
-     * @param  string $url
-     * @param  array  $options
+     * @param string $url
+     * @param array  $options
+     *
      * @return Psr\Http\Message\ResponseInterface
      */
     public function post($url, $options = []);
@@ -59,8 +65,9 @@ interface GrantedFlowInterface {
     /**
      * Send HTTP PUT request to protected resource.
      *
-     * @param  string $url
-     * @param  array  $options
+     * @param string $url
+     * @param array  $options
+     *
      * @return Psr\Http\Message\ResponseInterface
      */
     public function put($url, $options = []);
@@ -68,8 +75,9 @@ interface GrantedFlowInterface {
     /**
      * Send HTTP PATCH request to protected resource.
      *
-     * @param  string $url
-     * @param  array  $options
+     * @param string $url
+     * @param array  $options
+     *
      * @return Psr\Http\Message\ResponseInterface
      */
     public function patch($url, $options = []);
@@ -77,8 +85,9 @@ interface GrantedFlowInterface {
     /**
      * Send HTTP DELETE request to protected resource.
      *
-     * @param  string $url
-     * @param  array  $options
+     * @param string $url
+     * @param array  $options
+     *
      * @return Psr\Http\Message\ResponseInterface
      */
     public function delete($url, $options = []);
@@ -86,8 +95,9 @@ interface GrantedFlowInterface {
     /**
      * Send HTTP HEAD request to protected resource.
      *
-     * @param  string $url
-     * @param  array  $options
+     * @param string $url
+     * @param array  $options
+     *
      * @return Psr\Http\Message\ResponseInterface
      */
     public function head($url, $options = []);
@@ -95,8 +105,9 @@ interface GrantedFlowInterface {
     /**
      * Send HTTP OPTIONS request to protected resource.
      *
-     * @param  string $url
-     * @param  array  $options
+     * @param string $url
+     * @param array  $options
+     *
      * @return Psr\Http\Message\ResponseInterface
      */
     public function options($url, $options = []);
@@ -112,6 +123,7 @@ interface GrantedFlowInterface {
      * Set granted access token.
      *
      * @param $accessToken OAuth1\Contracts\Tokens\AccessTokenInterface
+     *
      * @return OAuth1\Contracts\GrantedFlowInterface
      */
     public function setGrantedAccessToken(AccessTokenInterface $accessToken);
@@ -120,9 +132,10 @@ interface GrantedFlowInterface {
      * Get granted request headers.
      *
      * @param OAuth1\Contracts\Tokens\AccessTokenInterface $accessToken
-     * @param string $url
-     * @param string $httpVerb
-     * @param array  $options
+     * @param string                                       $url
+     * @param string                                       $httpVerb
+     * @param array                                        $options
+     *
      * @return array
      */
     public function grantedRequestHeaders(AccessTokenInterface $accessToken, $url, $httpVerb, $options = []);

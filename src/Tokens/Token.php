@@ -4,7 +4,8 @@ namespace OAuth1\Tokens;
 
 use OAuth1\Contracts\Tokens\TokenInterface;
 
-abstract class Token implements TokenInterface {
+abstract class Token implements TokenInterface
+{
     /**
      * Token's key.
      *
@@ -41,7 +42,7 @@ abstract class Token implements TokenInterface {
         return $this->key;
     }
 
-   /**
+    /**
      * Get token's secret.
      *
      * @return string

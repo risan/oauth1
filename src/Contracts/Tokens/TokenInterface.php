@@ -2,7 +2,8 @@
 
 namespace OAuth1\Contracts\Tokens;
 
-interface TokenInterface {
+interface TokenInterface
+{
     /**
      * Get token's key.
      *

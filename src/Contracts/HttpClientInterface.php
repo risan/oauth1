@@ -2,5 +2,6 @@
 
 namespace OAuth1\Contracts;
 
-interface HttpClientInterface {
+interface HttpClientInterface
+{
 }

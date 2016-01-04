@@ -5,7 +5,8 @@ namespace OAuth1\Flows;
 use InvalidArgumentException;
 use OAuth1\Contracts\Tokens\AccessTokenInterface;
 
-trait GrantedFlow {
+trait GrantedFlow
+{
     /**
      * Granted access token.
      *
@@ -26,7 +27,8 @@ trait GrantedFlow {
     /**
      * Set resource base url.
      *
-     * @param  string $url
+     * @param string $url
+     *
      * @return OAuth1\Contracts\GrantedFlowInterface
      */
     public function setResourceBaseUrl($url)
@@ -39,7 +41,8 @@ trait GrantedFlow {
     /**
      * Build resource url.
      *
-     * @param  string $url
+     * @param string $url
+     *
      * @return string
      */
     public function resourceUrl($url)
@@ -48,27 +51,28 @@ trait GrantedFlow {
             return $url;
         }
 
-        return $this->resourceBaseUrl() . $url;
+        return $this->resourceBaseUrl().$url;
     }
 
     /**
      * Send HTTP request to protected resource.
      *
-     * @param  string $method
-     * @param  string $url
-     * @param  array  $options
+     * @param string $method
+     * @param string $url
+     * @param array  $options
+     *
      * @return Psr\Http\Message\ResponseInterface
      */
     public function request($method, $url, $options = [])
     {
-        if (! $this->grantedAccessToken() instanceof AccessTokenInterface) {
+        if (!$this->grantedAccessToken() instanceof AccessTokenInterface) {
             throw new InvalidArgumentException('No access token has been set.');
         }
 
         $resourceUrl = $this->resourceUrl($url);
 
         $headers = [
-            'headers' => $this->grantedRequestHeaders($this->grantedAccessToken(), $resourceUrl, $method, $options)
+            'headers' => $this->grantedRequestHeaders($this->grantedAccessToken(), $resourceUrl, $method, $options),
         ];
 
         return $this->httpClient()->request($method, $resourceUrl, array_merge($options, $headers));
@@ -77,8 +81,9 @@ trait GrantedFlow {
     /**
      * Send HTTP GET request to protected resource.
      *
-     * @param  string $url
-     * @param  array  $options
+     * @param string $url
+     * @param array  $options
+     *
      * @return Psr\Http\Message\ResponseInterface
      */
     public function get($url, $options = [])
@@ -89,8 +94,9 @@ trait GrantedFlow {
     /**
      * Send POST DELETE request to protected resource.
      *
-     * @param  string $url
-     * @param  array  $options
+     * @param string $url
+     * @param array  $options
+     *
      * @return Psr\Http\Message\ResponseInterface
      */
     public function post($url, $options = [])
@@ -101,8 +107,9 @@ trait GrantedFlow {
     /**
      * Send HTTP PUT request to protected resource.
      *
-     * @param  string $url
-     * @param  array  $options
+     * @param string $url
+     * @param array  $options
+     *
      * @return Psr\Http\Message\ResponseInterface
      */
     public function put($url, $options = [])
@@ -113,8 +120,9 @@ trait GrantedFlow {
     /**
      * Send HTTP PATCH request to protected resource.
      *
-     * @param  string $url
-     * @param  array  $options
+     * @param string $url
+     * @param array  $options
+     *
      * @return Psr\Http\Message\ResponseInterface
      */
     public function patch($url, $options = [])
@@ -125,8 +133,9 @@ trait GrantedFlow {
     /**
      * Send HTTP DELETE request to protected resource.
      *
-     * @param  string $url
-     * @param  array  $options
+     * @param string $url
+     * @param array  $options
+     *
      * @return Psr\Http\Message\ResponseInterface
      */
     public function delete($url, $options = [])
@@ -137,8 +146,9 @@ trait GrantedFlow {
     /**
      * Send HTTP HEAD request to protected resource.
      *
-     * @param  string $url
-     * @param  array  $options
+     * @param string $url
+     * @param array  $options
+     *
      * @return Psr\Http\Message\ResponseInterface
      */
     public function head($url, $options = [])
@@ -149,8 +159,9 @@ trait GrantedFlow {
     /**
      * Send HTTP OPTIONS request to protected resource.
      *
-     * @param  string $url
-     * @param  array  $options
+     * @param string $url
+     * @param array  $options
+     *
      * @return Psr\Http\Message\ResponseInterface
      */
     public function options($url, $options = [])
@@ -172,6 +183,7 @@ trait GrantedFlow {
      * Set granted access token.
      *
      * @param $accessToken OAuth1\Contracts\Tokens\AccessTokenInterface
+     *
      * @return OAuth1\Contracts\GrantedFlowInterface
      */
     public function setGrantedAccessToken(AccessTokenInterface $accessToken)
@@ -185,9 +197,10 @@ trait GrantedFlow {
      * Get granted request headers.
      *
      * @param OAuth1\Contracts\Tokens\AccessTokenInterface $accessToken
-     * @param string $url
-     * @param string $httpVerb
-     * @param array  $options
+     * @param string                                       $url
+     * @param string                                       $httpVerb
+     * @param array                                        $options
+     *
      * @return array
      */
     public function grantedRequestHeaders(AccessTokenInterface $accessToken, $url, $httpVerb, $options = [])
@@ -202,7 +215,7 @@ trait GrantedFlow {
         $parameters['oauth_signature'] = $this->signer()->setTokenSecret($accessToken->secret())->sign($url, $parameters, $httpVerb);
 
         return [
-            'Authorization' => $this->authorizationHeaders($parameters)
+            'Authorization' => $this->authorizationHeaders($parameters),
         ];
     }
 }

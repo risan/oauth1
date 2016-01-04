@@ -4,7 +4,8 @@ namespace OAuth1\Flows;
 
 use OAuth1\Tokens\RequestToken;
 
-trait RequestTokenFlow {
+trait RequestTokenFlow
+{
     /**
      * Request token url.
      *
@@ -15,19 +16,19 @@ trait RequestTokenFlow {
         return $this->config()->requestTokenUrl();
     }
 
-    /**
-     * Get request token.
-     *
-     * @return OAuth1\Contracts\Tokens\RequestTokenInterface
-     */
+     /**
+      * Get request token.
+      *
+      * @return OAuth1\Contracts\Tokens\RequestTokenInterface
+      */
      public function requestToken()
-    {
-        $response = $this->httpClient()->post($this->requestTokenUrl(), [
-            'headers' => $this->requestTokenHeaders()
+     {
+         $response = $this->httpClient()->post($this->requestTokenUrl(), [
+            'headers' => $this->requestTokenHeaders(),
         ]);
 
-        return RequestToken::fromHttpResponse($response);
-    }
+         return RequestToken::fromHttpResponse($response);
+     }
 
     /**
      * Get request token headers.
@@ -41,7 +42,7 @@ trait RequestTokenFlow {
         $parameters['oauth_signature'] = $this->signer()->sign($this->requestTokenUrl(), $parameters);
 
         return [
-            'Authorization' => $this->authorizationHeaders($parameters)
+            'Authorization' => $this->authorizationHeaders($parameters),
         ];
     }
 }

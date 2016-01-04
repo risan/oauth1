@@ -2,9 +2,8 @@
 
 namespace OAuth1\Contracts\Signers;
 
-use OAuth1\Contracts\Tokens\TokenInterface;
-
-interface SignerInterface {
+interface SignerInterface
+{
     /**
      * Get signer's consumer secret.
      *
@@ -23,6 +22,7 @@ interface SignerInterface {
      * Set signer's token secret.
      *
      * @param string $secret
+     *
      * @return OAuth1\Contracts\Signers\SignerInterface
      */
     public function setTokenSecret($secret);
@@ -44,9 +44,10 @@ interface SignerInterface {
     /**
      * Sign request for the client.
      *
-     * @param  string $uri
-     * @param  array  $parameters
-     * @param  string $httpVerb
+     * @param string $uri
+     * @param array  $parameters
+     * @param string $httpVerb
+     *
      * @return string
      */
     public function sign($uri, array $parameters = [], $httpVerb = 'POST');

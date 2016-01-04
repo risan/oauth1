@@ -4,7 +4,8 @@ namespace OAuth1\Flows;
 
 use OAuth1\Contracts\Tokens\RequestTokenInterface;
 
-trait AuthorizationFlow {
+trait AuthorizationFlow
+{
     /**
      * Authorize url.
      *
@@ -18,12 +19,11 @@ trait AuthorizationFlow {
     /**
      * Request authorization.
      *
-     * @param  OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken
-     * @return void
+     * @param OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken
      */
     public function authorize(RequestTokenInterface $requestToken)
     {
-        header('Location: ' . $this->buildAuthorizationUrl($requestToken));
+        header('Location: '.$this->buildAuthorizationUrl($requestToken));
 
         exit();
     }
@@ -31,15 +31,16 @@ trait AuthorizationFlow {
     /**
      * Build authorization url.
      *
-     * @param  OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken
+     * @param OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken
+     *
      * @return string
      */
     public function buildAuthorizationUrl(RequestTokenInterface $requestToken)
     {
         $query = http_build_query([
-            'oauth_token' => $requestToken->key()
+            'oauth_token' => $requestToken->key(),
         ]);
 
-        return $this->authorizeUrl() . '?' . $query;
+        return $this->authorizeUrl().'?'.$query;
     }
 }

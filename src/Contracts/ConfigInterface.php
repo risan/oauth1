@@ -2,7 +2,8 @@
 
 namespace OAuth1\Contracts;
 
-interface ConfigInterface {
+interface ConfigInterface
+{
     /**
      * Get OAuth consumer key.
      *
@@ -55,7 +56,8 @@ interface ConfigInterface {
     /**
      * Set resource base url.
      *
-     * @param  string $url
+     * @param string $url
+     *
      * @return OAuth\ConfigInterface
      */
     public function setResourceBaseUrl($url);
@@ -65,5 +67,5 @@ interface ConfigInterface {
      *
      * @param array $config
      */
-    static public function fromArray(array $config);
+    public static function fromArray(array $config);
 }

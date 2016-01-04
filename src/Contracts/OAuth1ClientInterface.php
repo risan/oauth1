@@ -10,7 +10,8 @@ use OAuth1\Contracts\Flows\AuthorizationFlowInterface;
 interface OAuth1ClientInterface extends GrantedFlowInterface,
                                         AccessTokenFlowInterface,
                                         RequestTokenFlowInterface,
-                                        AuthorizationFlowInterface {
+                                        AuthorizationFlowInterface
+{
     /**
      * Get http client instance.
      *
@@ -63,7 +64,8 @@ interface OAuth1ClientInterface extends GrantedFlowInterface,
     /**
      * Build authorization headers.
      *
-     * @param  array  $parameters
+     * @param array $parameters
+     *
      * @return string
      */
     public function authorizationHeaders(array $parameters);

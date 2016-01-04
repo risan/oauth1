@@ -4,12 +4,14 @@ namespace OAuth1\Contracts\Tokens;
 
 use Psr\Http\Message\ResponseInterface;
 
-interface RequestTokenInterface extends TokenInterface {
+interface RequestTokenInterface extends TokenInterface
+{
     /**
      * Create from HTTP response.
      *
-     * @param  Psr\Http\Message\ResponseInterface $response
+     * @param Psr\Http\Message\ResponseInterface $response
+     *
      * @return OAuth1\Contracts\Tokens\RequestTokenInterface
      */
-    static public function fromHttpResponse(ResponseInterface $response);
+    public static function fromHttpResponse(ResponseInterface $response);
 }

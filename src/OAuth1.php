@@ -2,7 +2,6 @@
 
 namespace OAuth1;
 
-use OAuth1\Config;
 use InvalidArgumentException;
 use OAuth1\Flows\GrantedFlow;
 use OAuth1\Flows\AccessTokenFlow;
@@ -13,8 +12,8 @@ use OAuth1\Contracts\ConfigInterface;
 use OAuth1\Contracts\OAuth1ClientInterface;
 use OAuth1\Contracts\Signers\SignerInterface;
 
-class OAuth1 implements OAuth1ClientInterface {
-
+class OAuth1 implements OAuth1ClientInterface
+{
     use GrantedFlow,
         AccessTokenFlow,
         RequestTokenFlow,
@@ -51,7 +50,7 @@ class OAuth1 implements OAuth1ClientInterface {
     {
         if (is_array($config)) {
             $config = Config::fromArray($config);
-        } elseif (! $config instanceof ConfigInterface) {
+        } elseif (!$config instanceof ConfigInterface) {
             throw new InvalidArgumentException('OAuth1 client configuration must be a valid array or an instance of OAuth1\Config class.');
         }
 
@@ -139,14 +138,15 @@ class OAuth1 implements OAuth1ClientInterface {
             'oauth_nonce' => $this->nonce(),
             'oauth_signature_method' => $this->signer()->method(),
             'oauth_timestamp' => $this->timestamp(),
-            'oauth_version' => $this->version()
+            'oauth_version' => $this->version(),
         ];
     }
 
     /**
      * Build authorization headers.
      *
-     * @param  array  $parameters
+     * @param array $parameters
+     *
      * @return string
      */
     public function authorizationHeaders(array $parameters)

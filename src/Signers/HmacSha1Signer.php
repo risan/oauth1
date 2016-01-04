@@ -4,7 +4,8 @@ namespace OAuth1\Signers;
 
 use OAuth1\Contracts\Signers\HmacSha1SignerInterface;
 
-class HmacSha1Signer extends Signer implements HmacSha1SignerInterface {
+class HmacSha1Signer extends Signer implements HmacSha1SignerInterface
+{
     /**
      * Get signer's method name.
      *
@@ -18,9 +19,10 @@ class HmacSha1Signer extends Signer implements HmacSha1SignerInterface {
     /**
      * Sign request for the client.
      *
-     * @param  string $uri
-     * @param  array  $parameters
-     * @param  string $httpVerb
+     * @param string $uri
+     * @param array  $parameters
+     * @param string $httpVerb
+     *
      * @return string
      */
     public function sign($uri, array $parameters = [], $httpVerb = 'POST')
@@ -33,9 +35,10 @@ class HmacSha1Signer extends Signer implements HmacSha1SignerInterface {
     /**
      * Construct HMAC-SHA1 signature base string.
      *
-     * @param  string $uri
-     * @param  array  $parameters
-     * @param  string $httpVerb
+     * @param string $uri
+     * @param array  $parameters
+     * @param string $httpVerb
+     *
      * @return string
      */
     public function baseString($uri, array $parameters = [], $httpVerb = 'POST')
@@ -44,13 +47,14 @@ class HmacSha1Signer extends Signer implements HmacSha1SignerInterface {
 
         $parameters = http_build_query($parameters, '', '&', PHP_QUERY_RFC3986);
 
-        return sprintf("%s&%s&%s", $httpVerb, rawurlencode($uri), rawurlencode($parameters));
+        return sprintf('%s&%s&%s', $httpVerb, rawurlencode($uri), rawurlencode($parameters));
     }
 
     /**
      * Hash the given data with signer's key.
      *
-     * @param  string $data
+     * @param string $data
+     *
      * @return string
      */
     public function hash($data)

@@ -4,7 +4,8 @@ namespace OAuth1\Contracts\Flows;
 
 use OAuth1\Contracts\Tokens\RequestTokenInterface;
 
-interface AccessTokenFlowInterface {
+interface AccessTokenFlowInterface
+{
     /**
      * Access token url.
      *
@@ -15,9 +16,10 @@ interface AccessTokenFlowInterface {
     /**
      * Get access token.
      *
-     * @param  OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken
-     * @param  string   $tokenKey
-     * @param  string   $verifier
+     * @param OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken
+     * @param string                                        $tokenKey
+     * @param string                                        $verifier
+     *
      * @return OAuth1\Contracts\Tokens\AccessTokenInterface
      */
     public function accessToken(RequestTokenInterface $requestToken, $tokenKey, $verifier);
@@ -25,17 +27,19 @@ interface AccessTokenFlowInterface {
     /**
      * Is valid token?
      *
-     * @param  OAuth1\Contracts\Token\RequestTokenInterface $requestToken
-     * @param  string   $tokenKey
-     * @return boolean
+     * @param OAuth1\Contracts\Token\RequestTokenInterface $requestToken
+     * @param string                                       $tokenKey
+     *
+     * @return bool
      */
     public function isValidToken(RequestTokenInterface $requestToken, $tokenKey);
 
     /**
      * Access token header.
      *
-     * @param  OAuth1\Contracts\Token\RequestTokenInterface $requestToken
-     * @param  string   $verifier
+     * @param OAuth1\Contracts\Token\RequestTokenInterface $requestToken
+     * @param string                                       $verifier
+     *
      * @return array
      */
     public function accessTokenHeaders(RequestTokenInterface $requestToken, $verifier);

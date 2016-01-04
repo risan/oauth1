@@ -2,7 +2,8 @@
 
 namespace OAuth1\Contracts\Flows;
 
-interface RequestTokenFlowInterface {
+interface RequestTokenFlowInterface
+{
     /**
      * Request token url.
      *

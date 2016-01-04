@@ -5,7 +5,8 @@ namespace OAuth1;
 use InvalidArgumentException;
 use OAuth1\Contracts\ConfigInterface;
 
-class Config implements ConfigInterface {
+class Config implements ConfigInterface
+{
     /**
      * OAuth consumer key.
      *
@@ -58,13 +59,13 @@ class Config implements ConfigInterface {
     /**
      * Create a new instance of Config.
      *
-     * @param string        $consumerKey
-     * @param string        $consumerSecret
-     * @param string        $requestTokenUrl
-     * @param string        $authorizeUrl
-     * @param string        $accessTokenUrl
-     * @param string|null   $callbackUrl
-     * @param string|null   $resourceBaseUrl
+     * @param string      $consumerKey
+     * @param string      $consumerSecret
+     * @param string      $requestTokenUrl
+     * @param string      $authorizeUrl
+     * @param string      $accessTokenUrl
+     * @param string|null $callbackUrl
+     * @param string|null $resourceBaseUrl
      */
     public function __construct($consumerKey, $consumerSecret, $requestTokenUrl, $authorizeUrl, $accessTokenUrl, $callbackUrl = null, $resourceBaseUrl = null)
     {
@@ -150,7 +151,8 @@ class Config implements ConfigInterface {
     /**
      * Set resource base url.
      *
-     * @param  string $url
+     * @param string $url
+     *
      * @return OAuth\ConfigInterface
      */
     public function setResourceBaseUrl($url)
@@ -165,18 +167,18 @@ class Config implements ConfigInterface {
      *
      * @param array $config
      */
-    static public function fromArray(array $config)
+    public static function fromArray(array $config)
     {
         $requiredParams = [
             'consumer_key',
             'consumer_secret',
             'request_token_url',
             'authorize_url',
-            'access_token_url'
+            'access_token_url',
         ];
 
         foreach ($requiredParams as $param) {
-            if (! isset($config[$param])) {
+            if (!isset($config[$param])) {
                 throw new InvalidArgumentException("Missing OAuth1 client configuration: $param.");
             }
         }
