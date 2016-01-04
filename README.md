@@ -2,6 +2,7 @@
 
 [![Build Status](https://img.shields.io/travis/risan/oauth1.svg?style=flat-square)](https://travis-ci.org/risan/oauth1)
 [![HHVM Tested](https://img.shields.io/hhvm/risan/oauth1.svg?style=flat-square)](https://travis-ci.org/risan/oauth1)
+[![StyleCI](https://styleci.io/repos/48460990/shield?style=flat-square)](https://styleci.io/repos/48460990)
 [![Latest Stable Version](https://img.shields.io/packagist/v/risan/oauth1.svg?style=flat-square)](https://packagist.org/packages/risan/oauth1)
 [![License](https://img.shields.io/packagist/l/risan/oauth1.svg?style=flat-square)](https://packagist.org/packages/risan/oauth1)
 
