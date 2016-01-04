@@ -2,10 +2,10 @@
 
 namespace OAuth1\Contracts;
 
-use OAuth1\Contracts\Flows\GrantedFlowInterface;
 use OAuth1\Contracts\Flows\AccessTokenFlowInterface;
-use OAuth1\Contracts\Flows\RequestTokenFlowInterface;
 use OAuth1\Contracts\Flows\AuthorizationFlowInterface;
+use OAuth1\Contracts\Flows\GrantedFlowInterface;
+use OAuth1\Contracts\Flows\RequestTokenFlowInterface;
 
 interface OAuth1ClientInterface extends GrantedFlowInterface,
                                         AccessTokenFlowInterface,

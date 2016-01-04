@@ -15,8 +15,8 @@ class Upwork extends OAuth1 implements OAuth1ClientInterface
     {
         $config = array_merge($config, [
             'request_token_url' => 'https://www.upwork.com/api/auth/v1/oauth/token/request',
-            'authorize_url' => 'https://www.upwork.com/services/api/auth',
-            'access_token_url' => 'https://www.upwork.com/api/auth/v1/oauth/token/access',
+            'authorize_url'     => 'https://www.upwork.com/services/api/auth',
+            'access_token_url'  => 'https://www.upwork.com/api/auth/v1/oauth/token/access',
             'resource_base_url' => 'https://www.upwork.com/',
         ]);
 

@@ -2,8 +2,8 @@
 
 namespace OAuth1\Tokens;
 
-use Psr\Http\Message\ResponseInterface;
 use OAuth1\Contracts\Tokens\AccessTokenInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class AccessToken extends Token implements AccessTokenInterface
 {

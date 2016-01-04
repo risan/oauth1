@@ -3,8 +3,8 @@
 namespace OAuth1\Flows;
 
 use InvalidArgumentException;
-use OAuth1\Tokens\AccessToken;
 use OAuth1\Contracts\Tokens\RequestTokenInterface;
+use OAuth1\Tokens\AccessToken;
 
 trait AccessTokenFlow
 {

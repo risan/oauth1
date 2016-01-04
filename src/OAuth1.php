@@ -3,14 +3,14 @@
 namespace OAuth1;
 
 use InvalidArgumentException;
-use OAuth1\Flows\GrantedFlow;
-use OAuth1\Flows\AccessTokenFlow;
-use OAuth1\Signers\HmacSha1Signer;
-use OAuth1\Flows\RequestTokenFlow;
-use OAuth1\Flows\AuthorizationFlow;
 use OAuth1\Contracts\ConfigInterface;
 use OAuth1\Contracts\OAuth1ClientInterface;
 use OAuth1\Contracts\Signers\SignerInterface;
+use OAuth1\Flows\AccessTokenFlow;
+use OAuth1\Flows\AuthorizationFlow;
+use OAuth1\Flows\GrantedFlow;
+use OAuth1\Flows\RequestTokenFlow;
+use OAuth1\Signers\HmacSha1Signer;
 
 class OAuth1 implements OAuth1ClientInterface
 {
@@ -134,11 +134,11 @@ class OAuth1 implements OAuth1ClientInterface
     public function baseProtocolParameters()
     {
         return [
-            'oauth_consumer_key' => $this->config()->consumerKey(),
-            'oauth_nonce' => $this->nonce(),
+            'oauth_consumer_key'     => $this->config()->consumerKey(),
+            'oauth_nonce'            => $this->nonce(),
             'oauth_signature_method' => $this->signer()->method(),
-            'oauth_timestamp' => $this->timestamp(),
-            'oauth_version' => $this->version(),
+            'oauth_timestamp'        => $this->timestamp(),
+            'oauth_version'          => $this->version(),
         ];
     }
 
