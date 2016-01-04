@@ -134,11 +134,11 @@ class OAuth1 implements OAuth1ClientInterface
     public function baseProtocolParameters()
     {
         return [
-            'oauth_consumer_key'     => $this->config()->consumerKey(),
-            'oauth_nonce'            => $this->nonce(),
+            'oauth_consumer_key' => $this->config()->consumerKey(),
+            'oauth_nonce' => $this->nonce(),
             'oauth_signature_method' => $this->signer()->method(),
-            'oauth_timestamp'        => $this->timestamp(),
-            'oauth_version'          => $this->version(),
+            'oauth_timestamp' => $this->timestamp(),
+            'oauth_version' => $this->version(),
         ];
     }
 
