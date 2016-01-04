@@ -1,0 +1,9 @@
+preset: symfony
+
+risky: true
+
+linting: true
+
+finder:
+  path:
+    - "src"
