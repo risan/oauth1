@@ -1,10 +1,12 @@
 # OAuth1 Client Library
 
-[![Build Status](https://img.shields.io/travis/risan/oauth1.svg?style=flat-square)](https://travis-ci.org/risan/oauth1)
-[![HHVM Tested](https://img.shields.io/hhvm/risan/oauth1.svg?style=flat-square)](https://travis-ci.org/risan/oauth1)
-[![StyleCI](https://styleci.io/repos/48460990/shield?style=flat-square)](https://styleci.io/repos/48460990)
-[![Latest Stable Version](https://img.shields.io/packagist/v/risan/oauth1.svg?style=flat-square)](https://packagist.org/packages/risan/oauth1)
-[![License](https://img.shields.io/packagist/l/risan/oauth1.svg?style=flat-square)](https://packagist.org/packages/risan/oauth1)
+[![Build Status](https://travis-ci.org/risan/oauth1.svg?branch=master)](https://travis-ci.org/risan/oauth1)
+[![HHVM Status](http://hhvm.h4cc.de/badge/risan/oauth1.svg?style=flat)](http://hhvm.h4cc.de/package/risan/oauth1)
+[![StyleCI](https://styleci.io/repos/48460990/shield?style=flat)](https://styleci.io/repos/48460990)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/risan/oauth1/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/risan/oauth1/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/risan/oauth1/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/risan/oauth1/?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/risan/oauth1/v/stable)](https://packagist.org/packages/risan/oauth1)
+[![License](https://poser.pugx.org/risan/oauth1/license)](https://packagist.org/packages/risan/oauth1)
 
 Simple, fluent and extensible OAuth 1 client library for PHP.
 
