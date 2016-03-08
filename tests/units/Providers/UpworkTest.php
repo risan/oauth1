@@ -21,6 +21,12 @@ class UpworkTest extends PHPUnit_Framework_TestCase {
     }
 
     /** @test */
+    function upwork_has_default_config()
+    {
+        $this->assertCount(4, $this->upwork->defaultConfig());
+    }
+
+    /** @test */
     function upwork_has_http_client()
     {
         $this->assertInstanceOf(HttpClientInterface::class, $this->upwork->httpClient());

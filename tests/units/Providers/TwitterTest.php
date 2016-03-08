@@ -21,6 +21,12 @@ class TwitterTest extends PHPUnit_Framework_TestCase {
     }
 
     /** @test */
+    function twitter_has_default_config()
+    {
+        $this->assertCount(4, $this->twitter->defaultConfig());
+    }
+
+    /** @test */
     function twitter_has_http_client()
     {
         $this->assertInstanceOf(HttpClientInterface::class, $this->twitter->httpClient());

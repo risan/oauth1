@@ -21,6 +21,12 @@ class TumblrTest extends PHPUnit_Framework_TestCase {
     }
 
     /** @test */
+    function tumblr_has_default_config()
+    {
+        $this->assertCount(4, $this->tumblr->defaultConfig());
+    }
+
+    /** @test */
     function tumblr_has_http_client()
     {
         $this->assertInstanceOf(HttpClientInterface::class, $this->tumblr->httpClient());
