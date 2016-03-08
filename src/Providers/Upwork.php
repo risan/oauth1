@@ -1,25 +1,25 @@
 <?php
 
-namespace OAuth1;
+namespace OAuth1\Providers;
 
-use OAuth1\Contracts\OAuth1ClientInterface;
+use OAuth1\Contracts\Providers\Provider as ProviderContract;
 
-class Upwork extends OAuth1 implements OAuth1ClientInterface
+class Upwork extends Provider implements ProviderContract
 {
     /**
-     * Create a new instance of Upwork client class.
+     * Get default provider's configuration.
      *
-     * @param array $config
+     * @return array
      */
-    public function __construct(array $config)
+    public function defaultConfig()
     {
-        $config = array_merge($config, [
+        return [
             'request_token_url' => 'https://www.upwork.com/api/auth/v1/oauth/token/request',
             'authorize_url' => 'https://www.upwork.com/services/api/auth',
             'access_token_url' => 'https://www.upwork.com/api/auth/v1/oauth/token/access',
             'resource_base_url' => 'https://www.upwork.com/',
-        ]);
-
-        parent::__construct($config, null);
+        ];
     }
 }
+
+

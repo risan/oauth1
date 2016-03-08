@@ -1,25 +1,24 @@
 <?php
 
-namespace OAuth1;
+namespace OAuth1\Providers;
 
-use OAuth1\Contracts\OAuth1ClientInterface;
+use OAuth1\Contracts\Providers\Provider as ProviderContract;
 
-class Twitter extends OAuth1 implements OAuth1ClientInterface
+class Twitter extends Provider implements ProviderContract
 {
     /**
-     * Create a new instance of Twitter client class.
+     * Get default provider's configuration.
      *
-     * @param array $config
+     * @return array
      */
-    public function __construct(array $config)
+    public function defaultConfig()
     {
-        $config = array_merge($config, [
+        return [
             'request_token_url' => 'https://api.twitter.com/oauth/request_token',
             'authorize_url' => 'https://api.twitter.com/oauth/authorize',
             'access_token_url' => 'https://api.twitter.com/oauth/access_token',
             'resource_base_url' => 'https://api.twitter.com/1.1/',
-        ]);
-
-        parent::__construct($config, null);
+        ];
     }
 }
+
