@@ -24,6 +24,15 @@ class OAuth1BaseTest extends PHPUnit_Framework_TestCase {
         $this->oauth1 = new OAuth1($this->config);
     }
 
+    /**
+     * @test
+     * @expectedException InvalidArgumentException
+     */
+    function oauth1_created_with_invalid_parameter_throws_exception()
+    {
+        new OAuth1('invalid');
+    }
+
     /** @test */
     function oauth1_has_http_client()
     {

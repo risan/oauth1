@@ -52,6 +52,23 @@ class OAuth1GrantedTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, $this->oauth1->resourceUrl($this->resourcePath));
     }
 
+    /** @test */
+    function oauth1_can_generate_resource_url_without_base_url()
+    {
+        $oauth1 = new OAuth1([
+            'consumer_key' => 'key',
+            'consumer_secret' => 'secret',
+            'request_token_url' => 'http://foo.bar',
+            'authorize_url' => 'http://foo.bar',
+            'access_token_url' => 'http://foo.bar',
+            'resource_base_url' => null,
+        ]);
+
+        $resourcePath = 'http://foo.bar';
+
+        $this->assertEquals($resourcePath, $oauth1->resourceUrl($resourcePath));
+    }
+
     /**
      * @test
      * @expectedException InvalidArgumentException
@@ -136,10 +153,27 @@ class OAuth1GrantedTest extends PHPUnit_Framework_TestCase {
     /** @test */
     function oauth1_can_generate_granted_request_headers()
     {
-        $this->assertArrayHasKey('Authorization', $this->oauth1->grantedRequestHeaders(
+        $requestHeaders = $this->oauth1->grantedRequestHeaders(
             $this->accessToken,
             $this->oauth1->resourceUrl($this->resourcePath),
             'GET'
-        ));
+        );
+
+        $this->assertArrayHasKey('Authorization', $requestHeaders);
+    }
+
+    /** @test */
+    function oauth1_can_generate_granted_request_headers_with_query_option()
+    {
+        $requestHeaders = $this->oauth1->grantedRequestHeaders(
+            $this->accessToken,
+            $this->oauth1->resourceUrl($this->resourcePath),
+            'GET',
+            ['query' => ['foo' => 'bar']]
+        );
+
+        $this->assertArrayHasKey('Authorization', $requestHeaders);
+
+        $this->assertContains('foo=bar', $requestHeaders['Authorization']);
     }
 }

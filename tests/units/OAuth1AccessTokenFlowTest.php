@@ -50,4 +50,13 @@ class OAuth1AccessTokenFlowTest extends PHPUnit_Framework_TestCase {
     {
         $this->assertInstanceOf(AccessTokenInterface::class, $this->oauth1->accessToken($this->requestToken, 'foo', 'bar'));
     }
+
+    /**
+     * @test
+     * @expectedException InvalidArgumentException
+     */
+    function oauth1_throws_exception_when_token_key_is_invalid()
+    {
+        $this->oauth1->accessToken($this->requestToken, 'invalid', 'bar');
+    }
 }
