@@ -5,7 +5,7 @@ use OAuth1\Contracts\ConfigInterface;
 use OAuth1\Contracts\HttpClientInterface;
 use OAuth1\Contracts\Signers\SignerInterface;
 
-class OAuth1BaseTest extends PHPUnit_Framework_TestCase {
+class OAuth1Test extends PHPUnit_Framework_TestCase {
     protected $config;
     protected $oauth1;
 
