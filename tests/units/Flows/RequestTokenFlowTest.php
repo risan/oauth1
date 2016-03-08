@@ -1,12 +1,11 @@
 <?php
 
 use OAuth1\OAuth1;
-use OAuth1\Tokens\RequestToken;
+use OAuth1\Contracts\Tokens\RequestTokenInterface;
 
-class OAuth1AuthorizationFlowTest extends PHPUnit_Framework_TestCase {
+class RequestTokenFlowTest extends PHPUnit_Framework_TestCase {
     protected $config;
     protected $oauth1;
-    protected $requestToken;
 
     function setUp()
     {
@@ -21,21 +20,23 @@ class OAuth1AuthorizationFlowTest extends PHPUnit_Framework_TestCase {
         ];
 
         $this->oauth1 = new OAuth1($this->config);
-
-        $this->requestToken = new RequestToken('foo', 'bar');
     }
 
     /** @test */
-    function oauth1_has_authorize_url()
+    function oauth1_has_request_token_url()
     {
-        return $this->assertEquals($this->config['authorize_url'], $this->oauth1->authorizeUrl());
+        return $this->assertEquals($this->config['request_token_url'], $this->oauth1->requestTokenUrl());
     }
 
     /** @test */
-    function oauth1_can_build_authorization_url()
+    function oauth1_can_generate_request_token_headers()
     {
-        $expected = $this->config['authorize_url'] . '?oauth_token=' . $this->requestToken->key();
+        $this->assertArrayHasKey('Authorization', $this->oauth1->requestTokenHeaders());
+    }
 
-        return $this->assertEquals($expected, $this->oauth1->buildAuthorizationUrl($this->requestToken));
+    /** @test */
+    function oauth1_can_create_request_token()
+    {
+        $this->assertInstanceOf(RequestTokenInterface::class, $this->oauth1->requestToken());
     }
 }

@@ -289,10 +289,10 @@ With this providers, you only have to pass `consumer_key` and `consumer_secret` 
 
 ### Twitter
 
-You can uthe `Oauth1\Twitter` class to communicate with Twitter Rest API. To create an instance of this class:
+You can the `Oauth1\Providers\Twitter` class to communicate with Twitter Rest API. To create an instance of this class:
 
 ```php
-$twitter = new OAuth1\Twitter([
+$twitter = new OAuth1\Providers\Twitter([
     'consumer_key'    => 'YOUR_TWITTER_CONSUMER_KEY',
     'consumer_secret' => 'YOUR_TWITTER_CONSUMER_SECRET',
     'callback_url'    => 'YOUR_CALLBACK_URL' // Optional
@@ -309,10 +309,10 @@ $response = $twitter->get('statuses/user_timeline.json');
 
 ### Tumblr
 
-You can use the provided `Oauth1\Tumblr` class to communicate with Tumblr API. To instantiate it:
+You can use the provided `Oauth1\Providers\Tumblr` class to communicate with Tumblr API. To instantiate it:
 
 ```php
-$tumblr = new OAuth1\Tumblr([
+$tumblr = new OAuth1\Providers\Tumblr([
     'consumer_key'    => 'YOUR_TUMBLR_CONSUMER_KEY',
     'consumer_secret' => 'YOUR_TUMBLR_CONSUMER_SECRET',
     'callback_url'    => 'YOUR_CALLBACK_URL' // Optional
@@ -329,10 +329,10 @@ $response = $tumblr->get('blog/allthingseurope.tumblr.com/info');
 
 ### Upwork
 
-You can also use the `OAuth\Upwork` class to communicate with Upwork API. To instantiate the `Upwork` client:
+You can also use the `OAuth\Providers\Upwork` class to communicate with Upwork API. To instantiate the `Upwork` client:
 
 ```php
-$upwork = new OAuth1\Upwork([
+$upwork = new OAuth1\Providers\Upwork([
     'consumer_key'    => 'YOUR_UPWORK_CONSUMER_KEY',
     'consumer_secret' => 'YOUR_UPWORK_CONSUMER_SECRET',
     'callback_url'    => 'YOUR_CALLBACK_URL' // Optional

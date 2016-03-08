@@ -4,7 +4,7 @@ use OAuth1\OAuth1;
 use OAuth1\Tokens\RequestToken;
 use OAuth1\Contracts\Tokens\AccessTokenInterface;
 
-class OAuth1AccessTokenFlowTest extends PHPUnit_Framework_TestCase {
+class AccessTokenFlowTest extends PHPUnit_Framework_TestCase {
     protected $config;
     protected $oauth1;
     protected $requestToken;

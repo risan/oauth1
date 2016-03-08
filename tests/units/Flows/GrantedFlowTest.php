@@ -5,7 +5,7 @@ use OAuth1\Tokens\AccessToken;
 use Psr\Http\Message\ResponseInterface;
 use OAuth1\Contracts\Tokens\AccessTokenInterface;
 
-class OAuth1GrantedTest extends PHPUnit_Framework_TestCase {
+class GrantedFlowTest extends PHPUnit_Framework_TestCase {
     protected $config;
     protected $oauth1;
     protected $accessToken;

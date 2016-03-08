@@ -1,6 +1,6 @@
 <?php
 
-use OAuth1\Tumblr;
+use OAuth1\Providers\Tumblr;
 use OAuth1\Contracts\ConfigInterface;
 use OAuth1\Contracts\HttpClientInterface;
 use OAuth1\Contracts\Signers\HmacSha1SignerInterface;
