@@ -21,4 +21,3 @@ class Twitter extends Provider implements ProviderContract
         ];
     }
 }
-

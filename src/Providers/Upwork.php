@@ -21,5 +21,3 @@ class Upwork extends Provider implements ProviderContract
         ];
     }
 }
-
-
