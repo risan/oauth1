@@ -16,14 +16,14 @@ interface AuthorizationFlowInterface
     /**
      * Request authorization.
      *
-     * @param OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken
+     * @param \OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken
      */
     public function authorize(RequestTokenInterface $requestToken);
 
     /**
      * Build authorization url.
      *
-     * @param OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken
+     * @param \OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken
      *
      * @return string
      */

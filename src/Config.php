@@ -153,7 +153,7 @@ class Config implements ConfigInterface
      *
      * @param string $url
      *
-     * @return OAuth\ConfigInterface
+     * @return \OAuth1\Contracts\ConfigInterface
      */
     public function setResourceBaseUrl($url)
     {

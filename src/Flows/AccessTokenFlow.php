@@ -21,11 +21,11 @@ trait AccessTokenFlow
     /**
      * Get access token.
      *
-     * @param OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken
-     * @param string                                        $tokenKey
-     * @param string                                        $verifier
+     * @param \OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken
+     * @param string                                         $tokenKey
+     * @param string                                         $verifier
      *
-     * @return OAuth1\Contracts\Tokens\AccessTokenInterface
+     * @return \OAuth1\Contracts\Tokens\AccessTokenInterface
      */
     public function accessToken(RequestTokenInterface $requestToken, $tokenKey, $verifier)
     {
@@ -43,8 +43,8 @@ trait AccessTokenFlow
     /**
      * Is valid token?
      *
-     * @param OAuth1\Contracts\Token\RequestTokenInterface $requestToken
-     * @param string                                       $tokenKey
+     * @param \OAuth1\Contracts\Token\RequestTokenInterface $requestToken
+     * @param string                                        $tokenKey
      *
      * @return bool
      */
@@ -56,8 +56,8 @@ trait AccessTokenFlow
     /**
      * Access token header.
      *
-     * @param OAuth1\Contracts\Token\RequestTokenInterface $requestToken
-     * @param string                                       $verifier
+     * @param \OAuth1\Contracts\Token\RequestTokenInterface $requestToken
+     * @param string                                        $verifier
      *
      * @return array
      */

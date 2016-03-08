@@ -22,29 +22,29 @@ class OAuth1 implements OAuth1ClientInterface
     /**
      * Http client instance.
      *
-     * @return OAuth1\Contracts\HttpClientInterface
+     * @return \OAuth1\Contracts\HttpClientInterface
      */
     protected $httpClient;
 
     /**
      * Client configuration.
      *
-     * @var OAuth1\Contracts\ConfigInterface
+     * @var \OAuth1\Contracts\ConfigInterface
      */
     protected $config;
 
     /**
      * OAuth signer instance.
      *
-     * @return OAuth1\Contracts\Signers\SignerInterface
+     * @return \OAuth1\Contracts\Signers\SignerInterface
      */
     protected $signer;
 
     /**
      * Create a new instance of Generic class.
      *
-     * @param OAuth1\Contracts\ConfigInterface|array        $config
-     * @param OAuth1\Contracts\Signers\SignerInterface|null $signature
+     * @param \OAuth1\Contracts\ConfigInterface|array        $config
+     * @param \OAuth1\Contracts\Signers\SignerInterface|null $signature
      */
     public function __construct($config, SignerInterface $signature = null)
     {
@@ -61,7 +61,7 @@ class OAuth1 implements OAuth1ClientInterface
     /**
      * Get http client instance.
      *
-     * @return OAuth1\Contracts\HttpClientInterface
+     * @return \OAuth1\Contracts\HttpClientInterface
      */
     public function httpClient()
     {
@@ -75,7 +75,7 @@ class OAuth1 implements OAuth1ClientInterface
     /**
      * Get client configuration.
      *
-     * @return OAuth1\Contracts\ConfigInterface
+     * @return \OAuth1\Contracts\ConfigInterface
      */
     public function config()
     {
@@ -85,7 +85,7 @@ class OAuth1 implements OAuth1ClientInterface
     /**
      * Get signer.
      *
-     * @return OAuth1\Contracts\Signers\SignerInterface
+     * @return \OAuth1\Contracts\Signers\SignerInterface
      */
     public function signer()
     {

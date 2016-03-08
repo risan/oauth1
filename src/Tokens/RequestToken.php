@@ -10,9 +10,9 @@ class RequestToken extends Token implements RequestTokenInterface
     /**
      * Create from HTTP response.
      *
-     * @param Psr\Http\Message\ResponseInterface $response
+     * @param \Psr\Http\Message\ResponseInterface $response
      *
-     * @return OAuth1\Contracts\Tokens\RequestTokenInterface
+     * @return \OAuth1\Contracts\Tokens\RequestTokenInterface
      */
     public static function fromHttpResponse(ResponseInterface $response)
     {

@@ -9,9 +9,9 @@ interface AccessTokenInterface extends TokenInterface
     /**
      * Create from HTTP response.
      *
-     * @param Psr\Http\Message\ResponseInterface $response
+     * @param \Psr\Http\Message\ResponseInterface $response
      *
-     * @return OAuth1\Contracts\Tokens\AccessTokenInterface
+     * @return \OAuth1\Contracts\Tokens\AccessTokenInterface
      */
     public static function fromHttpResponse(ResponseInterface $response);
 }

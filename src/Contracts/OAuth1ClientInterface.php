@@ -12,21 +12,21 @@ interface OAuth1ClientInterface extends GrantedFlowInterface, AccessTokenFlowInt
     /**
      * Get http client instance.
      *
-     * @return OAuth1\Contracts\HttpClientInterface
+     * @return \OAuth1\Contracts\HttpClientInterface
      */
     public function httpClient();
 
     /**
      * Get client configuration.
      *
-     * @return OAuth1\Contracts\ConfigInterface
+     * @return \OAuth1\Contracts\ConfigInterface
      */
     public function config();
 
     /**
      * Get signer.
      *
-     * @return OAuth1\Contracts\Signers\SignerInterface
+     * @return \OAuth1\Contracts\Signers\SignerInterface
      */
     public function signer();
 

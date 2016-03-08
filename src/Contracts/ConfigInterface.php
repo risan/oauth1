@@ -58,7 +58,7 @@ interface ConfigInterface
      *
      * @param string $url
      *
-     * @return OAuth\ConfigInterface
+     * @return \OAuth\ConfigInterface
      */
     public function setResourceBaseUrl($url);
 

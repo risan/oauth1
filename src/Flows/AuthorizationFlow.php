@@ -19,7 +19,7 @@ trait AuthorizationFlow
     /**
      * Request authorization.
      *
-     * @param OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken
+     * @param \OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken
      */
     public function authorize(RequestTokenInterface $requestToken)
     {
@@ -31,7 +31,7 @@ trait AuthorizationFlow
     /**
      * Build authorization url.
      *
-     * @param OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken
+     * @param \OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken
      *
      * @return string
      */

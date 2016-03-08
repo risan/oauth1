@@ -23,7 +23,7 @@ interface SignerInterface
      *
      * @param string $secret
      *
-     * @return OAuth1\Contracts\Signers\SignerInterface
+     * @return \OAuth1\Contracts\Signers\SignerInterface
      */
     public function setTokenSecret($secret);
 

@@ -14,7 +14,7 @@ interface RequestTokenFlowInterface
     /**
      * Get request token.
      *
-     * @return OAuth1\Contracts\Tokens\RequestTokenInterface
+     * @return \OAuth1\Contracts\Tokens\RequestTokenInterface
      */
     public function requestToken();
 

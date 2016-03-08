@@ -18,7 +18,7 @@ interface GrantedFlowInterface
      *
      * @param string $url
      *
-     * @return OAuth1\Contracts\GrantedFlowInterface
+     * @return \OAuth1\Contracts\GrantedFlowInterface
      */
     public function setResourceBaseUrl($url);
 
@@ -38,7 +38,7 @@ interface GrantedFlowInterface
      * @param string $url
      * @param array  $options
      *
-     * @return Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function request($method, $url, $options = []);
 
@@ -48,7 +48,7 @@ interface GrantedFlowInterface
      * @param string $url
      * @param array  $options
      *
-     * @return Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function get($url, $options = []);
 
@@ -58,7 +58,7 @@ interface GrantedFlowInterface
      * @param string $url
      * @param array  $options
      *
-     * @return Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function post($url, $options = []);
 
@@ -68,7 +68,7 @@ interface GrantedFlowInterface
      * @param string $url
      * @param array  $options
      *
-     * @return Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function put($url, $options = []);
 
@@ -78,7 +78,7 @@ interface GrantedFlowInterface
      * @param string $url
      * @param array  $options
      *
-     * @return Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function patch($url, $options = []);
 
@@ -88,7 +88,7 @@ interface GrantedFlowInterface
      * @param string $url
      * @param array  $options
      *
-     * @return Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function delete($url, $options = []);
 
@@ -98,7 +98,7 @@ interface GrantedFlowInterface
      * @param string $url
      * @param array  $options
      *
-     * @return Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function head($url, $options = []);
 
@@ -108,33 +108,33 @@ interface GrantedFlowInterface
      * @param string $url
      * @param array  $options
      *
-     * @return Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function options($url, $options = []);
 
     /**
      * Get granted access token.
      *
-     * @return OAuth1\Contracts\Tokens\AccessTokenInterface
+     * @return \OAuth1\Contracts\Tokens\AccessTokenInterface
      */
     public function grantedAccessToken();
 
     /**
      * Set granted access token.
      *
-     * @param $accessToken OAuth1\Contracts\Tokens\AccessTokenInterface
+     * @param \OAuth1\Contracts\Tokens\AccessTokenInterface $accessToken
      *
-     * @return OAuth1\Contracts\GrantedFlowInterface
+     * @return \OAuth1\Contracts\GrantedFlowInterface
      */
     public function setGrantedAccessToken(AccessTokenInterface $accessToken);
 
     /**
      * Get granted request headers.
      *
-     * @param OAuth1\Contracts\Tokens\AccessTokenInterface $accessToken
-     * @param string                                       $url
-     * @param string                                       $httpVerb
-     * @param array                                        $options
+     * @param \OAuth1\Contracts\Tokens\AccessTokenInterface $accessToken
+     * @param string                                        $url
+     * @param string                                        $httpVerb
+     * @param array                                         $options
      *
      * @return array
      */

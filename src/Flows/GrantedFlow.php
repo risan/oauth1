@@ -10,7 +10,7 @@ trait GrantedFlow
     /**
      * Granted access token.
      *
-     * @var OAuth1\Contracts\Tokens\AccessTokenInterface
+     * @var \OAuth1\Contracts\Tokens\AccessTokenInterface
      */
     protected $grantedAccessToken;
 
@@ -29,7 +29,7 @@ trait GrantedFlow
      *
      * @param string $url
      *
-     * @return OAuth1\Contracts\GrantedFlowInterface
+     * @return \OAuth1\Contracts\GrantedFlowInterface
      */
     public function setResourceBaseUrl($url)
     {
@@ -61,7 +61,7 @@ trait GrantedFlow
      * @param string $url
      * @param array  $options
      *
-     * @return Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function request($method, $url, $options = [])
     {
@@ -84,7 +84,7 @@ trait GrantedFlow
      * @param string $url
      * @param array  $options
      *
-     * @return Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function get($url, $options = [])
     {
@@ -97,7 +97,7 @@ trait GrantedFlow
      * @param string $url
      * @param array  $options
      *
-     * @return Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function post($url, $options = [])
     {
@@ -110,7 +110,7 @@ trait GrantedFlow
      * @param string $url
      * @param array  $options
      *
-     * @return Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function put($url, $options = [])
     {
@@ -123,7 +123,7 @@ trait GrantedFlow
      * @param string $url
      * @param array  $options
      *
-     * @return Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function patch($url, $options = [])
     {
@@ -136,7 +136,7 @@ trait GrantedFlow
      * @param string $url
      * @param array  $options
      *
-     * @return Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function delete($url, $options = [])
     {
@@ -149,7 +149,7 @@ trait GrantedFlow
      * @param string $url
      * @param array  $options
      *
-     * @return Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function head($url, $options = [])
     {
@@ -162,7 +162,7 @@ trait GrantedFlow
      * @param string $url
      * @param array  $options
      *
-     * @return Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function options($url, $options = [])
     {
@@ -172,7 +172,7 @@ trait GrantedFlow
     /**
      * Get granted access token.
      *
-     * @return OAuth1\Contracts\Tokens\AccessTokenInterface
+     * @return \OAuth1\Contracts\Tokens\AccessTokenInterface
      */
     public function grantedAccessToken()
     {
@@ -182,9 +182,9 @@ trait GrantedFlow
     /**
      * Set granted access token.
      *
-     * @param $accessToken OAuth1\Contracts\Tokens\AccessTokenInterface
+     * @param \OAuth1\Contracts\Tokens\AccessTokenInterface $accessToken
      *
-     * @return OAuth1\Contracts\GrantedFlowInterface
+     * @return \OAuth1\Contracts\GrantedFlowInterface
      */
     public function setGrantedAccessToken(AccessTokenInterface $accessToken)
     {
@@ -196,10 +196,10 @@ trait GrantedFlow
     /**
      * Get granted request headers.
      *
-     * @param OAuth1\Contracts\Tokens\AccessTokenInterface $accessToken
-     * @param string                                       $url
-     * @param string                                       $httpVerb
-     * @param array                                        $options
+     * @param \OAuth1\Contracts\Tokens\AccessTokenInterface $accessToken
+     * @param string                                        $url
+     * @param string                                        $httpVerb
+     * @param array                                         $options
      *
      * @return array
      */
