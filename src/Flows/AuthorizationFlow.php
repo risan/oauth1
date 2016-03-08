@@ -25,7 +25,7 @@ trait AuthorizationFlow
     {
         header('Location: '.$this->buildAuthorizationUrl($requestToken));
 
-        exit();
+        die();
     }
 
     /**
@@ -43,4 +43,11 @@ trait AuthorizationFlow
 
         return $this->authorizeUrl().'?'.$query;
     }
+
+    /**
+     * Get client configuration.
+     *
+     * @return \OAuth1\Contracts\ConfigInterface
+     */
+    abstract public function config();
 }

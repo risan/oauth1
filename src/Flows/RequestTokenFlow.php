@@ -45,4 +45,41 @@ trait RequestTokenFlow
             'Authorization' => $this->authorizationHeaders($parameters),
         ];
     }
+
+    /**
+     * Get http client instance.
+     *
+     * @return \OAuth1\Contracts\HttpClientInterface
+     */
+    abstract public function httpClient();
+
+    /**
+     * Get client configuration.
+     *
+     * @return \OAuth1\Contracts\ConfigInterface
+     */
+    abstract public function config();
+
+    /**
+     * Get signer.
+     *
+     * @return \OAuth1\Contracts\Signers\SignerInterface
+     */
+    abstract public function signer();
+
+    /**
+     * Get OAuth base protocol parameters.
+     *
+     * @return array
+     */
+    abstract public function baseProtocolParameters();
+
+    /**
+     * Build authorization headers.
+     *
+     * @param array $parameters
+     *
+     * @return string
+     */
+    abstract public function authorizationHeaders(array $parameters);
 }

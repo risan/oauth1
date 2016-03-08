@@ -44,9 +44,9 @@ class OAuth1 implements OAuth1ClientInterface
      * Create a new instance of Generic class.
      *
      * @param \OAuth1\Contracts\ConfigInterface|array        $config
-     * @param \OAuth1\Contracts\Signers\SignerInterface|null $signature
+     * @param \OAuth1\Contracts\Signers\SignerInterface|null $signer
      */
-    public function __construct($config, SignerInterface $signature = null)
+    public function __construct($config, SignerInterface $signer = null)
     {
         if (is_array($config)) {
             $config = Config::fromArray($config);
@@ -55,7 +55,7 @@ class OAuth1 implements OAuth1ClientInterface
         }
 
         $this->config = $config;
-        $this->signature = $signature;
+        $this->signer = $signer;
     }
 
     /**
