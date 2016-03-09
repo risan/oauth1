@@ -14,13 +14,6 @@ interface AuthorizationFlowInterface
     public function authorizeUrl();
 
     /**
-     * Request authorization.
-     *
-     * @param \OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken
-     */
-    public function authorize(RequestTokenInterface $requestToken);
-
-    /**
      * Build authorization url.
      *
      * @param \OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken

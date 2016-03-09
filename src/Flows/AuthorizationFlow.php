@@ -17,20 +17,6 @@ trait AuthorizationFlow
     }
 
     /**
-     * Request authorization.
-     *
-     * @codeCoverageIgnore
-     *
-     * @param \OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken
-     */
-    public function authorize(RequestTokenInterface $requestToken)
-    {
-        header('Location: '.$this->buildAuthorizationUrl($requestToken));
-
-        exit();
-    }
-
-    /**
      * Build authorization url.
      *
      * @param \OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken
