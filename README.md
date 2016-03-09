@@ -117,7 +117,7 @@ elseif (isset($_GET['oauth_token']) && isset($_GET['oauth_verifier'])) {
 }
 
 // STEP 1: Get request token.
-// STEP 2: Authorize access.
+// STEP 2: Redirect to authorization page.
 else {
     // Get request token.
     // @return OAuth1\Tokens\RequestToken instance
