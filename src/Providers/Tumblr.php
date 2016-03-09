@@ -2,9 +2,9 @@
 
 namespace OAuth1\Providers;
 
-use OAuth1\Contracts\Providers\Provider as ProviderContract;
+use OAuth1\Contracts\Providers\ProviderInterface;
 
-class Tumblr extends Provider implements ProviderContract
+class Tumblr extends Provider implements ProviderInterface
 {
     /**
      * Get default provider's configuration.

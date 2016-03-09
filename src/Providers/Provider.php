@@ -3,9 +3,9 @@
 namespace OAuth1\Providers;
 
 use OAuth1\OAuth1;
-use OAuth1\Contracts\Providers\Provider as ProviderContract;
+use OAuth1\Contracts\Providers\ProviderInterface;
 
-abstract class Provider extends OAuth1 implements ProviderContract
+abstract class Provider extends OAuth1 implements ProviderInterface
 {
     /**
      * Create a new instance of Twitter client class.

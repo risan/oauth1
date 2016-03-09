@@ -4,7 +4,7 @@ namespace OAuth1\Contracts\Providers;
 
 use OAuth1\Contracts\OAuth1ClientInterface;
 
-interface Provider extends OAuth1ClientInterface
+interface ProviderInterface extends OAuth1ClientInterface
 {
     /**
      * Get default provider's configuration.
