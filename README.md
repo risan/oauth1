@@ -5,6 +5,7 @@
 [![StyleCI](https://styleci.io/repos/48460990/shield?style=flat)](https://styleci.io/repos/48460990)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/risan/oauth1/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/risan/oauth1/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/risan/oauth1/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/risan/oauth1/?branch=master)
+[![SensioLabs Insight](https://img.shields.io/sensiolabs/i/258a9ce7-94cf-4a9d-a8ae-1add8fa5b8be.svg)](https://insight.sensiolabs.com/projects/258a9ce7-94cf-4a9d-a8ae-1add8fa5b8be)
 [![Latest Stable Version](https://poser.pugx.org/risan/oauth1/v/stable)](https://packagist.org/packages/risan/oauth1)
 [![License](https://poser.pugx.org/risan/oauth1/license)](https://packagist.org/packages/risan/oauth1)
 
@@ -112,6 +113,7 @@ elseif (isset($_GET['oauth_token']) && isset($_GET['oauth_verifier'])) {
 
     // Reload page.
     header("Location: {$_SERVER['PHP_SELF']}");
+    exit();
 }
 
 // STEP 1: Get request token.
@@ -124,8 +126,10 @@ else {
     // Serialize RequestToken instance and save to session.
     $_SESSION['request_token'] = serialize($requestToken);
 
-    // Authorize access.
-    $oauth1->authorize($requestToken);
+    // Redirect to authorization url.
+    $authorizationUrl = $oauth1->buildAuthorizationUrl($requestToken);
+    header("Location: {$authorizationUrl}");
+    exit();
 }
 ```
 
