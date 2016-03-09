@@ -47,7 +47,7 @@ Or you may also add `risan\oauth1` package into your `composer.json` file like s
 
 ```bash
 "require": {
-  "risan/oauth1": "~1.2"
+  "risan/oauth1": "~1.3"
 }
 ```
 
