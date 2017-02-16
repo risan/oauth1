@@ -1,9 +1,10 @@
 <?php
 
 use OAuth1\Tokens\RequestToken;
+use PHPUnit\Framework\TestCase;
 use GuzzleHttp\Client as HttpClient;
 
-class RequestTokenTest extends PHPUnit_Framework_TestCase {
+class RequestTokenTest extends TestCase {
     protected $requestToken;
     protected $httpClient;
 

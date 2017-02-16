@@ -1,11 +1,12 @@
 <?php
 
 use OAuth1\Providers\Twitter;
+use PHPUnit\Framework\TestCase;
 use OAuth1\Contracts\ConfigInterface;
 use OAuth1\Contracts\HttpClientInterface;
 use OAuth1\Contracts\Signers\HmacSha1SignerInterface;
 
-class TwitterTest extends PHPUnit_Framework_TestCase {
+class TwitterTest extends TestCase {
     protected $config;
     protected $twitter;
 

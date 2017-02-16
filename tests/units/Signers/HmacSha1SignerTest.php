@@ -1,8 +1,9 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
 use OAuth1\Signers\HmacSha1Signer;
 
-class HmacSha1SignerTest extends PHPUnit_Framework_TestCase {
+class HmacSha1SignerTest extends TestCase {
     protected $signer;
 
     function setUp()

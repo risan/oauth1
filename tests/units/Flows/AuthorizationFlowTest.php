@@ -1,9 +1,10 @@
 <?php
 
 use OAuth1\OAuth1;
+use PHPUnit\Framework\TestCase;
 use OAuth1\Tokens\RequestToken;
 
-class AuthorizationFlowTest extends PHPUnit_Framework_TestCase {
+class AuthorizationFlowTest extends TestCase {
     protected $config;
     protected $oauth1;
     protected $requestToken;

@@ -1,11 +1,12 @@
 <?php
 
 use OAuth1\Providers\Upwork;
+use PHPUnit\Framework\TestCase;
 use OAuth1\Contracts\ConfigInterface;
 use OAuth1\Contracts\HttpClientInterface;
 use OAuth1\Contracts\Signers\HmacSha1SignerInterface;
 
-class UpworkTest extends PHPUnit_Framework_TestCase {
+class UpworkTest extends TestCase {
     protected $config;
     protected $upwork;
 
