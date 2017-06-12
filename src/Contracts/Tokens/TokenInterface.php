@@ -1,6 +1,6 @@
 <?php
 
-namespace OAuth1\Contracts\Tokens;
+namespace Risan\OAuth1\Contracts\Tokens;
 
 interface TokenInterface
 {

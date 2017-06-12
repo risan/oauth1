@@ -1,8 +1,8 @@
 <?php
 
-namespace OAuth1\Contracts\Flows;
+namespace Risan\OAuth1\Contracts\Flows;
 
-use OAuth1\Contracts\Tokens\RequestTokenInterface;
+use Risan\OAuth1\Contracts\Tokens\RequestTokenInterface;
 
 interface AuthorizationFlowInterface
 {

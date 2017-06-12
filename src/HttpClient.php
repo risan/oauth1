@@ -1,9 +1,9 @@
 <?php
 
-namespace OAuth1;
+namespace Risan\OAuth1;
 
 use GuzzleHttp\Client as Guzzle;
-use OAuth1\Contracts\HttpClientInterface;
+use Risan\OAuth1\Contracts\HttpClientInterface;
 
 class HttpClient extends Guzzle implements HttpClientInterface
 {

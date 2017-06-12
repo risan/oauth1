@@ -1,10 +1,10 @@
 <?php
 
-use OAuth1\Providers\Twitter;
+use Risan\OAuth1\Providers\Twitter;
 use PHPUnit\Framework\TestCase;
-use OAuth1\Contracts\ConfigInterface;
-use OAuth1\Contracts\HttpClientInterface;
-use OAuth1\Contracts\Signers\HmacSha1SignerInterface;
+use Risan\OAuth1\Contracts\ConfigInterface;
+use Risan\OAuth1\Contracts\HttpClientInterface;
+use Risan\OAuth1\Contracts\Signers\HmacSha1SignerInterface;
 
 class TwitterTest extends TestCase {
     protected $config;

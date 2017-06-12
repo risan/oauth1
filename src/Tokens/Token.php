@@ -1,8 +1,8 @@
 <?php
 
-namespace OAuth1\Tokens;
+namespace Risan\OAuth1\Tokens;
 
-use OAuth1\Contracts\Tokens\TokenInterface;
+use Risan\OAuth1\Contracts\Tokens\TokenInterface;
 
 abstract class Token implements TokenInterface
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace OAuth1\Contracts\Flows;
+namespace Risan\OAuth1\Contracts\Flows;
 
 interface RequestTokenFlowInterface
 {

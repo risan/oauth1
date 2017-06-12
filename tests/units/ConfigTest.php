@@ -1,6 +1,6 @@
 <?php
 
-use OAuth1\Config;
+use Risan\OAuth1\Config;
 use PHPUnit\Framework\TestCase;
 
 class ConfigTest extends TestCase {

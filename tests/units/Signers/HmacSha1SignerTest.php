@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use OAuth1\Signers\HmacSha1Signer;
+use Risan\OAuth1\Signers\HmacSha1Signer;
 
 class HmacSha1SignerTest extends TestCase {
     protected $signer;

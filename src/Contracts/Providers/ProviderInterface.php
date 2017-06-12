@@ -1,8 +1,8 @@
 <?php
 
-namespace OAuth1\Contracts\Providers;
+namespace Risan\OAuth1\Contracts\Providers;
 
-use OAuth1\Contracts\OAuth1ClientInterface;
+use Risan\OAuth1\Contracts\OAuth1ClientInterface;
 
 interface ProviderInterface extends OAuth1ClientInterface
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace OAuth1\Contracts;
+namespace Risan\OAuth1\Contracts;
 
-use OAuth1\Contracts\Flows\AccessTokenFlowInterface;
-use OAuth1\Contracts\Flows\AuthorizationFlowInterface;
-use OAuth1\Contracts\Flows\GrantedFlowInterface;
-use OAuth1\Contracts\Flows\RequestTokenFlowInterface;
+use Risan\OAuth1\Contracts\Flows\AccessTokenFlowInterface;
+use Risan\OAuth1\Contracts\Flows\AuthorizationFlowInterface;
+use Risan\OAuth1\Contracts\Flows\GrantedFlowInterface;
+use Risan\OAuth1\Contracts\Flows\RequestTokenFlowInterface;
 
 interface OAuth1ClientInterface extends GrantedFlowInterface, AccessTokenFlowInterface, RequestTokenFlowInterface, AuthorizationFlowInterface
 {

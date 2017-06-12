@@ -1,8 +1,8 @@
 <?php
 
-namespace OAuth1\Signers;
+namespace Risan\OAuth1\Signers;
 
-use OAuth1\Contracts\Signers\HmacSha1SignerInterface;
+use Risan\OAuth1\Contracts\Signers\HmacSha1SignerInterface;
 
 class HmacSha1Signer extends Signer implements HmacSha1SignerInterface
 {

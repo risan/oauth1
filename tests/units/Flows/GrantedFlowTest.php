@@ -1,10 +1,10 @@
 <?php
 
-use OAuth1\OAuth1;
-use OAuth1\Tokens\AccessToken;
+use Risan\OAuth1\OAuth1;
+use Risan\OAuth1\Tokens\AccessToken;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use OAuth1\Contracts\Tokens\AccessTokenInterface;
+use Risan\OAuth1\Contracts\Tokens\AccessTokenInterface;
 
 class GrantedFlowTest extends TestCase {
     protected $config;

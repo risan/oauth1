@@ -1,6 +1,6 @@
 <?php
 
-namespace OAuth1\Contracts\Signers;
+namespace Risan\OAuth1\Contracts\Signers;
 
 interface SignerInterface
 {

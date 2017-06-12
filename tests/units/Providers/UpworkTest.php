@@ -1,10 +1,10 @@
 <?php
 
-use OAuth1\Providers\Upwork;
+use Risan\OAuth1\Providers\Upwork;
 use PHPUnit\Framework\TestCase;
-use OAuth1\Contracts\ConfigInterface;
-use OAuth1\Contracts\HttpClientInterface;
-use OAuth1\Contracts\Signers\HmacSha1SignerInterface;
+use Risan\OAuth1\Contracts\ConfigInterface;
+use Risan\OAuth1\Contracts\HttpClientInterface;
+use Risan\OAuth1\Contracts\Signers\HmacSha1SignerInterface;
 
 class UpworkTest extends TestCase {
     protected $config;

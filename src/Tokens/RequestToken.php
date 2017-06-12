@@ -1,8 +1,8 @@
 <?php
 
-namespace OAuth1\Tokens;
+namespace Risan\OAuth1\Tokens;
 
-use OAuth1\Contracts\Tokens\RequestTokenInterface;
+use Risan\OAuth1\Contracts\Tokens\RequestTokenInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class RequestToken extends Token implements RequestTokenInterface

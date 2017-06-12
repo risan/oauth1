@@ -1,8 +1,8 @@
 <?php
 
-namespace OAuth1\Signers;
+namespace Risan\OAuth1\Signers;
 
-use OAuth1\Contracts\Signers\SignerInterface;
+use Risan\OAuth1\Contracts\Signers\SignerInterface;
 
 abstract class Signer implements SignerInterface
 {

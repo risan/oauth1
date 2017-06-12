@@ -1,9 +1,9 @@
 <?php
 
-namespace OAuth1\Providers;
+namespace Risan\OAuth1\Providers;
 
-use OAuth1\OAuth1;
-use OAuth1\Contracts\Providers\ProviderInterface;
+use Risan\OAuth1\OAuth1;
+use Risan\OAuth1\Contracts\Providers\ProviderInterface;
 
 abstract class Provider extends OAuth1 implements ProviderInterface
 {

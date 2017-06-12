@@ -1,8 +1,8 @@
 <?php
 
-use OAuth1\OAuth1;
+use Risan\OAuth1\OAuth1;
 use PHPUnit\Framework\TestCase;
-use OAuth1\Contracts\Tokens\RequestTokenInterface;
+use Risan\OAuth1\Contracts\Tokens\RequestTokenInterface;
 
 class RequestTokenFlowTest extends TestCase {
     protected $config;

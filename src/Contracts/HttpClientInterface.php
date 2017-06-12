@@ -1,6 +1,6 @@
 <?php
 
-namespace OAuth1\Contracts;
+namespace Risan\OAuth1\Contracts;
 
 interface HttpClientInterface
 {

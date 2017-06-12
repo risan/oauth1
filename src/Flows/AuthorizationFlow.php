@@ -1,8 +1,8 @@
 <?php
 
-namespace OAuth1\Flows;
+namespace Risan\OAuth1\Flows;
 
-use OAuth1\Contracts\Tokens\RequestTokenInterface;
+use Risan\OAuth1\Contracts\Tokens\RequestTokenInterface;
 
 trait AuthorizationFlow
 {

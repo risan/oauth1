@@ -1,16 +1,16 @@
 <?php
 
-namespace OAuth1;
+namespace Risan\OAuth1;
 
 use InvalidArgumentException;
-use OAuth1\Contracts\ConfigInterface;
-use OAuth1\Contracts\OAuth1ClientInterface;
-use OAuth1\Contracts\Signers\SignerInterface;
-use OAuth1\Flows\AccessTokenFlow;
-use OAuth1\Flows\AuthorizationFlow;
-use OAuth1\Flows\GrantedFlow;
-use OAuth1\Flows\RequestTokenFlow;
-use OAuth1\Signers\HmacSha1Signer;
+use Risan\OAuth1\Contracts\ConfigInterface;
+use Risan\OAuth1\Contracts\OAuth1ClientInterface;
+use Risan\OAuth1\Contracts\Signers\SignerInterface;
+use Risan\OAuth1\Flows\AccessTokenFlow;
+use Risan\OAuth1\Flows\AuthorizationFlow;
+use Risan\OAuth1\Flows\GrantedFlow;
+use Risan\OAuth1\Flows\RequestTokenFlow;
+use Risan\OAuth1\Signers\HmacSha1Signer;
 
 class OAuth1 implements OAuth1ClientInterface
 {

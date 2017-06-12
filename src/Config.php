@@ -1,9 +1,9 @@
 <?php
 
-namespace OAuth1;
+namespace Risan\OAuth1;
 
 use InvalidArgumentException;
-use OAuth1\Contracts\ConfigInterface;
+use Risan\OAuth1\Contracts\ConfigInterface;
 
 class Config implements ConfigInterface
 {

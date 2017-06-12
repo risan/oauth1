@@ -1,8 +1,8 @@
 <?php
 
-namespace OAuth1\Providers;
+namespace Risan\OAuth1\Providers;
 
-use OAuth1\Contracts\Providers\ProviderInterface;
+use Risan\OAuth1\Contracts\Providers\ProviderInterface;
 
 class Twitter extends Provider implements ProviderInterface
 {

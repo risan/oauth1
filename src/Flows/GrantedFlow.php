@@ -1,9 +1,9 @@
 <?php
 
-namespace OAuth1\Flows;
+namespace Risan\OAuth1\Flows;
 
 use InvalidArgumentException;
-use OAuth1\Contracts\Tokens\AccessTokenInterface;
+use Risan\OAuth1\Contracts\Tokens\AccessTokenInterface;
 
 trait GrantedFlow
 {

@@ -1,10 +1,10 @@
 <?php
 
-use OAuth1\OAuth1;
+use Risan\OAuth1\OAuth1;
 use PHPUnit\Framework\TestCase;
-use OAuth1\Contracts\ConfigInterface;
-use OAuth1\Contracts\HttpClientInterface;
-use OAuth1\Contracts\Signers\SignerInterface;
+use Risan\OAuth1\Contracts\ConfigInterface;
+use Risan\OAuth1\Contracts\HttpClientInterface;
+use Risan\OAuth1\Contracts\Signers\SignerInterface;
 
 class OAuth1Test extends TestCase {
     protected $config;

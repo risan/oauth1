@@ -1,6 +1,6 @@
 <?php
 
-use OAuth1\Tokens\RequestToken;
+use Risan\OAuth1\Tokens\RequestToken;
 use PHPUnit\Framework\TestCase;
 use GuzzleHttp\Client as HttpClient;
 

@@ -23,7 +23,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "OAuth1\\": "src/"
+            "Risan\\OAuth1\\": "src/"
         }
     },
     "require": {
