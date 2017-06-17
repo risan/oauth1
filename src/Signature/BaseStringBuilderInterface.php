@@ -42,13 +42,4 @@ interface BaseStringBuilderInterface
      * @return string
      */
     public function buildParametersComponent(array $parameters);
-
-    /**
-     * Parse the given uri to PSR URIInterface.
-     *
-     * @param  \Psr\Http\Message\UriInterface|string $uri
-     * @return Psr\Http\Message\UriInterface
-     * @throws \InvalidArgumentException
-     */
-    public function parseToPsrUri($uri);
 }
