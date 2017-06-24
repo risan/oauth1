@@ -56,4 +56,43 @@ class BaseStringBuilderTest extends TestCase
     {
         $this->assertEquals('http://example.com/path', $this->baseStringBuilder->buildUriComponent($this->psrUri));
     }
+
+    /** @test */
+    function base_string_builder_can_normalize_parameters()
+    {
+        $normalizedParameters = $this->baseStringBuilder->normalizeParameters([
+            'name' => 'John',
+            'full name' => 'John Doe',
+        ]);
+
+        // Can sort and encode the paramaters.
+        $this->assertSame([
+            'full%20name' => 'John%20Doe',
+            'name' => 'John',
+        ], $normalizedParameters);
+    }
+
+    /** @test */
+    function base_string_builder_can_normalize_multi_dimensional_parameters()
+    {
+        $normalizedParameters = $this->baseStringBuilder->normalizeParameters([
+            'name' => 'John',
+            'full name' => 'John Doe',
+            'favorite languages' => ['php', 'go lang'],
+            'location' => [
+                'home town' => 'Cimahi',
+                'home' => 'Stockholm Sweden',
+            ],
+        ]);
+
+        $this->assertSame([
+            'favorite%20languages' => ['php', 'go%20lang'],
+            'full%20name' => 'John%20Doe',
+            'location' => [
+                'home' => 'Stockholm%20Sweden',
+                'home%20town' => 'Cimahi',
+            ],
+            'name' => 'John',
+        ], $normalizedParameters);
+    }
 }
