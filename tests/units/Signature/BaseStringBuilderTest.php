@@ -78,7 +78,7 @@ class BaseStringBuilderTest extends TestCase
         $normalizedParameters = $this->baseStringBuilder->normalizeParameters([
             'name' => 'John',
             'full name' => 'John Doe',
-            'favorite languages' => ['php', 'go lang'],
+            'programming languages' => ['php', 'go lang'],
             'location' => [
                 'home town' => 'Cimahi',
                 'home' => 'Stockholm Sweden',
@@ -86,13 +86,39 @@ class BaseStringBuilderTest extends TestCase
         ]);
 
         $this->assertSame([
-            'favorite%20languages' => ['php', 'go%20lang'],
             'full%20name' => 'John%20Doe',
             'location' => [
                 'home' => 'Stockholm%20Sweden',
                 'home%20town' => 'Cimahi',
             ],
             'name' => 'John',
+            'programming%20languages' => ['php', 'go%20lang'],
         ], $normalizedParameters);
+    }
+
+    /** @test */
+    function base_string_builder_can_build_query_string()
+    {
+        $queryString = $this->baseStringBuilder->buildQueryString([
+            'first_name' => 'john',
+            'last_name' => 'doe',
+        ]);
+
+        $this->assertEquals('first_name=john&last_name=doe', $queryString);
+    }
+
+    /** @test */
+    function base_string_builder_can_build_query_string_from_multi_dimensional_array()
+    {
+        $queryString = $this->baseStringBuilder->buildQueryString([
+            'name' => 'john',
+            'languages' => ['php', 'js'],
+            'location' => [
+                'city' => 'stockholm',
+                'country' => 'sweden',
+            ],
+        ]);
+
+        $this->assertEquals('name=john&languages[0]=php&languages[1]=js&location[city]=stockholm&location[country]=sweden', $queryString);
     }
 }
