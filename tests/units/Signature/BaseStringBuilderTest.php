@@ -138,4 +138,38 @@ class BaseStringBuilderTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->baseStringBuilder->parseToPsrUri(123);
     }
+
+    /** @test */
+    function base_string_builder_can_build_base_string()
+    {
+        $baseString = $this->baseStringBuilder->build('POST', 'http://example.com', ['foo' => 'bar']);
+        $this->assertEquals('POST&http%3A%2F%2Fexample.com&foo%3Dbar', $baseString);
+
+        // URI with path.
+        $baseString = $this->baseStringBuilder->build('POST', 'http://example.com/path', ['foo' => 'bar']);
+        $this->assertEquals('POST&http%3A%2F%2Fexample.com%2Fpath&foo%3Dbar', $baseString);
+
+        // With query parameter.
+        $baseString = $this->baseStringBuilder->build('POST', 'http://example.com/path?foo=bar', ['baz' => 'qux']);
+        $this->assertEquals('POST&http%3A%2F%2Fexample.com%2Fpath&baz%3Dqux%26foo%3Dbar', $baseString);
+
+        // Can uppercase the HTTP method.
+        $baseString = $this->baseStringBuilder->build('post', 'http://example.com/path', ['foo' => 'bar']);
+        $this->assertEquals('POST&http%3A%2F%2Fexample.com%2Fpath&foo%3Dbar', $baseString);
+
+        // Can uppercase & encode custom HTTP method.
+        $baseString = $this->baseStringBuilder->build('Custom Method', 'http://example.com/path', ['foo' => 'bar']);
+        $this->assertEquals('CUSTOM%20METHOD&http%3A%2F%2Fexample.com%2Fpath&foo%3Dbar', $baseString);
+
+        // Can remove default HTTP port.
+        $baseString = $this->baseStringBuilder->build('POST', 'http://example.com:80/path', ['foo' => 'bar']);
+        $this->assertEquals('POST&http%3A%2F%2Fexample.com%2Fpath&foo%3Dbar', $baseString);
+
+        $baseString = $this->baseStringBuilder->build('POST', 'https://example.com:443/path', ['foo' => 'bar']);
+        $this->assertEquals('POST&https%3A%2F%2Fexample.com%2Fpath&foo%3Dbar', $baseString);
+
+        // Can keep custom HTTP port.
+        $baseString = $this->baseStringBuilder->build('POST', 'http://example.com:8080/path', ['foo' => 'bar']);
+        $this->assertEquals('POST&http%3A%2F%2Fexample.com%3A8080%2Fpath&foo%3Dbar', $baseString);
+    }
 }
