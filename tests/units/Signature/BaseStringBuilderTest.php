@@ -2,6 +2,7 @@
 
 use GuzzleHttp\Psr7\Uri;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\UriInterface;
 use Risan\OAuth1\Signature\BaseStringBuilder;
 
 class BaseStringBuilderTest extends TestCase
@@ -120,5 +121,21 @@ class BaseStringBuilderTest extends TestCase
         ]);
 
         $this->assertEquals('name=john&languages[0]=php&languages[1]=js&location[city]=stockholm&location[country]=sweden', $queryString);
+    }
+
+    /** @test */
+    function base_string_builder_can_parse_uri_to_psr_uri_instance()
+    {
+        // Can parse from string.
+        $uri = $this->baseStringBuilder->parseToPsrUri('http://example.com');
+        $this->assertInstanceOf(UriInterface::class, $uri);
+
+        // Can parse from uri interface instance.
+        $uri = $this->baseStringBuilder->parseToPsrUri($this->psrUri);
+        $this->assertSame($this->psrUri, $uri);
+
+        // Should throw InvalidArgumentException.
+        $this->expectException(InvalidArgumentException::class);
+        $this->baseStringBuilder->parseToPsrUri(123);
     }
 }
