@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\Credentials\Credentials;
+use Risan\OAuth1\Credentials\CredentialsInterface;
 
 class CredentialsTest extends TestCase
 {
@@ -10,6 +11,12 @@ class CredentialsTest extends TestCase
     function setUp()
     {
         $this->credentialsStub = $this->getMockForAbstractClass(Credentials::class, ['foo', 'bar']);
+    }
+
+    /** @test */
+    function credentials_must_be_an_instance_of_credentials_interface()
+    {
+        $this->assertInstanceOf(CredentialsInterface::class, $this->credentialsStub);
     }
 
     /** @test */
