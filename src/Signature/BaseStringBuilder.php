@@ -95,7 +95,7 @@ class BaseStringBuilder implements BaseStringBuilderInterface
      * @param  array  $parameters
      * @param  array  $initialQueryParameters
      * @param  string $previousKey
-     * @return strin
+     * @return string
      */
     public function buildQueryString(array $parameters, array $initialQueryParameters = [], $previousKey = null)
     {

@@ -4,6 +4,7 @@ use GuzzleHttp\Psr7\Uri;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UriInterface;
 use Risan\OAuth1\Signature\BaseStringBuilder;
+use Risan\OAuth1\Signature\BaseStringBuilderInterface;
 
 class BaseStringBuilderTest extends TestCase
 {
@@ -14,6 +15,12 @@ class BaseStringBuilderTest extends TestCase
     {
         $this->baseStringBuilder = new BaseStringBuilder;
         $this->psrUri = new Uri('http://example.com/path');
+    }
+
+    /** @test */
+    function base_string_builder_must_be_an_instance_of_base_string_builder_interface()
+    {
+        $this->assertInstanceOf(BaseStringBuilderInterface::class, $this->baseStringBuilder);
     }
 
     /** @test */
