@@ -2,6 +2,7 @@
 
 namespace Risan\OAuth1\Signature;
 
+use Risan\OAuth1\Credentials\ClientCredentials;
 use Risan\OAuth1\Credentials\ServerIssuedCredentials;
 
 trait CanGetSigningKey
@@ -34,6 +35,18 @@ trait CanGetSigningKey
         }
 
         return $key;
+    }
+
+    /**
+     * Set the ClientCredentials instance for signing.
+     *
+     * @return \Risan\OAuth1\Credentials\ClientCredentials
+     */
+    public function setClientCredentials(ClientCredentials $clientCredentials)
+    {
+        $this->clientCredentials = $clientCredentials;
+
+        return $this;
     }
 
     /**

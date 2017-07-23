@@ -2,6 +2,7 @@
 
 namespace Risan\OAuth1\Signature;
 
+use Risan\OAuth1\Credentials\ClientCredentials;
 use Risan\OAuth1\Credentials\ServerIssuedCredentials;
 
 interface KeyBasedSignerInterface
@@ -12,6 +13,13 @@ interface KeyBasedSignerInterface
      * @return string
      */
     public function getKey();
+
+    /**
+     * Set the ClientCredentials instance for signing.
+     *
+     * @return \Risan\OAuth1\Credentials\ClientCredentials
+     */
+    public function setClientCredentials(ClientCredentials $clientCredentials);
 
     /**
      * Get the ClientCredentials instance for signing.
