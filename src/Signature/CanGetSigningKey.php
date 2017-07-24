@@ -66,7 +66,7 @@ trait CanGetSigningKey
      */
     public function setServerIssuedCredentials(ServerIssuedCredentials $serverIssuedCredentials)
     {
-        $this->serverIssuedCredentials = $setServerIssuedCredentials;
+        $this->serverIssuedCredentials = $serverIssuedCredentials;
 
         return $this;
     }
