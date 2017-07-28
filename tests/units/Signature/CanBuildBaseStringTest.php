@@ -24,6 +24,6 @@ class CanBuildBaseStringTest extends TestCase
     {
         $baseString = $this->canBuildBaseStringStub->buildBaseString('http://example.com/path', ['foo' => 'bar'], 'POST');
 
-        $this->assertEquals('POST&http%3A%2F%2Fexample.com%2Fpath&foo%3Dbar', $canBuildBaseStringStub);
+        $this->assertEquals('POST&http%3A%2F%2Fexample.com%2Fpath&foo%3Dbar', $baseString);
     }
 }
