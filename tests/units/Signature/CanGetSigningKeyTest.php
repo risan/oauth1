@@ -40,6 +40,9 @@ class CanGetSigningKeyTest extends TestCase
     /** @test */
     function can_get_signing_key_trait_can_get_valid_key()
     {
+        // Without any key.
+        $this->assertEquals('&', $this->canGetSigningKeyStub->getKey());
+
         // Client credentials only.
         $this->canGetSigningKeyStub->setClientCredentials($this->clientCredentials);
         $this->assertEquals('client_secret&', $this->canGetSigningKeyStub->getKey());

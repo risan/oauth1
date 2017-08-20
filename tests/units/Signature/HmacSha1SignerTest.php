@@ -18,9 +18,9 @@ class HmacSha1SignerTest extends TestCase
 
     function setUp()
     {
+        $this->hmacSha1Signer = new HmacSha1Signer;
         $this->clientCredentials = new ClientCredentials('client_id', 'client_secret');
         $this->tokenCredentials = new TokenCredentials('token_id', 'token_secret');
-        $this->hmacSha1Signer = new HmacSha1Signer($this->clientCredentials);
     }
 
     /** @test */
@@ -58,11 +58,11 @@ class HmacSha1SignerTest extends TestCase
     /** @test */
     function hmac_sha1_signer_can_set_and_get_client_credentials()
     {
-        $this->assertSame($this->clientCredentials, $this->hmacSha1Signer->getClientCredentials());
+        $this->assertNull($this->hmacSha1Signer->getClientCredentials());
 
-        $newClientCredentials = new ClientCredentials('foo', 'bar');
-        $this->assertSame($this->hmacSha1Signer, $this->hmacSha1Signer->setClientCredentials($newClientCredentials));
-        $this->assertSame($newClientCredentials, $this->hmacSha1Signer->getClientCredentials());
+        $this->assertSame($this->hmacSha1Signer, $this->hmacSha1Signer->setClientCredentials($this->clientCredentials));
+
+        $this->assertSame($this->clientCredentials, $this->hmacSha1Signer->getClientCredentials());
     }
 
     /** @test */
@@ -78,7 +78,11 @@ class HmacSha1SignerTest extends TestCase
     /** @test */
     function hmac_sha1_signer_can_get_valid_key()
     {
+        // No keys.
+        $this->assertEquals('&', $this->hmacSha1Signer->getKey());
+
         // Client credentials only.
+        $this->hmacSha1Signer->setClientCredentials($this->clientCredentials);
         $this->assertEquals('client_secret&', $this->hmacSha1Signer->getKey());
 
         // Client credentials and token credentials.
@@ -90,6 +94,7 @@ class HmacSha1SignerTest extends TestCase
     function hmac_sha1_signer_can_hash_data()
     {
         // Client credentials only.
+        $this->hmacSha1Signer->setClientCredentials($this->clientCredentials);
         $this->assertEquals(hex2bin('2db1ee1dfcfe5ac52ee83d8e23fd5f88cce5e97e'), $this->hmacSha1Signer->hash('foo'));
 
         // Client credentials and token credentials.
@@ -101,6 +106,7 @@ class HmacSha1SignerTest extends TestCase
     function hmac_sha1_signer_can_create_valid_signature()
     {
         // Client credentials only.
+        $this->hmacSha1Signer->setClientCredentials($this->clientCredentials);
         $this->assertEquals('xQN8FRuwOGeo3oxtqfc3Fr81UJc=', $this->hmacSha1Signer->sign('http://example.com/path', ['foo' => 'bar'], 'POST'));
 
         // Client credentials and token credentials.

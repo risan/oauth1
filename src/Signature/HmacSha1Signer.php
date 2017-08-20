@@ -9,11 +9,6 @@ class HmacSha1Signer implements SignerInterface, BaseStringSignerInterface, KeyB
     use CanBuildBaseString,
         CanGetSigningKey;
 
-    public function __construct(ClientCredentials $clientCredentials)
-    {
-        $this->clientCredentials = $clientCredentials;
-    }
-
     /**
      * {@inheritDoc}
      */

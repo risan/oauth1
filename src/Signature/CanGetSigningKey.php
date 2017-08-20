@@ -28,7 +28,14 @@ trait CanGetSigningKey
      */
     public function getKey()
     {
-        $key = rawurlencode($this->clientCredentials->getSecret()) . '&';
+        $key = '';
+
+        if ($this->clientCredentials instanceof ClientCredentials) {
+            $key .= rawurlencode($this->clientCredentials->getSecret());
+        }
+
+        // Keep the ampersand even if both keys are empty.
+        $key .= '&';
 
         if ($this->serverIssuedCredentials instanceof ServerIssuedCredentials) {
             $key .= rawurlencode($this->serverIssuedCredentials->getSecret());
