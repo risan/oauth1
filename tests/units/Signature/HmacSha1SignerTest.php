@@ -42,9 +42,9 @@ class HmacSha1SignerTest extends TestCase
     }
 
     /** @test */
-    function hmac_sha1_signer_have_valid_method()
+    function hmac_sha1_signer_can_get_valid_method()
     {
-        $this->assertEquals('HMAC-SHA1', $this->hmacSha1Signer->method());
+        $this->assertEquals('HMAC-SHA1', $this->hmacSha1Signer->getMethod());
     }
 
     /** @test */

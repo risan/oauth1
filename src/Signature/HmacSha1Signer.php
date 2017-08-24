@@ -12,7 +12,7 @@ class HmacSha1Signer implements SignerInterface, BaseStringSignerInterface, KeyB
     /**
      * {@inheritDoc}
      */
-    public function method()
+    public function getMethod()
     {
         return 'HMAC-SHA1';
     }

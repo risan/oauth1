@@ -9,7 +9,7 @@ interface SignerInterface
      *
      * @return string
      */
-    public function method();
+    public function getMethod();
 
     /**
      * Create a signature for given request parameters.
