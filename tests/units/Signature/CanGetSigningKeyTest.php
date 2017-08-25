@@ -18,6 +18,12 @@ class CanGetSigningKeyTest extends TestCase
     }
 
     /** @test */
+    function can_get_signing_key_trait_is_key_based()
+    {
+        $this->assertTrue($this->canGetSigningKeyStub->isKeyBased());
+    }
+
+    /** @test */
     function can_get_signing_key_trait_can_set_and_get_client_credentials()
     {
         $this->assertNull($this->canGetSigningKeyStub->getClientCredentials());

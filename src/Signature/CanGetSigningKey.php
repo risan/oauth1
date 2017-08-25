@@ -22,6 +22,16 @@ trait CanGetSigningKey
     protected $serverIssuedCredentials;
 
     /**
+     * Check if the signer is key based.
+     *
+     * @return boolean
+     */
+    public function isKeyBased()
+    {
+        return true;
+    }
+
+    /**
      * Get the key for signing.
      *
      * @return string

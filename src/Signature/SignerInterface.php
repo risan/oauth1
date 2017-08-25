@@ -12,6 +12,13 @@ interface SignerInterface
     public function getMethod();
 
     /**
+     * Check if the signer is key based.
+     *
+     * @return boolean
+     */
+    public function isKeyBased();
+
+    /**
      * Create a signature for given request parameters.
      *
      * @param  string $uri

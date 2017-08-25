@@ -47,6 +47,12 @@ class HmacSha1SignerTest extends TestCase
         $this->assertEquals('HMAC-SHA1', $this->hmacSha1Signer->getMethod());
     }
 
+     /** @test */
+    function hmac_sha1_signer_is_key_based()
+    {
+        $this->assertTrue($this->hmacSha1Signer->isKeyBased());
+    }
+
     /** @test */
     function hmac_sha1_signer_can_build_base_string()
     {
