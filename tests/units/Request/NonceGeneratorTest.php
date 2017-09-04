@@ -1,7 +1,8 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Risan\OAuth1\NonceGenerator;
+use Risan\OAuth1\Request\NonceGenerator;
+use Risan\OAuth1\Request\NonceGeneratorInterface;
 
 class NonceGeneratorTest extends TestCase
 {
@@ -10,6 +11,12 @@ class NonceGeneratorTest extends TestCase
     function setUp()
     {
         $this->nonceGenerator = new NonceGenerator;
+    }
+
+    /** @test */
+    function nonce_generator_is_an_instance_of_nonce_generator_interface()
+    {
+        $this->assertInstanceOf(NonceGeneratorInterface::class, $this->nonceGenerator);
     }
 
     /** @test */
