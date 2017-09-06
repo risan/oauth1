@@ -23,7 +23,7 @@ interface RequestBuilderInterface
      *
      * @return \Risan\OAuth1\Request\NonceGeneratorInterface
      */
-    public function nonceGenerator();
+    public function getNonceGenerator();
 
     /**
      * Get current timestamp in seconds since Unix Epoch.
