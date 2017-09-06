@@ -2,7 +2,7 @@
 
 namespace Risan\OAuth1\Request;
 
-interface BuilderInterface
+interface RequestBuilderInterface
 {
     /**
      * Get the ConfigInterface instance.
