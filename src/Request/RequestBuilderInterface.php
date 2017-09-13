@@ -28,7 +28,7 @@ interface RequestBuilderInterface
     /**
      * Get current timestamp in seconds since Unix Epoch.
      *
-     * @return string
+     * @return int
      */
     public function getCurrentTimestamp();
 
