@@ -33,26 +33,16 @@ interface RequestBuilderInterface
     public function getCurrentTimestamp();
 
     /**
-     * Get base protocol parameters for the authorization header.
+     * Get url for obtaining temporary credentials.
      *
-     * @return array
-     */
-    public function getBaseProtocolParameters();
-
-    /**
-     * Add signature parameter to the given protocol parameters.
-     *
-     * @param array  &$parameters
-     * @param string $uri
-     * @param string $httpMethod
-     */
-    public function addSignatureParameter(array &$parameters, $uri, $httpMethod = 'POST');
-
-    /**
-     * Normalize protocol parameters to be used as authorization header.
-     *
-     * @param  array  $parameters
      * @return string
      */
-    public function normalizeProtocolParameters(array $parameters);
+    public function getTemporaryCredentialsUrl();
+
+    /**
+     * Get authorization header for obtaining temporary credentials.
+     *
+     * @return string
+     */
+    public function getTemporaryCredentialsAuthorizationHeader();
 }
