@@ -12,7 +12,7 @@ use Risan\OAuth1\Flows\GrantedFlow;
 use Risan\OAuth1\Flows\RequestTokenFlow;
 use Risan\OAuth1\Signers\HmacSha1Signer;
 
-class OAuth1 implements OAuth1ClientInterface
+class OAuth1Old implements OAuth1ClientInterface
 {
     use GrantedFlow,
         AccessTokenFlow,
