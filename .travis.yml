@@ -15,7 +15,7 @@ matrix:
     - php: 7.0
       env: COMPOSER_STABILITY=lowest
     - php: 7.1
-      env: COMPOSER_STABILITY=stable COLLECT_COVERAGE=true
+      env: COLLECT_COVERAGE=true
     - php: 7.1
       env: COMPOSER_STABILITY=lowest
 
