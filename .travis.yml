@@ -1,15 +1,25 @@
 language: php
 
-sudo: false
+env:
+  global:
+    - COMPOSER_STABILITY=stable
+    - COLLECT_COVERAGE=false
 
 matrix:
+  fast_finish: true
   include:
-    - php: 5.5
-      env: 'COMPOSER_FLAGS="--prefer-stable --prefer-lowest"'
     - php: 5.6
+    - php: 5.6
+      env: COMPOSER_STABILITY=lowest
+    - php: 7.0
+    - php: 7.0
+      env: COMPOSER_STABILITY=lowest
+    - php: 7.1
       env: COLLECT_COVERAGE=true
-    - php: 7
-    - php: hhvm
+    - php: 7.1
+      env: COMPOSER_STABILITY=lowest
+
+sudo: false
 
 cache:
   directories:
@@ -17,10 +27,13 @@ cache:
 
 before_script:
   - travis_retry composer self-update
-  - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-source
+
+install:
+  - if [[ $COMPOSER_STABILITY = 'stable' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-stable --no-suggest; fi
+  - if [[ $COMPOSER_STABILITY = 'lowest' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable --no-suggest; fi
 
 script:
-  - if [[ "$COLLECT_COVERAGE" == "true" ]]; then vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover; else vendor/bin/phpunit --no-coverage; fi
+  - if [[ "$COLLECT_COVERAGE" = "true" ]]; then vendor/bin/phpunit --coverage-text --coverage-clover coverage.xml; else vendor/bin/phpunit --no-coverage; fi
 
 after_script:
-  - if [[ "$COLLECT_COVERAGE" == "true" ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
+  - if [[ "$COLLECT_COVERAGE" = "true" ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.xml; fi
