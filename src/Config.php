@@ -30,16 +30,25 @@ class Config implements ConfigInterface
     protected $temporaryCredentialsUrl;
 
     /**
+     * The URL for asking user to authorize the request.
+     *
+     * @var string
+     */
+    protected $authorizationUrl;
+
+    /**
      * Create new instance of Config class.
      *
      * @param \Risan\OAuth1\Credentials\ClientCredentials $clientCredentials
      * @param string $temporaryCredentialsUrl
+     * @param string $authorizationUrl
      * @param string|null $callbackUri
      */
-    public function __construct(ClientCredentials $clientCredentials, $temporaryCredentialsUrl, $callbackUri = null)
+    public function __construct(ClientCredentials $clientCredentials, $temporaryCredentialsUrl, $authorizationUrl, $callbackUri = null)
     {
         $this->clientCredentials = $clientCredentials;
         $this->temporaryCredentialsUrl = $temporaryCredentialsUrl;
+        $this->authorizationUrl = $authorizationUrl;
         $this->callbackUri = $callbackUri;
     }
 
@@ -94,12 +103,21 @@ class Config implements ConfigInterface
     /**
      * {@inheritDoc}
      */
+    public function getAuthorizationUrl()
+    {
+        return $this->authorizationUrl;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public static function createFromArray(array $config)
     {
         $requiredParams = [
             'client_credentials_identifier',
             'client_credentials_secret',
             'temporary_credentials_url',
+            'authorization_url',
         ];
 
         foreach ($requiredParams as $param) {
@@ -113,6 +131,7 @@ class Config implements ConfigInterface
         return new static(
             new ClientCredentials($config['client_credentials_identifier'], $config['client_credentials_secret']),
             $config['temporary_credentials_url'],
+            $config['authorization_url'],
             $callbackUri
         );
     }
