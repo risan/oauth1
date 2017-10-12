@@ -48,6 +48,13 @@ interface ConfigInterface
     public function getTemporaryCredentialsUrl();
 
     /**
+     * Get the URL for asking user to authorize the request.
+     *
+     * @return string
+     */
+    public function getAuthorizationUrl();
+
+    /**
      * Create an instance of ConfigureInterface from array.
      *
      * @return \Risan\OAuth1\ConfigInterface
