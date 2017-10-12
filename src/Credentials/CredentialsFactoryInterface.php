@@ -11,6 +11,7 @@ interface CredentialsFactoryInterface
      *
      * @param  \Psr\Http\Message\ResponseInterface $response
      * @return \Risan\OAuth1\Credentials\TemporaryCredentials
+     * @throws \Risan\OAuth1\Credentials\CredentialsException
      */
     public function createTemporaryCredentialsFromResponse(ResponseInterface $response);
 }
