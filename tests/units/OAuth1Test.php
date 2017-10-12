@@ -3,23 +3,27 @@
 use Risan\OAuth1\OAuth1;
 use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\OAuth1Interface;
-use Psr\Http\Message\StreamInterface;
 use Risan\OAuth1\HttpClientInterface;
 use Psr\Http\Message\ResponseInterface;
-use Risan\OAuth1\Credentials\ClientCredentials;
 use Risan\OAuth1\Request\RequestConfigInterface;
+use Risan\OAuth1\Credentials\TemporaryCredentials;
+use Risan\OAuth1\Credentials\CredentialsFactoryInterface;
 
 class OAuth1Test extends TestCase
 {
     private $requestConfigStub;
     private $httpClientStub;
+    private $credentialsFactoryStub;
     private $oauth1;
+    private $responseStub;
 
     function setUp()
     {
         $this->requestConfigStub = $this->createMock(RequestConfigInterface::class);
         $this->httpClientStub = $this->createMock(HttpClientInterface::class);
-        $this->oauth1 = new OAuth1($this->requestConfigStub, $this->httpClientStub);
+        $this->credentialsFactoryStub = $this->createMock(CredentialsFactoryInterface::class);
+        $this->oauth1 = new OAuth1($this->requestConfigStub, $this->httpClientStub, $this->credentialsFactoryStub);
+        $this->responseStub = $this->createMock(ResponseInterface::class);
     }
 
     /** @test */
@@ -53,19 +57,6 @@ class OAuth1Test extends TestCase
             ->method('getTemporaryCredentialsAuthorizationHeader')
             ->willReturn('Authorization Header');
 
-        $responseStub = $this->createMock(ResponseInterface::class);
-        $streamStub = $this->createMock(StreamInterface::class);
-
-        $responseStub
-            ->expects($this->once())
-            ->method('getBody')
-            ->willReturn($streamStub);
-
-        $streamStub
-            ->expects($this->once())
-            ->method('getContents')
-            ->willReturn('oauth_token=token_id&oauth_secret=token_secret&oauth_callback_confirmed=true');
-
         $this->httpClientStub
             ->expects($this->once())
             ->method('post')
@@ -73,8 +64,16 @@ class OAuth1Test extends TestCase
                 'http://example.com/temporary_credentials_url',
                 ['headers' => ['Authorization' => 'Authorization Header']]
             )
-            ->willReturn($responseStub);
+            ->willReturn($this->responseStub);
 
-        $this->assertInstanceOf(ClientCredentials::class, $this->oauth1->getTemporaryCredentials());
+        $temporaryCredentialsStub = $this->createMock(TemporaryCredentials::class);
+
+        $this->credentialsFactoryStub
+            ->expects($this->once())
+            ->method('createTemporaryCredentialsFromResponse')
+            ->with($this->responseStub)
+            ->willReturn($temporaryCredentialsStub);
+
+        $this->assertInstanceOf(TemporaryCredentials::class, $this->oauth1->getTemporaryCredentials());
     }
 }
