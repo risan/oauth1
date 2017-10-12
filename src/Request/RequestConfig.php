@@ -35,14 +35,14 @@ class RequestConfig implements RequestConfigInterface
      * Create RequestBuilder instance.
      *
      * @param \Risan\OAuth1\ConfigInterface $config
-     * @param \Risan\OAuth1\Signature\SignerInterface|null $signer
-     * @param \Risan\OAuth1\Request\NonceGeneratorInterface|null $nonceGenerator
+     * @param \Risan\OAuth1\Signature\SignerInterface $signer
+     * @param \Risan\OAuth1\Request\NonceGeneratorInterface $nonceGenerator
      */
-    public function __construct(ConfigInterface $config, SignerInterface $signer = null, NonceGeneratorInterface $nonceGenerator = null)
+    public function __construct(ConfigInterface $config, SignerInterface $signer, NonceGeneratorInterface $nonceGenerator)
     {
         $this->config = $config;
-        $this->signer = $signer ?: new HmacSha1Signer;
-        $this->nonceGenerator = $nonceGenerator ?: new NonceGenerator;
+        $this->signer = $signer;
+        $this->nonceGenerator = $nonceGenerator;
 
         if ($this->signer instanceof KeyBasedSignerInterface) {
             $this->signer->setClientCredentials($config->getClientCredentials());
