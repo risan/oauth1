@@ -4,6 +4,7 @@ namespace Risan\OAuth1;
 
 use Risan\OAuth1\Credentials\ClientCredentials;
 use Risan\OAuth1\Request\RequestConfigInterface;
+use Risan\OAuth1\Credentials\CredentialsFactoryInterface;
 
 class OAuth1 implements OAuth1Interface
 {
@@ -22,15 +23,24 @@ class OAuth1 implements OAuth1Interface
     protected $httpClient;
 
     /**
+     * The CredentialsFactoryInterface instance.
+     *
+     * @var \Risan\OAuth1\Credentials\CredentialsFactoryInterface
+     */
+    protected $credentialsFactory;
+
+    /**
      * Create a new OAuth1 instance.
      *
      * @param \Risan\OAuth1\Request\RequestConfigInterface $requestConfig
      * @param \Risan\OAuth1\HttpClientInterface $httpClient
+     * @param \Risan\OAuth1\Credentials\CredentialsFactoryInterface $credentialsFactory
      */
-    public function __construct(RequestConfigInterface $requestConfig, HttpClientInterface $httpClient)
+    public function __construct(RequestConfigInterface $requestConfig, HttpClientInterface $httpClient, CredentialsFactoryInterface $credentialsFactory)
     {
         $this->requestConfig = $requestConfig;
         $this->httpClient = $httpClient;
+        $this->credentialsFactory = $credentialsFactory;
     }
 
     /**
@@ -52,6 +62,14 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritDoc}
      */
+    public function getCredentialsFactory()
+    {
+        return $this->credentialsFactory;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getTemporaryCredentials()
     {
         $response = $this->httpClient->post($this->requestConfig->getTemporaryCredentialsUrl(), [
@@ -60,6 +78,6 @@ class OAuth1 implements OAuth1Interface
             ],
         ]);
 
-        return ClientCredentials::createFromResponse($response);
+        return $this->credentialsFactory->createTemporaryCredentialsFromResponse($response);
     }
 }
