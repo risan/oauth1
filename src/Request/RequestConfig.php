@@ -8,7 +8,7 @@ use Risan\OAuth1\Signature\HmacSha1Signer;
 use Risan\OAuth1\Signature\SignerInterface;
 use Risan\OAuth1\Signature\KeyBasedSignerInterface;
 
-class RequestBuilder implements RequestBuilderInterface
+class RequestConfig implements RequestConfigInterface
 {
     /**
      * The ConfigInterface instance.
