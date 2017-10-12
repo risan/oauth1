@@ -11,6 +11,7 @@ class ConfigTest extends TestCase
     private $clientCredentialsSecret;
     private $clientCredentials;
     private $temporaryCredentialsUrl;
+    private $authorizationUrl;
     private $callbackUri;
     private $configParams;
     private $config;
@@ -22,24 +23,28 @@ class ConfigTest extends TestCase
         $this->clientCredentialsSecret = 'client_secret';
         $this->clientCredentials = new ClientCredentials($this->clientCredentialsIdentifier, $this->clientCredentialsSecret);
         $this->temporaryCredentialsUrl = 'http://example.com/temporary_credentials_url';
+        $this->authorizationUrl = 'http://example.com/authorization_url';
         $this->callbackUri = 'http://example.com/callback_uri';
 
         $this->configParams = [
             'client_credentials_identifier' => $this->clientCredentialsIdentifier,
             'client_credentials_secret' => $this->clientCredentialsSecret,
             'temporary_credentials_url' => $this->temporaryCredentialsUrl,
+            'authorization_url' => $this->authorizationUrl,
             'callback_uri' => $this->callbackUri,
         ];
 
         $this->config = new Config(
             $this->clientCredentials,
             $this->temporaryCredentialsUrl,
+            $this->authorizationUrl,
             $this->callbackUri
         );
 
         $this->configWithoutCallbackUri = new Config(
             $this->clientCredentials,
             $this->temporaryCredentialsUrl,
+            $this->authorizationUrl,
             null
         );
     }
@@ -97,6 +102,12 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
+    function config_can_get_authorization_url()
+    {
+        $this->assertEquals($this->authorizationUrl, $this->config->getAuthorizationUrl());
+    }
+
+    /** @test */
     function config_can_create_from_array()
     {
         $config = Config::createFromArray($this->configParams);
@@ -121,6 +132,11 @@ class ConfigTest extends TestCase
         );
 
         $this->assertEquals(
+            $this->configParams['authorization_url'],
+            $config->getAuthorizationUrl()
+        );
+
+        $this->assertEquals(
             $this->configParams['callback_uri'],
             $config->getCallbackUri()
         );
@@ -134,6 +150,7 @@ class ConfigTest extends TestCase
         Config::createFromArray([
             'client_credentials_secret' => $this->clientCredentialsSecret,
             'temporary_credentials_url' => $this->temporaryCredentialsUrl,
+            'authorization_url' => $this->authorizationUrl,
             'callback_uri' => $this->callbackUri,
         ]);
     }
@@ -146,6 +163,7 @@ class ConfigTest extends TestCase
         Config::createFromArray([
             'client_credentials_identifier' => $this->clientCredentialsIdentifier,
             'temporary_credentials_url' => $this->temporaryCredentialsUrl,
+            'authorization_url' => $this->authorizationUrl,
             'callback_uri' => $this->callbackUri,
         ]);
     }
@@ -156,6 +174,20 @@ class ConfigTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         Config::createFromArray([
+            'authorization_url' => $this->authorizationUrl,
+            'client_credentials_identifier' => $this->clientCredentialsIdentifier,
+            'client_credentials_secret' => $this->clientCredentialsSecret,
+            'callback_uri' => $this->callbackUri,
+        ]);
+    }
+
+    /** @test */
+    function config_must_throw_exception_if_authorization_url_is_empty()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Config::createFromArray([
+            'temporary_credentials_url' => $this->temporaryCredentialsUrl,
             'client_credentials_identifier' => $this->clientCredentialsIdentifier,
             'client_credentials_secret' => $this->clientCredentialsSecret,
             'callback_uri' => $this->callbackUri,
@@ -168,6 +200,7 @@ class ConfigTest extends TestCase
         $config = Config::createFromArray([
             'client_credentials_identifier' => $this->clientCredentialsIdentifier,
             'client_credentials_secret' => $this->clientCredentialsSecret,
+            'authorization_url' => $this->authorizationUrl,
             'temporary_credentials_url' => $this->temporaryCredentialsUrl,
         ]);
 

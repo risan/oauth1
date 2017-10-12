@@ -14,6 +14,7 @@ class OAuth1FactoryTest extends TestCase
             'client_credentials_identifier' => 'client_id',
             'client_credentials_secret' => 'client_secret',
             'temporary_credentials_url' => 'http://example.com/temporary_credentials_url',
+            'authorization_url' => 'http://example.com/authorization_url',
             'callback_uri' => 'http://example.com/callback_uri',
         ];
     }
