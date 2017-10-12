@@ -2,6 +2,7 @@
 
 namespace Risan\OAuth1;
 
+use Risan\OAuth1\Credentials\ClientCredentials;
 use Risan\OAuth1\Request\RequestConfigInterface;
 
 class OAuth1 implements OAuth1Interface
@@ -53,10 +54,12 @@ class OAuth1 implements OAuth1Interface
      */
     public function getTemporaryCredentials()
     {
-        return $this->httpClient->post($this->requestConfig->getTemporaryCredentialsUrl(), [
+        $response = $this->httpClient->post($this->requestConfig->getTemporaryCredentialsUrl(), [
             'headers' => [
                 'Authorization' => $this->requestConfig->getTemporaryCredentialsAuthorizationHeader(),
             ],
         ]);
+
+        return ClientCredentials::createFromResponse($response);
     }
 }
