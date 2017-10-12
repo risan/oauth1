@@ -12,7 +12,7 @@ interface OAuth1Interface
     public function getRequestConfig();
 
     /**
-     * Get the HTTP client interface instance.
+     * Get the HttpClientInterface instance.
      *
      * @return \Risan\OAuth1\HttpClientInterface
      */
