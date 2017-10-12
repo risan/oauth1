@@ -23,7 +23,7 @@ class CredentialsFactoryTest extends TestCase
     /** @test */
     function credentials_factory_will_throw_credentials_exception_when_creating_temporary_credentials_and_oauth_token_parameter_is_missing()
     {
-        $this->setupResponseStub('oauth_secret=token_secret&oauth_callback_confirmed=true');
+        $this->setupResponseStub('oauth_token_secret=token_secret&oauth_callback_confirmed=true');
 
         $this->expectException(CredentialsException::class);
 
@@ -31,7 +31,7 @@ class CredentialsFactoryTest extends TestCase
     }
 
     /** @test */
-    function credentials_factory_will_throw_credentials_exception_when_creating_temporary_credentials_and_oauth_secret_parameter_is_missing()
+    function credentials_factory_will_throw_credentials_exception_when_creating_temporary_credentials_and_oauth_token_secret_parameter_is_missing()
     {
         $this->setupResponseStub('oauth_token=token_id&oauth_callback_confirmed=true');
 
@@ -43,7 +43,7 @@ class CredentialsFactoryTest extends TestCase
     /** @test */
     function credentials_factory_will_throw_credentials_exception_when_creating_temporary_credentials_and_oauth_callback_confirmed_parameter_is_missing()
     {
-        $this->setupResponseStub('oauth_token=token_id&oauth_secret=token_secret');
+        $this->setupResponseStub('oauth_token=token_id&oauth_token_secret=token_secret');
 
         $this->expectException(CredentialsException::class);
 
@@ -53,7 +53,7 @@ class CredentialsFactoryTest extends TestCase
     /** @test */
     function credentials_factory_will_throw_credentials_exception_when_creating_temporary_credentials_and_oauth_callback_confirmed_is_not_true()
     {
-        $this->setupResponseStub('oauth_token=token_id&oauth_secret=token_secret&oauth_callback_confirmed=false');
+        $this->setupResponseStub('oauth_token=token_id&oauth_token_secret=token_secret&oauth_callback_confirmed=false');
 
         $this->expectException(CredentialsException::class);
 
@@ -63,7 +63,7 @@ class CredentialsFactoryTest extends TestCase
     /** @test */
     function credentials_factory_can_create_temporary_credentials_from_response()
     {
-        $this->setupResponseStub('oauth_token=token_id&oauth_secret=token_secret&oauth_callback_confirmed=true');
+        $this->setupResponseStub('oauth_token=token_id&oauth_token_secret=token_secret&oauth_callback_confirmed=true');
 
         $temporaryCredentials = $this->credentialsFactory->createTemporaryCredentialsFromResponse($this->responseStub);
 

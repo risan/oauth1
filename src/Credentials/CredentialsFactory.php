@@ -18,7 +18,7 @@ class CredentialsFactory implements CredentialsFactoryInterface
 
         $requiredParames = [
             'oauth_token',
-            'oauth_secret',
+            'oauth_token_secret',
             'oauth_callback_confirmed',
         ];
 
@@ -32,6 +32,6 @@ class CredentialsFactory implements CredentialsFactoryInterface
             throw new CredentialsException('Unable to parse temporary credentials response. Callback URI is not valid.');
         }
 
-        return new TemporaryCredentials($responseParameters['oauth_token'], $responseParameters['oauth_secret']);
+        return new TemporaryCredentials($responseParameters['oauth_token'], $responseParameters['oauth_token_secret']);
     }
 }
