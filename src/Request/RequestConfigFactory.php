@@ -1,6 +1,6 @@
 <?php
 
-namespace Risan\OAuth\Request;
+namespace Risan\OAuth1\Request;
 
 use Risan\OAuth1\Config;
 use Risan\OAuth1\Signature\HmacSha1Signer;
