@@ -3,6 +3,7 @@
 use Risan\OAuth1\OAuth1;
 use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\OAuth1Interface;
+use Psr\Http\Message\StreamInterface;
 use Risan\OAuth1\HttpClientInterface;
 use Psr\Http\Message\ResponseInterface;
 use Risan\OAuth1\Credentials\ClientCredentials;
@@ -53,6 +54,17 @@ class OAuth1Test extends TestCase
             ->willReturn('Authorization Header');
 
         $responseStub = $this->createMock(ResponseInterface::class);
+        $streamStub = $this->createMock(StreamInterface::class);
+
+        $responseStub
+            ->expects($this->once())
+            ->method('getBody')
+            ->willReturn($streamStub);
+
+        $streamStub
+            ->expects($this->once())
+            ->method('getContents')
+            ->willReturn('oauth_token=token_id&oauth_secret=token_secret&oauth_callback_confirmed=true');
 
         $this->httpClientStub
             ->expects($this->once())
