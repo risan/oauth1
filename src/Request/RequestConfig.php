@@ -102,7 +102,7 @@ class RequestConfig implements RequestConfigInterface
             $parameters['oauth_callback'] = $this->config->getCallbackUri();
         }
 
-        $this->addSignatureParameter($parameters, $this->getTemporaryCredentialsUrl(), 'POST');
+        $this->addSignatureParameter($parameters, $this->getTemporaryCredentialsUrl(), [], 'POST');
 
         return $this->normalizeProtocolParameters($parameters);
     }
@@ -115,6 +115,37 @@ class RequestConfig implements RequestConfigInterface
         return $this->appendQueryParametersToUri($this->config->getAuthorizationUrl(), [
             'oauth_token' => $temporaryCredentials->getIdentifier(),
         ]);
+    }
+
+     /**
+     * {@inheritDoc}
+     */
+    public function getTokenCredentialsUrl()
+    {
+        return $this->config->getTokenCredentialsUrl();
+    }
+
+     /**
+     * {@inheritDoc}
+     */
+    public function getTokenCredentialsAuthorizationHeader(TemporaryCredentials $temporaryCredentials, $verificationCode)
+    {
+        $parameters = $this->getBaseProtocolParameters();
+
+        $parameters['oauth_token'] = $temporaryCredentials->getIdentifier();
+
+        $this->addSignatureParameter(
+            $parameters,
+            $this->getTokenCredentialsUrl(),
+            [
+                'form_params' => [
+                    'oauth_verifier' => $verificationCode,
+                ],
+            ],
+            'POST'
+        );
+
+        return $this->normalizeProtocolParameters($parameters);
     }
 
     /**
@@ -138,13 +169,38 @@ class RequestConfig implements RequestConfigInterface
      *
      * @param array  &$parameters
      * @param string $uri
+     * @param arrat  $requestOptions
      * @param string $httpMethod
      */
-    public function addSignatureParameter(array &$parameters, $uri, $httpMethod = 'POST')
+    public function addSignatureParameter(array &$parameters, $uri, $requestOptions = [], $httpMethod = 'POST')
     {
-        $parameters['oauth_signature'] = $this->signer->sign($uri, $parameters, $httpMethod);
+        $requestParameters = $parameters;
+
+        if ($this->requestOptionsHas($requestOptions, 'query')) {
+            $requestParameters = array_merge($requestParameters, $requestOptions['query']);
+        }
+
+        if ($this->requestOptionsHas($requestOptions, 'form_params')) {
+            $requestParameters = array_merge($requestParameters, $requestOptions['form_params']);
+        }
+
+        $parameters['oauth_signature'] = $this->signer->sign($uri, $requestParameters, $httpMethod);
 
         return $parameters;
+    }
+
+    /**
+     * Check if request options has the given key option.
+     *
+     * @param  array  $requestOptions
+     * @param  string $key
+     * @return boolean
+     */
+    public function requestOptionsHas(array $requestOptions, $key)
+    {
+        return isset($requestOptions[$key]) &&
+            is_array($requestOptions[$key]) &&
+            count($requestOptions[$key]) > 0;
     }
 
     /**

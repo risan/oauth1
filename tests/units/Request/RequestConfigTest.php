@@ -30,6 +30,7 @@ class RequestConfigTest extends TestCase
             ->setMethods([
                 'getBaseProtocolParameters',
                 'getTemporaryCredentialsUrl',
+                'getTokenCredentialsUrl',
                 'addSignatureParameter',
                 'normalizeProtocolParameters',
             ])
@@ -75,9 +76,9 @@ class RequestConfigTest extends TestCase
         $this->configStub
             ->expects($this->once())
             ->method('getTemporaryCredentialsUrl')
-            ->willReturn('http://example.com');
+            ->willReturn('http://example.com/request_token');
 
-        $this->assertEquals('http://example.com', $this->requestConfig->getTemporaryCredentialsUrl());
+        $this->assertEquals('http://example.com/request_token', $this->requestConfig->getTemporaryCredentialsUrl());
     }
 
     /** @test */
@@ -86,9 +87,9 @@ class RequestConfigTest extends TestCase
         $this->configStub
             ->expects($this->once())
             ->method('getTokenCredentialsUrl')
-            ->willReturn('http://example.com');
+            ->willReturn('http://example.com/access_token');
 
-        $this->assertEquals('http://example.com', $this->requestConfig->getTokenCredentialsUrl());
+        $this->assertEquals('http://example.com/access_token', $this->requestConfig->getTokenCredentialsUrl());
     }
 
     /** @test */
@@ -244,12 +245,7 @@ class RequestConfigTest extends TestCase
         $this->requestConfigStub
             ->expects($this->once())
             ->method('getBaseProtocolParameters')
-            ->willReturn(['foo' => 'bar']);
-
-        $this->requestConfigStub
-            ->expects($this->once())
-            ->method('getTokenCredentialsUrl')
-            ->willReturn('http://example.com/access_token');
+            ->willReturn(['oauth_consumer_key' => 'client_id']);
 
         $this->temporaryCredentialsStub
             ->expects($this->once())
@@ -258,9 +254,17 @@ class RequestConfigTest extends TestCase
 
         $this->requestConfigStub
             ->expects($this->once())
+            ->method('getTokenCredentialsUrl')
+            ->willReturn('http://example.com/access_token');
+
+        $this->requestConfigStub
+            ->expects($this->once())
             ->method('addSignatureParameter')
             ->with(
-                ['foo' => 'bar', 'oauth_token' => 'temporary_id'],
+                [
+                    'oauth_consumer_key' => 'client_id',
+                    'oauth_token' => 'temporary_id',
+                ],
                 'http://example.com/access_token',
                 'POST'
             );
@@ -268,7 +272,10 @@ class RequestConfigTest extends TestCase
         $this->requestConfigStub
             ->expects($this->once())
             ->method('normalizeProtocolParameters')
-            ->with(['foo' => 'bar', 'oauth_token' => 'temporary_id'])
+            ->with([
+                'oauth_consumer_key' => 'client_id',
+                'oauth_token' => 'temporary_id',
+            ])
             ->willReturn('Authorization Header');
 
         $this->assertEquals(
