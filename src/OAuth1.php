@@ -12,7 +12,7 @@ class OAuth1 implements OAuth1Interface
     /**
      * The RequestConfigInterface instance.
      *
-     * @var \Risan\OAuth1\Request\RequestConfig
+     * @var \Risan\OAuth1\Request\RequestConfigInterface
      */
     protected $requestConfig;
 
