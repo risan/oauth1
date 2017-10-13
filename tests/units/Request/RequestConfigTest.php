@@ -3,27 +3,36 @@
 use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\ConfigInterface;
 use Risan\OAuth1\Request\RequestConfig;
+use Risan\OAuth1\Signature\HmacSha1Signer;
 use Risan\OAuth1\Signature\SignerInterface;
+use Risan\OAuth1\Credentials\ClientCredentials;
 use Risan\OAuth1\Request\RequestConfigInterface;
 use Risan\OAuth1\Request\NonceGeneratorInterface;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
+use Risan\OAuth1\Credentials\ServerIssuedCredentials;
 
 class RequestConfigTest extends TestCase
 {
     private $configStub;
     private $signerStub;
+    private $hmacSha1SignerStub;
     private $nonceGeneratorStub;
     private $requestConfig;
+    private $clientCredentialsStub;
     private $temporaryCredentialsStub;
+    private $serverIssuedCredentialsStub;
     private $requestConfigStub;
 
     function setUp()
     {
         $this->configStub = $this->createMock(ConfigInterface::class);
         $this->signerStub = $this->createMock(SignerInterface::class);
+        $this->hmacSha1SignerStub = $this->createMock(HmacSha1Signer::class);
         $this->nonceGeneratorStub = $this->createMock(NonceGeneratorInterface::class);
         $this->requestConfig = new RequestConfig($this->configStub, $this->signerStub, $this->nonceGeneratorStub);
+        $this->clientCredentialsStub = $this->createMock(ClientCredentials::class);
         $this->temporaryCredentialsStub = $this->createMock(TemporaryCredentials::class);
+        $this->serverIssuedCredentialsStub = $this->createMock(ServerIssuedCredentials::class);
 
         $this->requestConfigStub = $this->getMockBuilder(RequestConfig::class)
             ->setConstructorArgs([$this->configStub, $this->signerStub, $this->nonceGeneratorStub])
@@ -68,6 +77,21 @@ class RequestConfigTest extends TestCase
     function request_config_can_get_current_timestamp()
     {
         $this->assertEquals((new DateTime)->getTimestamp(), $this->requestConfig->getCurrentTimestamp(), '' , 3);
+    }
+
+     /** @test */
+    function request_config_can_check_if_signer_is_key_based_or_not()
+    {
+        $this->assertFalse($this->requestConfig->isUsingKeyBasedSigner());
+
+        // With keybased signer.
+        $this->configStub
+            ->expects($this->once())
+            ->method('getClientCredentials')
+            ->willReturn($this->clientCredentialsStub);
+
+        $requestConfig = new RequestConfig($this->configStub, $this->createMock(HmacSha1Signer::class), $this->nonceGeneratorStub);
+        $this->assertTrue($requestConfig->isUsingKeyBasedSigner());
     }
 
     /** @test */
@@ -148,6 +172,7 @@ class RequestConfigTest extends TestCase
         ], $this->requestConfig->addSignatureParameter(
             $parameters,
             'http://example.com',
+            null,
             [
                 'form_params' => ['name' => 'john'],
                 'query' => ['age' => 20],
@@ -248,9 +273,7 @@ class RequestConfigTest extends TestCase
                     'oauth_consumer_key' => 'client_id',
                     'oauth_callback' => 'http://johndoe.com/callback',
                 ],
-                'http://example.com/request_token',
-                [],
-                'POST'
+                'http://example.com/request_token'
             );
 
         $this->requestConfigStub
@@ -311,6 +334,7 @@ class RequestConfigTest extends TestCase
                     'oauth_token' => 'temporary_id',
                 ],
                 'http://example.com/access_token',
+                $this->temporaryCredentialsStub,
                 [
                     'form_params' => [
                         'oauth_verifier' => 'verification_code',

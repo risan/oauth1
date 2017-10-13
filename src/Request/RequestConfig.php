@@ -9,6 +9,7 @@ use Risan\OAuth1\Signature\HmacSha1Signer;
 use Risan\OAuth1\Signature\SignerInterface;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
 use Risan\OAuth1\Signature\KeyBasedSignerInterface;
+use Risan\OAuth1\Credentials\ServerIssuedCredentials;
 
 class RequestConfig implements RequestConfigInterface
 {
@@ -46,7 +47,7 @@ class RequestConfig implements RequestConfigInterface
         $this->signer = $signer;
         $this->nonceGenerator = $nonceGenerator;
 
-        if ($this->signer instanceof KeyBasedSignerInterface) {
+        if ($this->isUsingKeyBasedSigner()) {
             $this->signer->setClientCredentials($config->getClientCredentials());
         }
     }
@@ -84,6 +85,16 @@ class RequestConfig implements RequestConfigInterface
     }
 
     /**
+     * Check if the signer is key based.
+     *
+     * @return boolean
+     */
+    public function isUsingKeyBasedSigner()
+    {
+        return $this->signer instanceof KeyBasedSignerInterface;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getTemporaryCredentialsUrl()
@@ -102,7 +113,7 @@ class RequestConfig implements RequestConfigInterface
             $parameters['oauth_callback'] = $this->config->getCallbackUri();
         }
 
-        $this->addSignatureParameter($parameters, $this->getTemporaryCredentialsUrl(), [], 'POST');
+        $this->addSignatureParameter($parameters, $this->getTemporaryCredentialsUrl());
 
         return $this->normalizeProtocolParameters($parameters);
     }
@@ -137,12 +148,12 @@ class RequestConfig implements RequestConfigInterface
         $this->addSignatureParameter(
             $parameters,
             $this->getTokenCredentialsUrl(),
+            $temporaryCredentials,
             [
                 'form_params' => [
                     'oauth_verifier' => $verificationCode,
                 ],
-            ],
-            'POST'
+            ]
         );
 
         return $this->normalizeProtocolParameters($parameters);
@@ -169,10 +180,11 @@ class RequestConfig implements RequestConfigInterface
      *
      * @param array  &$parameters
      * @param string $uri
-     * @param arrat  $requestOptions
+     * @param \Risan\OAuth1\Credentials\ServerIssuedCredentials|null $serverIssuedCredentials
+     * @param array  $requestOptions
      * @param string $httpMethod
      */
-    public function addSignatureParameter(array &$parameters, $uri, $requestOptions = [], $httpMethod = 'POST')
+    public function addSignatureParameter(array &$parameters, $uri, ServerIssuedCredentials $serverIssuedCredentials = null, array $requestOptions = [], $httpMethod = 'POST')
     {
         $requestParameters = $parameters;
 
@@ -182,6 +194,10 @@ class RequestConfig implements RequestConfigInterface
 
         if ($this->requestOptionsHas($requestOptions, 'form_params')) {
             $requestParameters = array_merge($requestParameters, $requestOptions['form_params']);
+        }
+
+        if ($this->isUsingKeyBasedSigner() && $serverIssuedCredentials instanceof ServerIssuedCredentials) {
+            //$this->signer->setServerIssuedCredentials($setServerIssuedCredentials);
         }
 
         $parameters['oauth_signature'] = $this->signer->sign($uri, $requestParameters, $httpMethod);

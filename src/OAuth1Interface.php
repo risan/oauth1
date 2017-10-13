@@ -41,4 +41,15 @@ interface OAuth1Interface
      * @return string
      */
     public function buildAuthorizationUrl(TemporaryCredentials $temporaryCredentials);
+
+    /**
+     * Obtain the token credentials.
+     *
+     * @param  Risan\OAuth1\Credentials\TemporaryCredentials $temporaryCredentials
+     * @param  string $temporaryIdentifier
+     * @param  string $verificationCode
+     * @return \Risan\OAuth1\Credentials\TokenCredentials
+     * @throws \InvalidArgumentException
+     */
+    public function getTokenCredentials(TemporaryCredentials $temporaryCredentials, $temporaryIdentifier, $verificationCode);
 }

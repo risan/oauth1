@@ -2,6 +2,7 @@
 
 namespace Risan\OAuth1;
 
+use InvalidArgumentException;
 use Risan\OAuth1\Credentials\ClientCredentials;
 use Risan\OAuth1\Request\RequestConfigInterface;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
@@ -88,5 +89,26 @@ class OAuth1 implements OAuth1Interface
     public function buildAuthorizationUrl(TemporaryCredentials $temporaryCredentials)
     {
         return $this->requestConfig->buildAuthorizationUrl($temporaryCredentials);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTokenCredentials(TemporaryCredentials $temporaryCredentials, $temporaryIdentifier, $verificationCode)
+    {
+        if ($temporaryCredentials->getIdentifier() !== $temporaryIdentifier) {
+            throw new InvalidArgumentException('The given temporary identifier does not match the temporary credentials.');
+        }
+
+        $response = $this->httpClient->post($this->requestConfig->getTokenCredentialsUrl(), [
+            'headers' => [
+                'Authorization' => $this->requestConfig->getTokenCredentialsAuthorizationHeader($temporaryCredentials, $verificationCode),
+            ],
+            'form_params' => [
+                'oauth_verifier' => $verificationCode,
+            ],
+        ]);
+
+        return $response;
     }
 }
