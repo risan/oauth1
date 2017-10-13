@@ -66,7 +66,9 @@ interface RequestConfigInterface
     /**
      * Get authorization header for obtaining token credentials.
      *
+     * @param  Risan\OAuth1\Credentials\TemporaryCredentials $temporaryCredentials
+     * @param  string $verificationCode
      * @return string
      */
-    public function getTokenCredentialsAuthorizationHeader();
+    public function getTokenCredentialsAuthorizationHeader(TemporaryCredentials $temporaryCredentials, $verificationCode);
 }
