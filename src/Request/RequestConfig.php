@@ -3,9 +3,11 @@
 namespace Risan\OAuth1\Request;
 
 use DateTime;
+use GuzzleHttp\Psr7\Uri;
 use Risan\OAuth1\ConfigInterface;
 use Risan\OAuth1\Signature\HmacSha1Signer;
 use Risan\OAuth1\Signature\SignerInterface;
+use Risan\OAuth1\Credentials\TemporaryCredentials;
 use Risan\OAuth1\Signature\KeyBasedSignerInterface;
 
 class RequestConfig implements RequestConfigInterface
@@ -106,6 +108,16 @@ class RequestConfig implements RequestConfigInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function buildAuthorizationUrl(TemporaryCredentials $temporaryCredentials)
+    {
+        return $this->appendQueryParametersToUri($this->config->getAuthorizationUrl(), [
+            'oauth_token' => $temporaryCredentials->getIdentifier(),
+        ]);
+    }
+
+    /**
      * Get base protocol parameters for the authorization header.
      *
      * @return array
@@ -133,6 +145,24 @@ class RequestConfig implements RequestConfigInterface
         $parameters['oauth_signature'] = $this->signer->sign($uri, $parameters, $httpMethod);
 
         return $parameters;
+    }
+
+    /**
+     * Append query parameters to URI.
+     *
+     * @param  string $uri
+     * @param  array  $parameters
+     * @return string
+     */
+    public function appendQueryParametersToUri($uri, array $parameters)
+    {
+        $uri = new Uri($uri);
+
+        parse_str($uri->getQuery(), $queryParameters);
+
+        $mergedParameters = array_merge($queryParameters, $parameters);
+
+        return (string) $uri->withQuery(http_build_query($mergedParameters));
     }
 
     /**
