@@ -35,7 +35,7 @@ interface RequestConfigInterface
     public function getCurrentTimestamp();
 
     /**
-     * Get url for obtaining temporary credentials.
+     * Get URL for obtaining temporary credentials.
      *
      * @return string
      */
@@ -55,4 +55,18 @@ interface RequestConfigInterface
      * @return string
      */
     public function buildAuthorizationUrl(TemporaryCredentials $temporaryCredentials);
+
+    /**
+     * Get URL for obtaining token credentials.
+     *
+     * @return string
+     */
+    public function getTokenCredentialsUrl();
+
+    /**
+     * Get authorization header for obtaining token credentials.
+     *
+     * @return string
+     */
+    public function getTokenCredentialsAuthorizationHeader();
 }
