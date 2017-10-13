@@ -13,8 +13,9 @@ class OAuth1FactoryTest extends TestCase
         $this->configParams = [
             'client_credentials_identifier' => 'client_id',
             'client_credentials_secret' => 'client_secret',
-            'temporary_credentials_url' => 'http://example.com/temporary_credentials_url',
-            'authorization_url' => 'http://example.com/authorization_url',
+            'temporary_credentials_url' => 'http://example.com/request_token',
+            'authorization_url' => 'http://example.com/authorize',
+            'token_credentials_url' => 'http://example.com/access_token',
             'callback_uri' => 'http://example.com/callback_uri',
         ];
     }
