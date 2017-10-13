@@ -6,6 +6,7 @@ use Risan\OAuth1\Request\RequestConfig;
 use Risan\OAuth1\Signature\SignerInterface;
 use Risan\OAuth1\Request\RequestConfigInterface;
 use Risan\OAuth1\Request\NonceGeneratorInterface;
+use Risan\OAuth1\Credentials\TemporaryCredentials;
 
 class RequestConfigTest extends TestCase
 {
@@ -13,6 +14,7 @@ class RequestConfigTest extends TestCase
     private $signerStub;
     private $nonceGeneratorStub;
     private $requestConfig;
+    private $temporaryCredentialsStub;
     private $requestConfigStub;
 
     function setUp()
@@ -21,6 +23,7 @@ class RequestConfigTest extends TestCase
         $this->signerStub = $this->createMock(SignerInterface::class);
         $this->nonceGeneratorStub = $this->createMock(NonceGeneratorInterface::class);
         $this->requestConfig = new RequestConfig($this->configStub, $this->signerStub, $this->nonceGeneratorStub);
+        $this->temporaryCredentialsStub = $this->createMock(TemporaryCredentials::class);
 
         $this->requestConfigStub = $this->getMockBuilder(RequestConfig::class)
             ->setConstructorArgs([$this->configStub, $this->signerStub, $this->nonceGeneratorStub])
@@ -145,6 +148,26 @@ class RequestConfigTest extends TestCase
     }
 
     /** @test */
+    function request_config_can_append_query_parameters_to_uri()
+    {
+        // The given URI without query.
+        $this->assertEquals('http://example.com?name=john&age=20',
+            $this->requestConfig->appendQueryParametersToUri('http://example.com', [
+                'name' => 'john',
+                'age' => '20',
+            ])
+        );
+
+        // The given URI with query.
+        $this->assertEquals('http://example.com?lang=en&name=john&age=20',
+            $this->requestConfig->appendQueryParametersToUri('http://example.com?lang=en', [
+                'name' => 'john',
+                'age' => '20',
+            ])
+        );
+    }
+
+    /** @test */
     function request_config_can_get_temporary_credentials_authorization_header()
     {
         $this->requestConfigStub
@@ -183,5 +206,24 @@ class RequestConfigTest extends TestCase
             ->willReturn('Authorization Header');
 
         $this->assertEquals('Authorization Header', $this->requestConfigStub->getTemporaryCredentialsAuthorizationHeader());
+    }
+
+    /** @test */
+    function request_config_can_build_authorization_url()
+    {
+        $this->configStub
+            ->expects($this->once())
+            ->method('getAuthorizationUrl')
+            ->willReturn('http://example.com/authorize');
+
+        $this->temporaryCredentialsStub
+            ->expects($this->once())
+            ->method('getIdentifier')
+            ->willReturn('id_temporary');
+
+        $this->assertEquals(
+            'http://example.com/authorize?oauth_token=id_temporary',
+            $this->requestConfig->buildAuthorizationUrl($this->temporaryCredentialsStub)
+        );
     }
 }
