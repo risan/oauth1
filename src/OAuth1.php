@@ -4,6 +4,7 @@ namespace Risan\OAuth1;
 
 use Risan\OAuth1\Credentials\ClientCredentials;
 use Risan\OAuth1\Request\RequestConfigInterface;
+use Risan\OAuth1\Credentials\TemporaryCredentials;
 use Risan\OAuth1\Credentials\CredentialsFactoryInterface;
 
 class OAuth1 implements OAuth1Interface
@@ -79,5 +80,13 @@ class OAuth1 implements OAuth1Interface
         ]);
 
         return $this->credentialsFactory->createTemporaryCredentialsFromResponse($response);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function buildAuthorizationUrl(TemporaryCredentials $temporaryCredentials)
+    {
+        return $this->requestConfig->buildAuthorizationUrl($temporaryCredentials);
     }
 }

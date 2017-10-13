@@ -2,6 +2,8 @@
 
 namespace Risan\OAuth1;
 
+use Risan\OAuth1\Credentials\TemporaryCredentials;
+
 interface OAuth1Interface
 {
     /**
@@ -31,4 +33,12 @@ interface OAuth1Interface
      * @return \Risan\OAuth1\Credentials\TemporaryCredentials
      */
     public function getTemporaryCredentials();
+
+    /**
+     * Build the authorization URL.
+     *
+     * @param  Risan\OAuth1\Credentials\TemporaryCredentials $temporaryCredentials
+     * @return string
+     */
+    public function buildAuthorizationUrl(TemporaryCredentials $temporaryCredentials);
 }
