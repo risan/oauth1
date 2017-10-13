@@ -12,6 +12,7 @@ class ConfigTest extends TestCase
     private $clientCredentials;
     private $temporaryCredentialsUrl;
     private $authorizationUrl;
+    private $tokenCredentialsUrl;
     private $callbackUri;
     private $configParams;
     private $config;
@@ -22,15 +23,17 @@ class ConfigTest extends TestCase
         $this->clientCredentialsIdentifier = 'client_id';
         $this->clientCredentialsSecret = 'client_secret';
         $this->clientCredentials = new ClientCredentials($this->clientCredentialsIdentifier, $this->clientCredentialsSecret);
-        $this->temporaryCredentialsUrl = 'http://example.com/temporary_credentials_url';
-        $this->authorizationUrl = 'http://example.com/authorization_url';
-        $this->callbackUri = 'http://example.com/callback_uri';
+        $this->temporaryCredentialsUrl = 'http://example.com/request_token';
+        $this->authorizationUrl = 'http://example.com/authorize';
+        $this->tokenCredentialsUrl = 'http://example.com/access_token';
+        $this->callbackUri = 'http://johndoe.com/callback_uri';
 
         $this->configParams = [
             'client_credentials_identifier' => $this->clientCredentialsIdentifier,
             'client_credentials_secret' => $this->clientCredentialsSecret,
             'temporary_credentials_url' => $this->temporaryCredentialsUrl,
             'authorization_url' => $this->authorizationUrl,
+            'token_credentials_url' => $this->tokenCredentialsUrl,
             'callback_uri' => $this->callbackUri,
         ];
 
@@ -38,6 +41,7 @@ class ConfigTest extends TestCase
             $this->clientCredentials,
             $this->temporaryCredentialsUrl,
             $this->authorizationUrl,
+            $this->tokenCredentialsUrl,
             $this->callbackUri
         );
 
@@ -45,6 +49,7 @@ class ConfigTest extends TestCase
             $this->clientCredentials,
             $this->temporaryCredentialsUrl,
             $this->authorizationUrl,
+            $this->tokenCredentialsUrl,
             null
         );
     }
@@ -108,6 +113,12 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
+    function config_can_get_token_credentials_url()
+    {
+        $this->assertEquals($this->tokenCredentialsUrl, $this->config->getTokenCredentialsUrl());
+    }
+
+    /** @test */
     function config_can_create_from_array()
     {
         $config = Config::createFromArray($this->configParams);
@@ -137,6 +148,11 @@ class ConfigTest extends TestCase
         );
 
         $this->assertEquals(
+            $this->configParams['token_credentials_url'],
+            $config->getTokenCredentialsUrl()
+        );
+
+        $this->assertEquals(
             $this->configParams['callback_uri'],
             $config->getCallbackUri()
         );
@@ -151,6 +167,7 @@ class ConfigTest extends TestCase
             'client_credentials_secret' => $this->clientCredentialsSecret,
             'temporary_credentials_url' => $this->temporaryCredentialsUrl,
             'authorization_url' => $this->authorizationUrl,
+            'token_credentials_url' => $this->tokenCredentialsUrl,
             'callback_uri' => $this->callbackUri,
         ]);
     }
@@ -164,6 +181,7 @@ class ConfigTest extends TestCase
             'client_credentials_identifier' => $this->clientCredentialsIdentifier,
             'temporary_credentials_url' => $this->temporaryCredentialsUrl,
             'authorization_url' => $this->authorizationUrl,
+            'token_credentials_url' => $this->tokenCredentialsUrl,
             'callback_uri' => $this->callbackUri,
         ]);
     }
@@ -175,6 +193,7 @@ class ConfigTest extends TestCase
 
         Config::createFromArray([
             'authorization_url' => $this->authorizationUrl,
+            'token_credentials_url' => $this->tokenCredentialsUrl,
             'client_credentials_identifier' => $this->clientCredentialsIdentifier,
             'client_credentials_secret' => $this->clientCredentialsSecret,
             'callback_uri' => $this->callbackUri,
@@ -190,6 +209,21 @@ class ConfigTest extends TestCase
             'temporary_credentials_url' => $this->temporaryCredentialsUrl,
             'client_credentials_identifier' => $this->clientCredentialsIdentifier,
             'client_credentials_secret' => $this->clientCredentialsSecret,
+            'token_credentials_url' => $this->tokenCredentialsUrl,
+            'callback_uri' => $this->callbackUri,
+        ]);
+    }
+
+    /** @test */
+    function config_must_throw_exception_if_token_credentials_url_is_empty()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Config::createFromArray([
+            'authorization_url' => $this->authorizationUrl,
+            'temporary_credentials_url' => $this->temporaryCredentialsUrl,
+            'client_credentials_identifier' => $this->clientCredentialsIdentifier,
+            'client_credentials_secret' => $this->clientCredentialsSecret,
             'callback_uri' => $this->callbackUri,
         ]);
     }
@@ -201,6 +235,7 @@ class ConfigTest extends TestCase
             'client_credentials_identifier' => $this->clientCredentialsIdentifier,
             'client_credentials_secret' => $this->clientCredentialsSecret,
             'authorization_url' => $this->authorizationUrl,
+            'token_credentials_url' => $this->tokenCredentialsUrl,
             'temporary_credentials_url' => $this->temporaryCredentialsUrl,
         ]);
 
