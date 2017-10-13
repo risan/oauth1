@@ -14,6 +14,7 @@ class OAuth1Test extends TestCase
     private $requestConfigStub;
     private $httpClientStub;
     private $credentialsFactoryStub;
+    private $temporaryCredentialsStub;
     private $oauth1;
     private $responseStub;
 
@@ -22,6 +23,7 @@ class OAuth1Test extends TestCase
         $this->requestConfigStub = $this->createMock(RequestConfigInterface::class);
         $this->httpClientStub = $this->createMock(HttpClientInterface::class);
         $this->credentialsFactoryStub = $this->createMock(CredentialsFactoryInterface::class);
+        $this->temporaryCredentialsStub = $this->createMock(TemporaryCredentials::class);
         $this->oauth1 = new OAuth1($this->requestConfigStub, $this->httpClientStub, $this->credentialsFactoryStub);
         $this->responseStub = $this->createMock(ResponseInterface::class);
     }
@@ -66,14 +68,27 @@ class OAuth1Test extends TestCase
             )
             ->willReturn($this->responseStub);
 
-        $temporaryCredentialsStub = $this->createMock(TemporaryCredentials::class);
-
         $this->credentialsFactoryStub
             ->expects($this->once())
             ->method('createTemporaryCredentialsFromResponse')
             ->with($this->responseStub)
-            ->willReturn($temporaryCredentialsStub);
+            ->willReturn($this->temporaryCredentialsStub);
 
         $this->assertInstanceOf(TemporaryCredentials::class, $this->oauth1->getTemporaryCredentials());
+    }
+
+    /** @test */
+    function request_config_can_build_authorization_url()
+    {
+        $this->requestConfigStub
+            ->expects($this->once())
+            ->method('buildAuthorizationUrl')
+            ->with($this->temporaryCredentialsStub)
+            ->willReturn('http://example.com/authorize?oauth_token=id_temporary');
+
+        $this->assertEquals(
+            'http://example.com/authorize?oauth_token=id_temporary',
+            $this->oauth1->buildAuthorizationUrl($this->temporaryCredentialsStub)
+        );
     }
 }
