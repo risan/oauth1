@@ -47,7 +47,7 @@ class RequestConfig implements RequestConfigInterface
         $this->signer = $signer;
         $this->nonceGenerator = $nonceGenerator;
 
-        if ($this->isUsingKeyBasedSigner()) {
+        if ($this->signer->isKeyBased()) {
             $this->signer->setClientCredentials($config->getClientCredentials());
         }
     }
@@ -82,16 +82,6 @@ class RequestConfig implements RequestConfigInterface
     public function getCurrentTimestamp()
     {
         return (new DateTime)->getTimestamp();
-    }
-
-    /**
-     * Check if the signer is key based.
-     *
-     * @return boolean
-     */
-    public function isUsingKeyBasedSigner()
-    {
-        return $this->signer instanceof KeyBasedSignerInterface;
     }
 
     /**
@@ -196,8 +186,8 @@ class RequestConfig implements RequestConfigInterface
             $requestParameters = array_merge($requestParameters, $requestOptions['form_params']);
         }
 
-        if ($this->isUsingKeyBasedSigner() && $serverIssuedCredentials instanceof ServerIssuedCredentials) {
-            //$this->signer->setServerIssuedCredentials($setServerIssuedCredentials);
+        if ($this->signer->isKeyBased() && $serverIssuedCredentials instanceof ServerIssuedCredentials) {
+            $this->signer->setServerIssuedCredentials($setServerIssuedCredentials);
         }
 
         $parameters['oauth_signature'] = $this->signer->sign($uri, $requestParameters, $httpMethod);
