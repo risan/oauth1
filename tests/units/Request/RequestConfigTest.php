@@ -81,6 +81,17 @@ class RequestConfigTest extends TestCase
     }
 
     /** @test */
+    function request_config_can_get_token_credentials_url()
+    {
+        $this->configStub
+            ->expects($this->once())
+            ->method('getTokenCredentialsUrl')
+            ->willReturn('http://example.com');
+
+        $this->assertEquals('http://example.com', $this->requestConfig->getTokenCredentialsUrl());
+    }
+
+    /** @test */
     function request_config_can_get_base_protocol_parameters()
     {
         $this->configStub
@@ -224,6 +235,48 @@ class RequestConfigTest extends TestCase
         $this->assertEquals(
             'http://example.com/authorize?oauth_token=id_temporary',
             $this->requestConfig->buildAuthorizationUrl($this->temporaryCredentialsStub)
+        );
+    }
+
+    /** @test */
+    function request_config_can_get_token_credentials_authorization_header()
+    {
+        $this->requestConfigStub
+            ->expects($this->once())
+            ->method('getBaseProtocolParameters')
+            ->willReturn(['foo' => 'bar']);
+
+        $this->requestConfigStub
+            ->expects($this->once())
+            ->method('getTokenCredentialsUrl')
+            ->willReturn('http://example.com/access_token');
+
+        $this->temporaryCredentialsStub
+            ->expects($this->once())
+            ->method('getIdentifier')
+            ->willReturn('temporary_id');
+
+        $this->requestConfigStub
+            ->expects($this->once())
+            ->method('addSignatureParameter')
+            ->with(
+                ['foo' => 'bar', 'oauth_token' => 'temporary_id'],
+                'http://example.com/access_token',
+                'POST'
+            );
+
+        $this->requestConfigStub
+            ->expects($this->once())
+            ->method('normalizeProtocolParameters')
+            ->with(['foo' => 'bar', 'oauth_token' => 'temporary_id'])
+            ->willReturn('Authorization Header');
+
+        $this->assertEquals(
+            'Authorization Header',
+            $this->requestConfigStub->getTokenCredentialsAuthorizationHeader(
+                $this->temporaryCredentialsStub,
+                'verification_code'
+            )
         );
     }
 }
