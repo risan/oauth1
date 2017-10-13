@@ -41,7 +41,7 @@ interface ConfigInterface
 
     /**
      * Get the URL for obtaining temporary credentials. Also known as request
-     * token url.
+     * token URL.
      *
      * @return string
      */
@@ -53,6 +53,14 @@ interface ConfigInterface
      * @return string
      */
     public function getAuthorizationUrl();
+
+    /**
+     * Get the URL for obtaining token credentials. Also known as access token
+     * URL.
+     *
+     * @return string
+     */
+    public function getTokenCredentialsUrl();
 
     /**
      * Create an instance of ConfigureInterface from array.

@@ -23,7 +23,7 @@ class Config implements ConfigInterface
 
     /**
      * The URL for obtaining temporary credentials. Also known as request token
-     * url.
+     * URL.
      *
      * @var string
      */
@@ -37,18 +37,27 @@ class Config implements ConfigInterface
     protected $authorizationUrl;
 
     /**
+     * The URL for obtaining token credentials. Also known as access token URL.
+     *
+     * @var string
+     */
+    protected $tokenCredentialsUrl;
+
+    /**
      * Create new instance of Config class.
      *
      * @param \Risan\OAuth1\Credentials\ClientCredentials $clientCredentials
      * @param string $temporaryCredentialsUrl
      * @param string $authorizationUrl
+     * @param string $tokenCredentialsUrl
      * @param string|null $callbackUri
      */
-    public function __construct(ClientCredentials $clientCredentials, $temporaryCredentialsUrl, $authorizationUrl, $callbackUri = null)
+    public function __construct(ClientCredentials $clientCredentials, $temporaryCredentialsUrl, $authorizationUrl, $tokenCredentialsUrl, $callbackUri = null)
     {
         $this->clientCredentials = $clientCredentials;
         $this->temporaryCredentialsUrl = $temporaryCredentialsUrl;
         $this->authorizationUrl = $authorizationUrl;
+        $this->tokenCredentialsUrl = $tokenCredentialsUrl;
         $this->callbackUri = $callbackUri;
     }
 
@@ -111,6 +120,14 @@ class Config implements ConfigInterface
     /**
      * {@inheritDoc}
      */
+    public function getTokenCredentialsUrl()
+    {
+        return $this->tokenCredentialsUrl;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public static function createFromArray(array $config)
     {
         $requiredParams = [
@@ -118,6 +135,7 @@ class Config implements ConfigInterface
             'client_credentials_secret',
             'temporary_credentials_url',
             'authorization_url',
+            'token_credentials_url',
         ];
 
         foreach ($requiredParams as $param) {
@@ -132,6 +150,7 @@ class Config implements ConfigInterface
             new ClientCredentials($config['client_credentials_identifier'], $config['client_credentials_secret']),
             $config['temporary_credentials_url'],
             $config['authorization_url'],
+            $config['token_credentials_url'],
             $callbackUri
         );
     }
