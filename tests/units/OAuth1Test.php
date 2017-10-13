@@ -47,6 +47,12 @@ class OAuth1Test extends TestCase
     }
 
     /** @test */
+    function oauth1_can_get_credentials_factory()
+    {
+        $this->assertInstanceOf(CredentialsFactoryInterface::class, $this->oauth1->getCredentialsFactory());
+    }
+
+    /** @test */
     function oauth1_can_obtain_temporary_credentials()
     {
         $this->requestConfigStub
