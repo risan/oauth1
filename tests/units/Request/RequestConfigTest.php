@@ -127,18 +127,33 @@ class RequestConfigTest extends TestCase
     /** @test */
     function request_config_can_add_signature_parameter()
     {
-        $parameters = ['foo' => 'bar'];
+        $parameters = ['oauth_consumer_key' => 'client_id'];
 
         $this->signerStub
             ->expects($this->once())
             ->method('sign')
-            ->with('http://example.com', $parameters, 'POST')
+            ->with(
+                'http://example.com',
+                array_merge($parameters, [
+                    'name' => 'john',
+                    'age' => 20,
+                ]),
+                'POST'
+            )
             ->willReturn('signature');
 
         $this->assertEquals([
-            'foo' => 'bar',
+            'oauth_consumer_key' => 'client_id',
             'oauth_signature' => 'signature',
-        ], $this->requestConfig->addSignatureParameter($parameters, 'http://example.com', 'POST'));
+        ], $this->requestConfig->addSignatureParameter(
+            $parameters,
+            'http://example.com',
+            [
+                'form_params' => ['name' => 'john'],
+                'query' => ['age' => 20],
+            ],
+            'POST'
+        ));
     }
 
     /** @test */
@@ -156,6 +171,29 @@ class RequestConfigTest extends TestCase
                 'foo' => 'bar',
                 'full name' => 'john doe',
             ]
+        ));
+    }
+
+    /** @test */
+    function request_config_can_check_request_options_key()
+    {
+        // Key not found.
+        $this->assertFalse(
+            $this->requestConfig->requestOptionsHas([], 'form_params'
+        ));
+
+        // Not an array.
+        $this->assertFalse(
+            $this->requestConfig->requestOptionsHas(['form_params' => 'foo bar'], 'form_params'
+        ));
+
+        // Empty array.
+        $this->assertFalse(
+            $this->requestConfig->requestOptionsHas(['form_params' => []], 'form_params'
+        ));
+
+        $this->assertTrue(
+            $this->requestConfig->requestOptionsHas(['form_params' => ['foo' => 'bar']], 'form_params'
         ));
     }
 
@@ -185,7 +223,7 @@ class RequestConfigTest extends TestCase
         $this->requestConfigStub
             ->expects($this->once())
             ->method('getBaseProtocolParameters')
-            ->willReturn(['foo' => 'bar']);
+            ->willReturn(['oauth_consumer_key' => 'client_id']);
 
         $this->configStub
             ->expects($this->once())
@@ -195,26 +233,33 @@ class RequestConfigTest extends TestCase
         $this->configStub
             ->expects($this->once())
             ->method('getCallbackUri')
-            ->willReturn('http://example.com/callback');
+            ->willReturn('http://johndoe.com/callback');
 
         $this->requestConfigStub
             ->expects($this->once())
             ->method('getTemporaryCredentialsUrl')
-            ->willReturn('http://example.com/temporary');
+            ->willReturn('http://example.com/request_token');
 
         $this->requestConfigStub
             ->expects($this->once())
             ->method('addSignatureParameter')
             ->with(
-                ['foo' => 'bar', 'oauth_callback' => 'http://example.com/callback'],
-                'http://example.com/temporary',
+                [
+                    'oauth_consumer_key' => 'client_id',
+                    'oauth_callback' => 'http://johndoe.com/callback',
+                ],
+                'http://example.com/request_token',
+                [],
                 'POST'
             );
 
         $this->requestConfigStub
             ->expects($this->once())
             ->method('normalizeProtocolParameters')
-            ->with(['foo' => 'bar', 'oauth_callback' => 'http://example.com/callback'])
+            ->with([
+                'oauth_consumer_key' => 'client_id',
+                'oauth_callback' => 'http://johndoe.com/callback',
+            ])
             ->willReturn('Authorization Header');
 
         $this->assertEquals('Authorization Header', $this->requestConfigStub->getTemporaryCredentialsAuthorizationHeader());
@@ -266,6 +311,11 @@ class RequestConfigTest extends TestCase
                     'oauth_token' => 'temporary_id',
                 ],
                 'http://example.com/access_token',
+                [
+                    'form_params' => [
+                        'oauth_verifier' => 'verification_code',
+                    ],
+                ],
                 'POST'
             );
 
