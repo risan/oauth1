@@ -4,6 +4,7 @@ namespace Risan\OAuth1\Config;
 
 use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
+use Risan\OAuth1\Request\UriParserInterface;
 
 class UriConfig implements UriConfigInterface
 {
@@ -64,6 +65,14 @@ class UriConfig implements UriConfigInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function getParser()
+    {
+        return $this->parser;
+    }
+
+    /**
      * Set URIs from an array.
      *
      * @param array $uris
@@ -81,7 +90,7 @@ class UriConfig implements UriConfigInterface
             $this->setBase($this->parser->toPsrUri($uris['base_uri']));
         }
 
-        if (isset($uris['callback'])) {
+        if (isset($uris['callback_uri'])) {
             $this->callback = $this->parser->toPsrUri($uris['callback_uri']);
         }
 

@@ -9,7 +9,7 @@ interface UriConfigInterface
      *
      * @return \Risan\OAuth1\Request\UriParserInterface
      */
-    public function parser();
+    public function getParser();
 
     /**
      * Get the base URI.
