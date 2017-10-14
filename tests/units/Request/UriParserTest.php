@@ -75,6 +75,21 @@ class UriParserTest extends TestCase
     }
 
     /** @test */
+    function uri_parser_can_be_built_from_parts()
+    {
+        $uri = $this->uriParser->buildFromParts([
+            'scheme' => 'http',
+            'host' => 'example.com',
+            'port' => '8080',
+            'path' => 'foo',
+            'query' => 'bar=baz',
+        ]);
+
+        $this->assertInstanceOf(UriInterface::class, $uri);
+        $this->assertEquals('http://example.com:8080/foo?bar=baz', (string) $uri);
+    }
+
+    /** @test */
     function uri_parser_can_resolve_relative_uri()
     {
         $baseUri = $this->uriParser->toPsrUri('http://example.com');
