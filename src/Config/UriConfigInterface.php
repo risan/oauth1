@@ -5,6 +5,20 @@ namespace Risan\OAuth1\Config;
 interface UriConfigInterface
 {
     /**
+     * Get the base URI.
+     *
+     * @return \Psr\Http\Message\UriInterface|null
+     */
+    public function base();
+
+    /**
+     * Check if base URI is set.
+     *
+     * @return boolean
+     */
+    public function hasBase();
+
+    /**
      * Get the URI for obtaining temporary credentials. Also known as request
      * token URI.
      *
