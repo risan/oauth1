@@ -55,17 +55,17 @@ interface ConfigInterface
      */
     public function getTokenCredentialsUri();
 
+     /**
+     * Get the callback URI.
+     *
+     * @return \Psr\Http\Message\UriInterface|null
+     */
+    public function getCallbackUri();
+
     /**
      * Check if callback URI is set.
      *
      * @return boolean
      */
     public function hasCallbackUri();
-
-    /**
-     * Get the callback URI.
-     *
-     * @return \Psr\Http\Message\UriInterface|null
-     */
-    public function getCallbackUri();
 }

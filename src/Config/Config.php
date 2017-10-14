@@ -91,16 +91,16 @@ class Config implements ConfigInterface
     /**
      * {@inheritDoc}
      */
-    public function hasCallbackUri()
+    public function getCallbackUri()
     {
-        return $this->uri->hasCallback();
+        return $this->uri->callback();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getCallbackUri()
+    public function hasCallbackUri()
     {
-        return $this->uri->callback();
+        return $this->uri->hasCallback();
     }
 }
