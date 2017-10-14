@@ -28,6 +28,14 @@ class UriParser implements UriParserInterface
     /**
      * {@inheritDoc}
      */
+    public function buildFromParts(array $parts)
+    {
+        return Uri::fromParts($parts);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function resolve(UriInterface $baseUri, UriInterface $uri)
     {
         return UriResolver::resolve($baseUri, $uri);

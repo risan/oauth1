@@ -23,6 +23,14 @@ interface UriParserInterface
     public function isMissingScheme(UriInterface $uri);
 
     /**
+     * Build URI from parts.
+     *
+     * @param  array  $parts
+     * @return \Psr\Http\Message\UriInterface
+     */
+    public function buildFromParts(array $parts);
+
+    /**
      * Resolve the URI against the base URI.
      *
      * @param  \Psr\Http\Message\UriInterface $baseUri
