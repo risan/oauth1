@@ -2,18 +2,36 @@
 
 namespace Risan\OAuth1\Signature;
 
-use GuzzleHttp\Psr7\Uri;
-use InvalidArgumentException;
-use Psr\Http\Message\UriInterface;
+use Risan\OAuth1\Request\UriParserInterface;
 
 class BaseStringBuilder implements BaseStringBuilderInterface
 {
+    /**
+     * The UriParserInterface instance.
+     *
+     * @var \Risan\OAuth1\Request\UriParserInterface
+     */
+    protected $uriParser;
+
+    public function __construct(UriParserInterface $uriParser)
+    {
+        $this->uriParser = $uriParser;
+    }
+
+     /**
+     * {@inheritDoc}
+     */
+    public function getUriParser()
+    {
+        return $this->uriParser;
+    }
+
     /**
      * {@inheritDoc}
      */
     public function build($httpMethod, $uri, array $parameters = [])
     {
-        $uri = $this->parseToPsrUri($uri);
+        $uri = $this->uriParser->toPsrUri($uri);
 
         $components = [];
 
@@ -41,9 +59,9 @@ class BaseStringBuilder implements BaseStringBuilderInterface
      */
     public function buildUriComponent($uri)
     {
-        $uri = $this->parseToPsrUri($uri);
+        $uri = $this->uriParser->toPsrUri($uri);
 
-        return Uri::fromParts([
+        return $this->uriParser->buildFromParts([
             'scheme' => $uri->getScheme(),
             'host' => $uri->getHost(),
             'port' => $uri->getPort(),
@@ -114,23 +132,5 @@ class BaseStringBuilder implements BaseStringBuilderInterface
         }
 
         return $previousKey !== null ? $queryParameters : implode('&', $queryParameters);
-    }
-
-    /**
-     * Parse the given uri to the PSR URIInterface instance.
-     *
-     * @param  \Psr\Http\Message\UriInterface|string $uri
-     * @return \Psr\Http\Message\UriInterface
-     * @throws \InvalidArgumentException
-     */
-    public function parseToPsrUri($uri)
-    {
-        if ($uri instanceof UriInterface) {
-            return $uri;
-        } elseif (is_string($uri)) {
-            return new Uri($uri);
-        }
-
-        throw new InvalidArgumentException('URI must be a string or an instance of \Psr\Http\Message\UriInterface');
     }
 }
