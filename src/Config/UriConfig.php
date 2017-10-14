@@ -158,7 +158,7 @@ class UriConfig implements UriConfigInterface
     /**
      * {@inheritDoc}
      */
-    public function temporaryCredentials()
+    public function forTemporaryCredentials()
     {
         return $this->build($this->temporaryCredentials);
     }
@@ -166,7 +166,7 @@ class UriConfig implements UriConfigInterface
     /**
      * {@inheritDoc}
      */
-    public function authorization()
+    public function forAuthorization()
     {
         return $this->build($this->authorization);
     }
@@ -174,7 +174,7 @@ class UriConfig implements UriConfigInterface
     /**
      * {@inheritDoc}
      */
-    public function tokenCredentials()
+    public function forTokenCredentials()
     {
         return $this->build($this->tokenCredentials);
     }

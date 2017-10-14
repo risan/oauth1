@@ -31,14 +31,14 @@ interface UriConfigInterface
      *
      * @return \Psr\Http\Message\UriInterface
      */
-    public function temporaryCredentials();
+    public function forTemporaryCredentials();
 
     /**
      * Get the URI for asking user to authorize the request.
      *
      * @return \Psr\Http\Message\UriInterface
      */
-    public function authorization();
+    public function forAuthorization();
 
     /**
      * Get the URI for obtaining token credentials. Also known as access token
@@ -46,7 +46,7 @@ interface UriConfigInterface
      *
      * @return \Psr\Http\Message\UriInterface
      */
-    public function tokenCredentials();
+    public function forTokenCredentials();
 
     /**
      * Get the callback URI.

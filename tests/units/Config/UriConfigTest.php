@@ -44,9 +44,9 @@ class UriConfigTest extends TestCase
         ]));
 
         $this->assertEquals('http://example.net', (string) $this->uriConfig->base());
-        $this->assertEquals('http://example.net/request_token', (string) $this->uriConfig->temporaryCredentials());
-        $this->assertEquals('http://example.net/authorize', (string) $this->uriConfig->authorization());
-        $this->assertEquals('http://example.net/access_token', (string) $this->uriConfig->tokenCredentials());
+        $this->assertEquals('http://example.net/request_token', (string) $this->uriConfig->forTemporaryCredentials());
+        $this->assertEquals('http://example.net/authorize', (string) $this->uriConfig->forAuthorization());
+        $this->assertEquals('http://example.net/access_token', (string) $this->uriConfig->forTokenCredentials());
         $this->assertEquals('http://johndoe.net', (string) $this->uriConfig->callback());
     }
 
@@ -103,22 +103,22 @@ class UriConfigTest extends TestCase
     /** @test */
     function uri_config_can_get_temporary_credentials()
     {
-        $this->assertInstanceOf(UriInterface::class, $this->uriConfig->temporaryCredentials());
-        $this->assertEquals('http://example.com/request_token', (string) $this->uriConfig->temporaryCredentials());
+        $this->assertInstanceOf(UriInterface::class, $this->uriConfig->forTemporaryCredentials());
+        $this->assertEquals('http://example.com/request_token', (string) $this->uriConfig->forTemporaryCredentials());
     }
 
     /** @test */
     function uri_config_can_get_authorization()
     {
-        $this->assertInstanceOf(UriInterface::class, $this->uriConfig->authorization());
-        $this->assertEquals('http://example.com/authorize', (string) $this->uriConfig->authorization());
+        $this->assertInstanceOf(UriInterface::class, $this->uriConfig->forAuthorization());
+        $this->assertEquals('http://example.com/authorize', (string) $this->uriConfig->forAuthorization());
     }
 
     /** @test */
     function uri_config_can_get_token_credentials()
     {
-        $this->assertInstanceOf(UriInterface::class, $this->uriConfig->tokenCredentials());
-        $this->assertEquals('http://example.com/access_token', (string) $this->uriConfig->tokenCredentials());
+        $this->assertInstanceOf(UriInterface::class, $this->uriConfig->forTokenCredentials());
+        $this->assertEquals('http://example.com/access_token', (string) $this->uriConfig->forTokenCredentials());
     }
 
     /** @test */
