@@ -68,12 +68,4 @@ interface ConfigInterface
      * @return \Psr\Http\Message\UriInterface|null
      */
     public function getCallbackUri();
-
-    /**
-     * Create an instance of ConfigureInterface from an array.
-     *
-     * @return \Risan\OAuth1\Config\ConfigInterface
-     * @throws \InvalidArgumentException
-     */
-    public static function createFromArray(array $config);
 }

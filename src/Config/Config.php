@@ -104,29 +104,4 @@ class Config implements ConfigInterface
     {
         return $this->uri->callback();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public static function createFromArray(array $config)
-    {
-        $requiredParams = [
-            'client_credentials_identifier',
-            'client_credentials_secret',
-            'temporary_credentials_uri',
-            'authorization_uri',
-            'token_credentials_uri',
-        ];
-
-        foreach ($requiredParams as $param) {
-            if (! isset($config[$param])) {
-                throw new InvalidArgumentException("Missing OAuth1 client configuration: {$param}.");
-            }
-        }
-
-        return new static(
-            new ClientCredentials($config['client_credentials_identifier'], $config['client_credentials_secret']),
-            new UriConfig($config)
-        );
-    }
 }
