@@ -1,26 +1,34 @@
 <?php
 
-use GuzzleHttp\Psr7\Uri;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UriInterface;
+use Risan\OAuth1\Request\UriParser;
 use Risan\OAuth1\Signature\BaseStringBuilder;
 use Risan\OAuth1\Signature\BaseStringBuilderInterface;
 
 class BaseStringBuilderTest extends TestCase
 {
+    private $uriParser;
     private $baseStringBuilder;
     private $psrUri;
 
     function setUp()
     {
-        $this->baseStringBuilder = new BaseStringBuilder;
-        $this->psrUri = new Uri('http://example.com/path');
+        $this->uriParser = new UriParser;
+        $this->baseStringBuilder = new BaseStringBuilder($this->uriParser);
+        $this->psrUri = $this->uriParser->toPsrUri('http://example.com/path');
     }
 
     /** @test */
-    function base_string_builder_must_be_an_instance_of_base_string_builder_interface()
+    function base_string_builder_implements_base_string_builder_interface()
     {
         $this->assertInstanceOf(BaseStringBuilderInterface::class, $this->baseStringBuilder);
+    }
+
+    /** @test */
+    function base_string_builder_can_get_uri_parser()
+    {
+        $this->assertSame($this->uriParser, $this->baseStringBuilder->getUriParser());
     }
 
     /** @test */
@@ -60,23 +68,17 @@ class BaseStringBuilderTest extends TestCase
     }
 
     /** @test */
-    function base_string_builder_can_build_valid_uri_component_from_psr_uri()
-    {
-        $this->assertEquals('http://example.com/path', $this->baseStringBuilder->buildUriComponent($this->psrUri));
-    }
-
-    /** @test */
     function base_string_builder_can_normalize_parameters()
     {
         $normalizedParameters = $this->baseStringBuilder->normalizeParameters([
-            'name' => 'John',
+            'lang' => 'en',
             'full name' => 'John Doe',
         ]);
 
         // Can sort and encode the paramaters.
         $this->assertSame([
             'full%20name' => 'John%20Doe',
-            'name' => 'John',
+            'lang' => 'en',
         ], $normalizedParameters);
     }
 
@@ -84,7 +86,7 @@ class BaseStringBuilderTest extends TestCase
     function base_string_builder_can_normalize_multi_dimensional_parameters()
     {
         $normalizedParameters = $this->baseStringBuilder->normalizeParameters([
-            'name' => 'John',
+            'lang' => 'en',
             'full name' => 'John Doe',
             'programming languages' => ['php', 'go lang'],
             'location' => [
@@ -95,11 +97,11 @@ class BaseStringBuilderTest extends TestCase
 
         $this->assertSame([
             'full%20name' => 'John%20Doe',
+            'lang' => 'en',
             'location' => [
                 'home' => 'Stockholm%20Sweden',
                 'home%20town' => 'Cimahi',
             ],
-            'name' => 'John',
             'programming%20languages' => ['php', 'go%20lang'],
         ], $normalizedParameters);
     }
@@ -131,19 +133,10 @@ class BaseStringBuilderTest extends TestCase
     }
 
     /** @test */
-    function base_string_builder_can_parse_uri_to_psr_uri_instance()
+    function base_string_builder_can_build_parameters_components()
     {
-        // Can parse from string.
-        $uri = $this->baseStringBuilder->parseToPsrUri('http://example.com');
-        $this->assertInstanceOf(UriInterface::class, $uri);
-
-        // Can parse from uri interface instance.
-        $uri = $this->baseStringBuilder->parseToPsrUri($this->psrUri);
-        $this->assertSame($this->psrUri, $uri);
-
-        // Should throw InvalidArgumentException.
-        $this->expectException(InvalidArgumentException::class);
-        $this->baseStringBuilder->parseToPsrUri(123);
+        $baseString = $this->baseStringBuilder->buildParametersComponent(['foo' => 'bar', 'baz' => 'qux']);
+        $this->assertEquals('baz=qux&foo=bar', $baseString);
     }
 
     /** @test */
