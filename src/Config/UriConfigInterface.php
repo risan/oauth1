@@ -5,6 +5,13 @@ namespace Risan\OAuth1\Config;
 interface UriConfigInterface
 {
     /**
+     * Get the UriParserInterface implementation.
+     *
+     * @return \Risan\OAuth1\UriParserInterface
+     */
+    public function parser();
+
+    /**
      * Get the base URI.
      *
      * @return \Psr\Http\Message\UriInterface|null

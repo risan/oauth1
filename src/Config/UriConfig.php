@@ -9,6 +9,13 @@ use GuzzleHttp\Psr7\UriResolver;
 class UriConfig implements UriConfigInterface
 {
     /**
+     * The UriParserInterface implementation.
+     *
+     * @return \Risan\OAuth1\UriParserInterface
+     */
+    protected $parser;
+
+    /**
      * The base URI.
      *
      * @var \Psr\Http\Message\UriInterface|null
@@ -49,10 +56,12 @@ class UriConfig implements UriConfigInterface
      * Create UriConfig instance.
      *
      * @param array $uris
+     * @param \Risan\OAuth1\UriParserInterface
      */
-    public function __construct(array $uris)
+    public function __construct(array $uris, UriParserInterface $parser)
     {
         $this->setFromArray($uris);
+        $this->parser = $parser;
     }
 
     /**
@@ -65,16 +74,16 @@ class UriConfig implements UriConfigInterface
     {
         $this->validateUris($uris);
 
-        $this->temporaryCredentials = $this->toPsrUri($uris['temporary_credentials_uri']);
-        $this->authorization = $this->toPsrUri($uris['authorization_uri']);
-        $this->tokenCredentials = $this->toPsrUri($uris['token_credentials_uri']);
+        $this->temporaryCredentials = $this->parser->toPsrUri($uris['temporary_credentials_uri']);
+        $this->authorization = $this->parser->toPsrUri($uris['authorization_uri']);
+        $this->tokenCredentials = $this->parser->toPsrUri($uris['token_credentials_uri']);
 
         if (isset($uris['base_uri'])) {
-            $this->setBase($this->toPsrUri($uris['base_uri']));
+            $this->setBase($this->parser->toPsrUri($uris['base_uri']));
         }
 
         if (isset($uris['callback'])) {
-            $this->callback = $this->toPsrUri($uris['callback_uri']);
+            $this->callback = $this->parser->toPsrUri($uris['callback_uri']);
         }
 
         return $this;
@@ -113,7 +122,7 @@ class UriConfig implements UriConfigInterface
      */
     public function setBase(UriInterface $uri)
     {
-        if (! $this->isAbsolute($uri)) {
+        if (! $this->parser->isAbsolute($uri)) {
             throw new InvalidArgumentException('The base URI must be absolute.');
         }
 
@@ -186,13 +195,13 @@ class UriConfig implements UriConfigInterface
      */
     public function build($uri)
     {
-        $uri = $this->toPsrUri($uri);
+        $uri = $this->parser->toPsrUri($uri);
 
         if ($this->shouldBeResolvedToAbsoluteUri($uri)) {
-            $uri = UriResolver::resolve($this->base(), $uri);
+            $uri = $this->parser->resolve($this->base(), $uri);
         }
 
-        return $this->isSchemeMissing() ? $uri->withScheme('http') : $uri;
+        return $this->parser->isMissingScheme($uri) ? $uri->withScheme('http') : $uri;
     }
 
     /**
@@ -203,46 +212,6 @@ class UriConfig implements UriConfigInterface
      */
     public function shouldBeResolvedToAbsoluteUri(UriInterface $uri)
     {
-        return ! $this->isAbsolute($uri) && $this->hasBase();
-    }
-
-    /**
-     * Check if the given URI missing the scheme path.
-     *
-     * @param  \Psr\Http\Message\UriInterface $uri
-     * @return boolean
-     */
-    public function isSchemeMissing(UriInterface $uri)
-    {
-        return $uri->getScheme() === '' && $uri->getHost() !== '';
-    }
-
-    /**
-     * Check whether the given URI is absolute.
-     *
-     * @param  \Psr\Http\Message\UriInterface $uri
-     * @return boolean
-     */
-    public function isAbsolute(UriInterface $uri)
-    {
-        return Uri::isAbsolute($uri);
-    }
-
-    /**
-     * Parse the given uri to the PSR URIInterface instance.
-     *
-     * @param  \Psr\Http\Message\UriInterface|string $uri
-     * @return \Psr\Http\Message\UriInterface
-     * @throws \InvalidArgumentException
-     */
-    public function toPsrUri($uri)
-    {
-        if ($uri instanceof UriInterface) {
-            return $uri;
-        } elseif (is_string($uri)) {
-            return new Uri($uri);
-        }
-
-        throw new InvalidArgumentException('URI must be a string or an instance of \Psr\Http\Message\UriInterface.');
+        return ! $this->parser->isAbsolute($uri) && $this->hasBase();
     }
 }
