@@ -1,199 +1,157 @@
 <?php
 
-namespace OAuth1;
+namespace Risan\OAuth1;
 
 use InvalidArgumentException;
-use OAuth1\Contracts\ConfigInterface;
+use Risan\OAuth1\Credentials\ClientCredentials;
 
 class Config implements ConfigInterface
 {
     /**
-     * OAuth consumer key.
+     * The ClientCredentials instance.
      *
-     * @var string
+     * @var \Risan\OAuth1\Credentials\ClientCredentials
      */
-    protected $consumerKey;
+    protected $clientCredentials;
 
     /**
-     * OAuth consumer secret.
-     *
-     * @var string
-     */
-    protected $consumerSecret;
-
-    /**
-     * OAuth request token url.
-     *
-     * @var string
-     */
-    protected $requestTokenUrl;
-
-    /**
-     * OAuth authorize url.
-     *
-     * @return string
-     */
-    protected $authorizeUrl;
-
-    /**
-     * OAuth access token url.
-     *
-     * @var string
-     */
-    protected $accessTokenUrl;
-
-    /**
-     * OAuth callback url.
+     * The callback URI.
      *
      * @var string|null
      */
-    protected $callbackUrl;
+    protected $callbackUri;
 
     /**
-     * Resource base url.
+     * The URL for obtaining temporary credentials. Also known as request token
+     * URL.
      *
-     * @return string|null
+     * @var string
      */
-    protected $resourceBaseUrl;
+    protected $temporaryCredentialsUrl;
 
     /**
-     * Create a new instance of Config.
+     * The URL for asking user to authorize the request.
      *
-     * @param string      $consumerKey
-     * @param string      $consumerSecret
-     * @param string      $requestTokenUrl
-     * @param string      $authorizeUrl
-     * @param string      $accessTokenUrl
-     * @param string|null $callbackUrl
-     * @param string|null $resourceBaseUrl
+     * @var string
      */
-    public function __construct($consumerKey, $consumerSecret, $requestTokenUrl, $authorizeUrl, $accessTokenUrl, $callbackUrl = null, $resourceBaseUrl = null)
+    protected $authorizationUrl;
+
+    /**
+     * The URL for obtaining token credentials. Also known as access token URL.
+     *
+     * @var string
+     */
+    protected $tokenCredentialsUrl;
+
+    /**
+     * Create new instance of Config class.
+     *
+     * @param \Risan\OAuth1\Credentials\ClientCredentials $clientCredentials
+     * @param string $temporaryCredentialsUrl
+     * @param string $authorizationUrl
+     * @param string $tokenCredentialsUrl
+     * @param string|null $callbackUri
+     */
+    public function __construct(ClientCredentials $clientCredentials, $temporaryCredentialsUrl, $authorizationUrl, $tokenCredentialsUrl, $callbackUri = null)
     {
-        $this->consumerKey = $consumerKey;
-        $this->consumerSecret = $consumerSecret;
-        $this->requestTokenUrl = $requestTokenUrl;
-        $this->authorizeUrl = $authorizeUrl;
-        $this->accessTokenUrl = $accessTokenUrl;
-        $this->callbackUrl = $callbackUrl;
-        $this->resourceBaseUrl = $resourceBaseUrl;
+        $this->clientCredentials = $clientCredentials;
+        $this->temporaryCredentialsUrl = $temporaryCredentialsUrl;
+        $this->authorizationUrl = $authorizationUrl;
+        $this->tokenCredentialsUrl = $tokenCredentialsUrl;
+        $this->callbackUri = $callbackUri;
     }
 
     /**
-     * Get OAuth consumer key.
-     *
-     * @return string
+     * {@inheritDoc}
      */
-    public function consumerKey()
+    public function getClientCredentials()
     {
-        return $this->consumerKey;
+        return $this->clientCredentials;
     }
 
     /**
-     * Get OAuth consumer secret.
-     *
-     * @return string
+     * {@inheritDoc}
      */
-    public function consumerSecret()
+    public function getClientCredentialsIdentifier()
     {
-        return $this->consumerSecret;
+        return $this->getClientCredentials()->getIdentifier();
     }
 
     /**
-     * Get OAuth request token url.
-     *
-     * @return string
+     * {@inheritDoc}
      */
-    public function requestTokenUrl()
+    public function getClientCredentialsSecret()
     {
-        return $this->requestTokenUrl;
+        return $this->getClientCredentials()->getSecret();
     }
 
     /**
-     * Get OAuth authorize url.
-     *
-     * @return string
+     * {@inheritDoc}
      */
-    public function authorizeUrl()
+    public function hasCallbackUri()
     {
-        return $this->authorizeUrl;
+        return $this->getCallbackUri() !== null;
     }
 
     /**
-     * Get OAuth access token url.
-     *
-     * @return string
+     * {@inheritDoc}
      */
-    public function accessTokenUrl()
+    public function getCallbackUri()
     {
-        return $this->accessTokenUrl;
+        return $this->callbackUri;
     }
 
     /**
-     * Get OAuth callback url.
-     *
-     * @return string|null
+     * {@inheritDoc}
      */
-    public function callbackUrl()
+    public function getTemporaryCredentialsUrl()
     {
-        return $this->callbackUrl;
+        return $this->temporaryCredentialsUrl;
     }
 
     /**
-     * Ge resource base url.
-     *
-     * @return string|null
+     * {@inheritDoc}
      */
-    public function resourceBaseUrl()
+    public function getAuthorizationUrl()
     {
-        return $this->resourceBaseUrl;
+        return $this->authorizationUrl;
     }
 
     /**
-     * Set resource base url.
-     *
-     * @param string $url
-     *
-     * @return \OAuth1\Contracts\ConfigInterface
+     * {@inheritDoc}
      */
-    public function setResourceBaseUrl($url)
+    public function getTokenCredentialsUrl()
     {
-        $this->resourceBaseUrl = $url;
-
-        return $this;
+        return $this->tokenCredentialsUrl;
     }
 
     /**
-     * Create an instance from array.
-     *
-     * @param array $config
+     * {@inheritDoc}
      */
-    public static function fromArray(array $config)
+    public static function createFromArray(array $config)
     {
         $requiredParams = [
-            'consumer_key',
-            'consumer_secret',
-            'request_token_url',
-            'authorize_url',
-            'access_token_url',
+            'client_credentials_identifier',
+            'client_credentials_secret',
+            'temporary_credentials_url',
+            'authorization_url',
+            'token_credentials_url',
         ];
 
         foreach ($requiredParams as $param) {
-            if (!isset($config[$param])) {
-                throw new InvalidArgumentException("Missing OAuth1 client configuration: $param.");
+            if (! isset($config[$param])) {
+                throw new InvalidArgumentException("Missing OAuth1 client configuration: {$param}.");
             }
         }
 
-        $callbackUrl = isset($config['callback_url']) ? $config['callback_url'] : null;
-        $resourceBaseUrl = isset($config['resource_base_url']) ? $config['resource_base_url'] : null;
+        $callbackUri = isset($config['callback_uri']) ? $config['callback_uri'] : null;
 
         return new static(
-            $config['consumer_key'],
-            $config['consumer_secret'],
-            $config['request_token_url'],
-            $config['authorize_url'],
-            $config['access_token_url'],
-            $callbackUrl,
-            $resourceBaseUrl
+            new ClientCredentials($config['client_credentials_identifier'], $config['client_credentials_secret']),
+            $config['temporary_credentials_url'],
+            $config['authorization_url'],
+            $config['token_credentials_url'],
+            $callbackUri
         );
     }
 }

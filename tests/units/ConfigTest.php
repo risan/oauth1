@@ -1,206 +1,244 @@
 <?php
 
-use OAuth1\Config;
+use Risan\OAuth1\Config;
+use PHPUnit\Framework\TestCase;
+use Risan\OAuth1\ConfigInterface;
+use Risan\OAuth1\Credentials\ClientCredentials;
 
-class ConfigTest extends PHPUnit_Framework_TestCase {
-    protected $config;
+class ConfigTest extends TestCase
+{
+    private $clientCredentialsIdentifier;
+    private $clientCredentialsSecret;
+    private $clientCredentials;
+    private $temporaryCredentialsUrl;
+    private $authorizationUrl;
+    private $tokenCredentialsUrl;
+    private $callbackUri;
+    private $configParams;
+    private $config;
+    private $configWithoutCallbackUri;
 
     function setUp()
     {
+        $this->clientCredentialsIdentifier = 'client_id';
+        $this->clientCredentialsSecret = 'client_secret';
+        $this->clientCredentials = new ClientCredentials($this->clientCredentialsIdentifier, $this->clientCredentialsSecret);
+        $this->temporaryCredentialsUrl = 'http://example.com/request_token';
+        $this->authorizationUrl = 'http://example.com/authorize';
+        $this->tokenCredentialsUrl = 'http://example.com/access_token';
+        $this->callbackUri = 'http://johndoe.com/callback_uri';
+
+        $this->configParams = [
+            'client_credentials_identifier' => $this->clientCredentialsIdentifier,
+            'client_credentials_secret' => $this->clientCredentialsSecret,
+            'temporary_credentials_url' => $this->temporaryCredentialsUrl,
+            'authorization_url' => $this->authorizationUrl,
+            'token_credentials_url' => $this->tokenCredentialsUrl,
+            'callback_uri' => $this->callbackUri,
+        ];
+
         $this->config = new Config(
-            'key',
-            'secret',
-            'http://requesttoken.foo',
-            'http://authorize.foo',
-            'http://accesstoken.foo',
-            'http://callback.foo',
-            'http://resource.foo'
+            $this->clientCredentials,
+            $this->temporaryCredentialsUrl,
+            $this->authorizationUrl,
+            $this->tokenCredentialsUrl,
+            $this->callbackUri
+        );
+
+        $this->configWithoutCallbackUri = new Config(
+            $this->clientCredentials,
+            $this->temporaryCredentialsUrl,
+            $this->authorizationUrl,
+            $this->tokenCredentialsUrl,
+            null
         );
     }
 
     /** @test */
-    function config_has_consumer_key()
+    function config_is_an_instance_of_config_interface()
     {
-        $this->assertEquals('key', $this->config->consumerKey());
+        $this->assertInstanceOf(ConfigInterface::class, $this->config);
     }
 
     /** @test */
-    function config_has_consumer_secret()
+    function config_can_get_client_credentials()
     {
-        $this->assertEquals('secret', $this->config->consumerSecret());
+        $this->assertInstanceOf(ClientCredentials::class, $this->config->getClientCredentials());
+
+        $this->assertSame($this->clientCredentials, $this->config->getClientCredentials());
     }
 
     /** @test */
-    function config_has_request_token_url()
+    function config_can_get_client_credentials_identifier()
     {
-        $this->assertEquals('http://requesttoken.foo', $this->config->requestTokenUrl());
+        $this->assertEquals(
+            $this->clientCredentials->getIdentifier(),
+            $this->config->getClientCredentialsIdentifier()
+        );
     }
 
     /** @test */
-    function config_has_authorize_url()
+    function config_can_get_client_credentials_secret()
     {
-        $this->assertEquals('http://authorize.foo', $this->config->authorizeUrl());
+        $this->assertEquals(
+            $this->clientCredentials->getSecret(),
+            $this->config->getClientCredentialsSecret()
+        );
     }
 
     /** @test */
-    function config_has_access_token_url()
+    function config_can_check_if_callback_uri_exists()
     {
-        $this->assertEquals('http://accesstoken.foo', $this->config->accessTokenUrl());
+        $this->assertTrue($this->config->hasCallbackUri());
+
+        $this->assertFalse($this->configWithoutCallbackUri->hasCallbackUri());
     }
 
     /** @test */
-    function config_has_callback_url()
+    function config_can_get_callback_uri()
     {
-        $this->assertEquals('http://callback.foo', $this->config->callbackUrl());
+        $this->assertEquals($this->callbackUri, $this->config->getCallbackUri());
     }
 
     /** @test */
-    function config_has_resource_base_url()
+    function config_can_get_temporary_credentials_url()
     {
-        $this->assertEquals('http://resource.foo', $this->config->resourceBaseUrl());
+        $this->assertEquals($this->temporaryCredentialsUrl, $this->config->getTemporaryCredentialsUrl());
     }
 
     /** @test */
-    function config_can_set_resource_base_url()
+    function config_can_get_authorization_url()
     {
-        $this->assertInstanceOf(Config::class, $this->config->setResourceBaseUrl('http://resource.bar'));
-        $this->assertEquals('http://resource.bar', $this->config->resourceBaseUrl());
+        $this->assertEquals($this->authorizationUrl, $this->config->getAuthorizationUrl());
     }
 
     /** @test */
-    function config_can_be_created_from_array()
+    function config_can_get_token_credentials_url()
     {
-        $params = [
-            'consumer_key' => 'key',
-            'consumer_secret' => 'secret',
-            'request_token_url' => 'http://requesttoken.foo',
-            'authorize_url' => 'http://authorize.foo',
-            'access_token_url' => 'http://accesstoken.foo',
-            'callback_url' => 'http://callback.foo',
-            'resource_base_url' => 'http://resource.foo'
-        ];
+        $this->assertEquals($this->tokenCredentialsUrl, $this->config->getTokenCredentialsUrl());
+    }
 
-        $config = Config::fromArray($params);
+    /** @test */
+    function config_can_create_from_array()
+    {
+        $config = Config::createFromArray($this->configParams);
 
         $this->assertInstanceOf(Config::class, $config);
-        $this->assertEquals('key', $config->consumerKey());
-        $this->assertEquals('secret', $config->consumerSecret());
-        $this->assertEquals('http://requesttoken.foo', $config->requestTokenUrl());
-        $this->assertEquals('http://authorize.foo', $config->authorizeUrl());
-        $this->assertEquals('http://accesstoken.foo', $config->accessTokenUrl());
-        $this->assertEquals('http://callback.foo', $config->callbackUrl());
-        $this->assertEquals('http://resource.foo', $config->resourceBaseUrl());
+
+        $this->assertInstanceOf(ClientCredentials::class, $config->getClientCredentials());
+
+        $this->assertEquals(
+            $this->configParams['client_credentials_identifier'],
+            $config->getClientCredentialsIdentifier()
+        );
+
+        $this->assertEquals(
+            $this->configParams['client_credentials_secret'],
+            $config->getClientCredentialsSecret()
+        );
+
+        $this->assertEquals(
+            $this->configParams['temporary_credentials_url'],
+            $config->getTemporaryCredentialsUrl()
+        );
+
+        $this->assertEquals(
+            $this->configParams['authorization_url'],
+            $config->getAuthorizationUrl()
+        );
+
+        $this->assertEquals(
+            $this->configParams['token_credentials_url'],
+            $config->getTokenCredentialsUrl()
+        );
+
+        $this->assertEquals(
+            $this->configParams['callback_uri'],
+            $config->getCallbackUri()
+        );
     }
 
-    /**
-     * @test
-     * @expectedException InvalidArgumentException
-     */
-    function config_without_consumer_key_throws_exception()
+    /** @test */
+    function config_must_throw_exception_if_client_credentials_identifier_is_empty()
     {
-        Config::fromArray([
-            'consumer_secret' => 'secret',
-            'request_token_url' => 'http://requesttoken.foo',
-            'authorize_url' => 'http://authorize.foo',
-            'access_token_url' => 'http://accesstoken.foo',
-            'callback_url' => 'http://callback.foo',
-            'resource_base_url' => 'http://resource.foo'
-        ]);
-    }
+        $this->expectException(InvalidArgumentException::class);
 
-    /**
-     * @test
-     * @expectedException InvalidArgumentException
-     */
-    function config_without_consumer_secret_throws_exception()
-    {
-        Config::fromArray([
-            'consumer_key' => 'key',
-            'request_token_url' => 'http://requesttoken.foo',
-            'authorize_url' => 'http://authorize.foo',
-            'access_token_url' => 'http://accesstoken.foo',
-            'callback_url' => 'http://callback.foo',
-            'resource_base_url' => 'http://resource.foo'
-        ]);
-    }
-
-    /**
-     * @test
-     * @expectedException InvalidArgumentException
-     */
-    function config_without_request_token_url_throws_exception()
-    {
-        Config::fromArray([
-            'consumer_key' => 'key',
-            'consumer_secret' => 'secret',
-            'authorize_url' => 'http://authorize.foo',
-            'access_token_url' => 'http://accesstoken.foo',
-            'callback_url' => 'http://callback.foo',
-            'resource_base_url' => 'http://resource.foo'
-        ]);
-    }
-
-    /**
-     * @test
-     * @expectedException InvalidArgumentException
-     */
-    function config_without_authorize_url_throws_exception()
-    {
-        Config::fromArray([
-            'consumer_key' => 'key',
-            'consumer_secret' => 'secret',
-            'request_token_url' => 'http://requesttoken.foo',
-            'access_token_url' => 'http://accesstoken.foo',
-            'callback_url' => 'http://callback.foo',
-            'resource_base_url' => 'http://resource.foo'
-        ]);
-    }
-
-    /**
-     * @test
-     * @expectedException InvalidArgumentException
-     */
-    function config_without_access_token_url_throws_exception()
-    {
-        Config::fromArray([
-            'consumer_key' => 'key',
-            'consumer_secret' => 'secret',
-            'request_token_url' => 'http://requesttoken.foo',
-            'authorize_url' => 'http://authorize.foo',
-            'callback_url' => 'http://callback.foo',
-            'resource_base_url' => 'http://resource.foo'
+        Config::createFromArray([
+            'client_credentials_secret' => $this->clientCredentialsSecret,
+            'temporary_credentials_url' => $this->temporaryCredentialsUrl,
+            'authorization_url' => $this->authorizationUrl,
+            'token_credentials_url' => $this->tokenCredentialsUrl,
+            'callback_uri' => $this->callbackUri,
         ]);
     }
 
     /** @test */
-    function config_created_without_callback_url()
+    function config_must_throw_exception_if_client_credentials_secret_is_empty()
     {
-        $config = Config::fromArray([
-            'consumer_key' => 'key',
-            'consumer_secret' => 'secret',
-            'request_token_url' => 'http://requesttoken.foo',
-            'authorize_url' => 'http://authorize.foo',
-            'access_token_url' => 'http://accesstoken.foo',
-            'resource_base_url' => 'http://resource.foo'
-        ]);
+        $this->expectException(InvalidArgumentException::class);
 
-        $this->assertInstanceOf(Config::class, $config);
-        $this->assertEmpty($config->callbackUrl());
+        Config::createFromArray([
+            'client_credentials_identifier' => $this->clientCredentialsIdentifier,
+            'temporary_credentials_url' => $this->temporaryCredentialsUrl,
+            'authorization_url' => $this->authorizationUrl,
+            'token_credentials_url' => $this->tokenCredentialsUrl,
+            'callback_uri' => $this->callbackUri,
+        ]);
     }
 
     /** @test */
-    function config_created_without_resource_base_url()
+    function config_must_throw_exception_if_temporary_credentials_url_is_empty()
     {
-        $config = Config::fromArray([
-            'consumer_key' => 'key',
-            'consumer_secret' => 'secret',
-            'request_token_url' => 'http://requesttoken.foo',
-            'authorize_url' => 'http://authorize.foo',
-            'access_token_url' => 'http://accesstoken.foo',
-            'callback_url' => 'http://callback.foo'
+        $this->expectException(InvalidArgumentException::class);
+
+        Config::createFromArray([
+            'authorization_url' => $this->authorizationUrl,
+            'token_credentials_url' => $this->tokenCredentialsUrl,
+            'client_credentials_identifier' => $this->clientCredentialsIdentifier,
+            'client_credentials_secret' => $this->clientCredentialsSecret,
+            'callback_uri' => $this->callbackUri,
+        ]);
+    }
+
+    /** @test */
+    function config_must_throw_exception_if_authorization_url_is_empty()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Config::createFromArray([
+            'temporary_credentials_url' => $this->temporaryCredentialsUrl,
+            'client_credentials_identifier' => $this->clientCredentialsIdentifier,
+            'client_credentials_secret' => $this->clientCredentialsSecret,
+            'token_credentials_url' => $this->tokenCredentialsUrl,
+            'callback_uri' => $this->callbackUri,
+        ]);
+    }
+
+    /** @test */
+    function config_must_throw_exception_if_token_credentials_url_is_empty()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Config::createFromArray([
+            'authorization_url' => $this->authorizationUrl,
+            'temporary_credentials_url' => $this->temporaryCredentialsUrl,
+            'client_credentials_identifier' => $this->clientCredentialsIdentifier,
+            'client_credentials_secret' => $this->clientCredentialsSecret,
+            'callback_uri' => $this->callbackUri,
+        ]);
+    }
+
+    /** @test */
+    function config_can_be_created_without_callback_uri()
+    {
+        $config = Config::createFromArray([
+            'client_credentials_identifier' => $this->clientCredentialsIdentifier,
+            'client_credentials_secret' => $this->clientCredentialsSecret,
+            'authorization_url' => $this->authorizationUrl,
+            'token_credentials_url' => $this->tokenCredentialsUrl,
+            'temporary_credentials_url' => $this->temporaryCredentialsUrl,
         ]);
 
         $this->assertInstanceOf(Config::class, $config);
-        $this->assertEmpty($config->resourceBaseUrl());
     }
 }

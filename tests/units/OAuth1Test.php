@@ -1,99 +1,100 @@
 <?php
 
-use OAuth1\OAuth1;
-use OAuth1\Contracts\ConfigInterface;
-use OAuth1\Contracts\HttpClientInterface;
-use OAuth1\Contracts\Signers\SignerInterface;
+use Risan\OAuth1\OAuth1;
+use PHPUnit\Framework\TestCase;
+use Risan\OAuth1\OAuth1Interface;
+use Risan\OAuth1\HttpClientInterface;
+use Psr\Http\Message\ResponseInterface;
+use Risan\OAuth1\Request\RequestConfigInterface;
+use Risan\OAuth1\Credentials\TemporaryCredentials;
+use Risan\OAuth1\Credentials\CredentialsFactoryInterface;
 
-class OAuth1Test extends PHPUnit_Framework_TestCase {
-    protected $config;
-    protected $oauth1;
+class OAuth1Test extends TestCase
+{
+    private $requestConfigStub;
+    private $httpClientStub;
+    private $credentialsFactoryStub;
+    private $temporaryCredentialsStub;
+    private $oauth1;
+    private $responseStub;
 
     function setUp()
     {
-        $this->config = [
-            'consumer_key' => 'key',
-            'consumer_secret' => 'secret',
-            'request_token_url' => 'http://www.mocky.io/v2/567a64390f0000eb051aef7c',
-            'authorize_url' => 'http://authorize.foo',
-            'access_token_url' => 'http://www.mocky.io/v2/567a64390f0000eb051aef7c',
-            'callback_url' => 'http://callback.foo',
-            'resource_base_url' => 'http://www.mocky.io/v2/'
-        ];
-
-        $this->oauth1 = new OAuth1($this->config);
-    }
-
-    /**
-     * @test
-     * @expectedException InvalidArgumentException
-     */
-    function oauth1_created_with_invalid_parameter_throws_exception()
-    {
-        new OAuth1('invalid');
+        $this->requestConfigStub = $this->createMock(RequestConfigInterface::class);
+        $this->httpClientStub = $this->createMock(HttpClientInterface::class);
+        $this->credentialsFactoryStub = $this->createMock(CredentialsFactoryInterface::class);
+        $this->temporaryCredentialsStub = $this->createMock(TemporaryCredentials::class);
+        $this->oauth1 = new OAuth1($this->requestConfigStub, $this->httpClientStub, $this->credentialsFactoryStub);
+        $this->responseStub = $this->createMock(ResponseInterface::class);
     }
 
     /** @test */
-    function oauth1_has_http_client()
+    function oauth1_is_an_instance_of_oauth1_interface()
     {
-        $this->assertInstanceOf(HttpClientInterface::class, $this->oauth1->httpClient());
+        $this->assertInstanceOf(OAuth1Interface::class, $this->oauth1);
     }
 
     /** @test */
-    function oauth1_has_config()
+    function oauth1_can_get_request_config()
     {
-        $this->assertInstanceOf(ConfigInterface::class, $this->oauth1->config());
+        $this->assertInstanceOf(RequestConfigInterface::class, $this->oauth1->getRequestConfig());
     }
 
     /** @test */
-    function oauth1_has_signer()
+    function oauth1_can_get_http_client()
     {
-        $this->assertInstanceOf(SignerInterface::class, $this->oauth1->signer());
+        $this->assertInstanceOf(HttpClientInterface::class, $this->oauth1->getHttpClient());
     }
 
     /** @test */
-    function oauth1_can_generate_nonce()
+    function oauth1_can_get_credentials_factory()
     {
-        $nonce = $this->oauth1->nonce();
-
-        $this->assertTrue(is_string($nonce));
-
-        $this->assertEquals(32, strlen($nonce));
+        $this->assertInstanceOf(CredentialsFactoryInterface::class, $this->oauth1->getCredentialsFactory());
     }
 
     /** @test */
-    function oauth1_can_get_timestamp()
+    function oauth1_can_obtain_temporary_credentials()
     {
-        $timestamp = $this->oauth1->timestamp();
+        $this->requestConfigStub
+            ->expects($this->once())
+            ->method('getTemporaryCredentialsUrl')
+            ->willReturn('http://example.com/temporary_credentials_url');
 
-        $this->assertLessThanOrEqual(time(), $timestamp);
+        $this->requestConfigStub
+            ->expects($this->once())
+            ->method('getTemporaryCredentialsAuthorizationHeader')
+            ->willReturn('Authorization Header');
 
-        $this->assertGreaterThan(strtotime('-1 minute'), $timestamp);
+        $this->httpClientStub
+            ->expects($this->once())
+            ->method('post')
+            ->with(
+                'http://example.com/temporary_credentials_url',
+                ['headers' => ['Authorization' => 'Authorization Header']]
+            )
+            ->willReturn($this->responseStub);
+
+        $this->credentialsFactoryStub
+            ->expects($this->once())
+            ->method('createTemporaryCredentialsFromResponse')
+            ->with($this->responseStub)
+            ->willReturn($this->temporaryCredentialsStub);
+
+        $this->assertInstanceOf(TemporaryCredentials::class, $this->oauth1->getTemporaryCredentials());
     }
 
     /** @test */
-    function oauth1_has_version()
+    function request_config_can_build_authorization_url()
     {
-        $this->assertEquals('1.0', $this->oauth1->version());
-    }
+        $this->requestConfigStub
+            ->expects($this->once())
+            ->method('buildAuthorizationUrl')
+            ->with($this->temporaryCredentialsStub)
+            ->willReturn('http://example.com/authorize?oauth_token=id_temporary');
 
-    /** @test */
-    function oauth1_has_base_protocol_parameters()
-    {
-        $parameters = $this->oauth1->baseProtocolParameters();
-
-        $this->assertArrayHasKey('oauth_consumer_key', $parameters);
-        $this->assertArrayHasKey('oauth_nonce', $parameters);
-        $this->assertArrayHasKey('oauth_signature_method', $parameters);
-        $this->assertArrayHasKey('oauth_timestamp', $parameters);
-        $this->assertArrayHasKey('oauth_version', $parameters);
-    }
-
-    /** @test */
-    function oauth1_can_generate_authorization_headers()
-    {
-        $parameters = ['foo' => 'bar'];
-
-        $this->assertEquals('OAuth foo=bar', $this->oauth1->authorizationHeaders($parameters));
+        $this->assertEquals(
+            'http://example.com/authorize?oauth_token=id_temporary',
+            $this->oauth1->buildAuthorizationUrl($this->temporaryCredentialsStub)
+        );
     }
 }

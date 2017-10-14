@@ -1,158 +1,114 @@
 <?php
 
-namespace OAuth1;
+namespace Risan\OAuth1;
 
 use InvalidArgumentException;
-use OAuth1\Contracts\ConfigInterface;
-use OAuth1\Contracts\OAuth1ClientInterface;
-use OAuth1\Contracts\Signers\SignerInterface;
-use OAuth1\Flows\AccessTokenFlow;
-use OAuth1\Flows\AuthorizationFlow;
-use OAuth1\Flows\GrantedFlow;
-use OAuth1\Flows\RequestTokenFlow;
-use OAuth1\Signers\HmacSha1Signer;
+use Risan\OAuth1\Credentials\ClientCredentials;
+use Risan\OAuth1\Request\RequestConfigInterface;
+use Risan\OAuth1\Credentials\TemporaryCredentials;
+use Risan\OAuth1\Credentials\CredentialsFactoryInterface;
 
-class OAuth1 implements OAuth1ClientInterface
+class OAuth1 implements OAuth1Interface
 {
-    use GrantedFlow,
-        AccessTokenFlow,
-        RequestTokenFlow,
-        AuthorizationFlow;
+    /**
+     * The RequestConfigInterface instance.
+     *
+     * @var \Risan\OAuth1\Request\RequestConfigInterface
+     */
+    protected $requestConfig;
 
     /**
-     * Http client instance.
+     * The HttpClientInterface instance.
      *
-     * @return \OAuth1\Contracts\HttpClientInterface
+     * @var \Risan\OAuth1\HttpClientInterface
      */
     protected $httpClient;
 
     /**
-     * Client configuration.
+     * The CredentialsFactoryInterface instance.
      *
-     * @var \OAuth1\Contracts\ConfigInterface
+     * @var \Risan\OAuth1\Credentials\CredentialsFactoryInterface
      */
-    protected $config;
+    protected $credentialsFactory;
 
     /**
-     * OAuth signer instance.
+     * Create a new OAuth1 instance.
      *
-     * @return \OAuth1\Contracts\Signers\SignerInterface
+     * @param \Risan\OAuth1\Request\RequestConfigInterface $requestConfig
+     * @param \Risan\OAuth1\HttpClientInterface $httpClient
+     * @param \Risan\OAuth1\Credentials\CredentialsFactoryInterface $credentialsFactory
      */
-    protected $signer;
-
-    /**
-     * Create a new instance of Generic class.
-     *
-     * @param \OAuth1\Contracts\ConfigInterface|array        $config
-     * @param \OAuth1\Contracts\Signers\SignerInterface|null $signer
-     */
-    public function __construct($config, SignerInterface $signer = null)
+    public function __construct(RequestConfigInterface $requestConfig, HttpClientInterface $httpClient, CredentialsFactoryInterface $credentialsFactory)
     {
-        if (is_array($config)) {
-            $config = Config::fromArray($config);
-        } elseif (!$config instanceof ConfigInterface) {
-            throw new InvalidArgumentException('OAuth1 client configuration must be a valid array or an instance of OAuth1\Config class.');
-        }
-
-        $this->config = $config;
-        $this->signer = $signer;
+        $this->requestConfig = $requestConfig;
+        $this->httpClient = $httpClient;
+        $this->credentialsFactory = $credentialsFactory;
     }
 
     /**
-     * Get http client instance.
-     *
-     * @return \OAuth1\Contracts\HttpClientInterface
+     * {@inheritDoc}
      */
-    public function httpClient()
+    public function getRequestConfig()
     {
-        if (is_null($this->httpClient)) {
-            $this->httpClient = new HttpClient();
-        }
+        return $this->requestConfig;
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function getHttpClient()
+    {
         return $this->httpClient;
     }
 
     /**
-     * Get client configuration.
-     *
-     * @return \OAuth1\Contracts\ConfigInterface
+     * {@inheritDoc}
      */
-    public function config()
+    public function getCredentialsFactory()
     {
-        return $this->config;
+        return $this->credentialsFactory;
     }
 
     /**
-     * Get signer.
-     *
-     * @return \OAuth1\Contracts\Signers\SignerInterface
+     * {@inheritDoc}
      */
-    public function signer()
+    public function getTemporaryCredentials()
     {
-        if (is_null($this->signer)) {
-            $this->signer = new HmacSha1Signer($this->config()->consumerSecret());
+        $response = $this->httpClient->post($this->requestConfig->getTemporaryCredentialsUrl(), [
+            'headers' => [
+                'Authorization' => $this->requestConfig->getTemporaryCredentialsAuthorizationHeader(),
+            ],
+        ]);
+
+        return $this->credentialsFactory->createTemporaryCredentialsFromResponse($response);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function buildAuthorizationUrl(TemporaryCredentials $temporaryCredentials)
+    {
+        return $this->requestConfig->buildAuthorizationUrl($temporaryCredentials);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTokenCredentials(TemporaryCredentials $temporaryCredentials, $temporaryIdentifier, $verificationCode)
+    {
+        if ($temporaryCredentials->getIdentifier() !== $temporaryIdentifier) {
+            throw new InvalidArgumentException('The given temporary identifier does not match the temporary credentials.');
         }
 
-        return $this->signer;
-    }
+        $response = $this->httpClient->post($this->requestConfig->getTokenCredentialsUrl(), [
+            'headers' => [
+                'Authorization' => $this->requestConfig->getTokenCredentialsAuthorizationHeader($temporaryCredentials, $verificationCode),
+            ],
+            'form_params' => [
+                'oauth_verifier' => $verificationCode,
+            ],
+        ]);
 
-    /**
-     * Generate random nonce.
-     *
-     * @return string
-     */
-    public function nonce()
-    {
-        return md5(mt_rand());
-    }
-
-    /**
-     * Get current timestamp.
-     *
-     * @return int
-     */
-    public function timestamp()
-    {
-        return time();
-    }
-
-    /**
-     * Get OAuth version.
-     *
-     * @return string
-     */
-    public function version()
-    {
-        return '1.0';
-    }
-
-    /**
-     * Get OAuth base protocol parameters.
-     *
-     * @return array
-     */
-    public function baseProtocolParameters()
-    {
-        return [
-            'oauth_consumer_key' => $this->config()->consumerKey(),
-            'oauth_nonce' => $this->nonce(),
-            'oauth_signature_method' => $this->signer()->method(),
-            'oauth_timestamp' => $this->timestamp(),
-            'oauth_version' => $this->version(),
-        ];
-    }
-
-    /**
-     * Build authorization headers.
-     *
-     * @param array $parameters
-     *
-     * @return string
-     */
-    public function authorizationHeaders(array $parameters)
-    {
-        $parameters = http_build_query($parameters, '', ', ', PHP_QUERY_RFC3986);
-
-        return "OAuth $parameters";
+        return $response;
     }
 }
