@@ -2,7 +2,6 @@
 
 namespace Risan\OAuth1\Config;
 
-use InvalidArgumentException;
 use Risan\OAuth1\Credentials\ClientCredentials;
 
 class Config implements ConfigInterface
