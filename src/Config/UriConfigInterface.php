@@ -7,7 +7,7 @@ interface UriConfigInterface
     /**
      * Get the UriParserInterface implementation.
      *
-     * @return \Risan\OAuth1\UriParserInterface
+     * @return \Risan\OAuth1\Request\UriParserInterface
      */
     public function parser();
 

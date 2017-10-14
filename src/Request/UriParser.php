@@ -1,8 +1,9 @@
 <?php
 
-namespace Risan\OAuth1;
+namespace Risan\OAuth1\Request;
 
 use GuzzleHttp\Psr7\Uri;
+use InvalidArgumentException;
 use GuzzleHttp\Psr7\UriResolver;
 use Psr\Http\Message\UriInterface;
 

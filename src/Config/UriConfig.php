@@ -2,16 +2,15 @@
 
 namespace Risan\OAuth1\Config;
 
-use GuzzleHttp\Psr7\Uri;
 use InvalidArgumentException;
-use GuzzleHttp\Psr7\UriResolver;
+use Psr\Http\Message\UriInterface;
 
 class UriConfig implements UriConfigInterface
 {
     /**
      * The UriParserInterface implementation.
      *
-     * @return \Risan\OAuth1\UriParserInterface
+     * @return \Risan\OAuth1\Request\UriParserInterface
      */
     protected $parser;
 
@@ -56,12 +55,12 @@ class UriConfig implements UriConfigInterface
      * Create UriConfig instance.
      *
      * @param array $uris
-     * @param \Risan\OAuth1\UriParserInterface
+     * @param \Risan\OAuth1\Request\UriParserInterface $parser
      */
     public function __construct(array $uris, UriParserInterface $parser)
     {
-        $this->setFromArray($uris);
         $this->parser = $parser;
+        $this->setFromArray($uris);
     }
 
     /**

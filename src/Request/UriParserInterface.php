@@ -1,6 +1,6 @@
 <?php
 
-namespace Risan\OAuth1;
+namespace Risan\OAuth1\Request;
 
 use Psr\Http\Message\UriInterface;
 
