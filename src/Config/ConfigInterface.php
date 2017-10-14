@@ -36,14 +36,14 @@ interface ConfigInterface
      * Get the URI for obtaining temporary credentials. Also known as request
      * token URI.
      *
-     * @return string
+     * @return \Psr\Http\Message\UriInterface
      */
     public function getTemporaryCredentialsUri();
 
     /**
      * Get the URI for asking user to authorize the request.
      *
-     * @return string
+     * @return \Psr\Http\Message\UriInterface
      */
     public function getAuthorizationUri();
 
@@ -51,7 +51,7 @@ interface ConfigInterface
      * Get the URI for obtaining token credentials. Also known as access token
      * URI.
      *
-     * @return string
+     * @return \Psr\Http\Message\UriInterface
      */
     public function getTokenCredentialsUri();
 
@@ -65,7 +65,7 @@ interface ConfigInterface
     /**
      * Get the callback URI.
      *
-     * @return string|null
+     * @return \Psr\Http\Message\UriInterface|null
      */
     public function getCallbackUri();
 
