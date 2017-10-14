@@ -24,7 +24,6 @@ class RequestConfigTest extends TestCase
         $this->configStub = $this->createMock(ConfigInterface::class);
         $this->signerStub = $this->createMock(SignerInterface::class);
         $this->nonceGeneratorStub = $this->createMock(NonceGeneratorInterface::class);
-        $this->requestConfig = new RequestConfig($this->configStub, $this->signerStub, $this->nonceGeneratorStub);
         $this->clientCredentialsStub = $this->createMock(ClientCredentials::class);
         $this->temporaryCredentialsStub = $this->createMock(TemporaryCredentials::class);
 
@@ -41,10 +40,12 @@ class RequestConfigTest extends TestCase
             ->disableArgumentCloning()
             ->disallowMockingUnknownTypes()
             ->getMock();
+
+        $this->requestConfig = new RequestConfig($this->configStub, $this->signerStub, $this->nonceGeneratorStub);
     }
 
     /** @test */
-    function request_config_is_an_instance_of_request_config_interface()
+    function request_config_implements_request_config_interface()
     {
         $this->assertInstanceOf(RequestConfigInterface::class, $this->requestConfig);
     }
@@ -98,6 +99,8 @@ class RequestConfigTest extends TestCase
     /** @test */
     function request_config_can_get_base_protocol_parameters()
     {
+        $requestConfigStub = $this->getStub(['getCurrentTimestamp']);
+
         $this->configStub
             ->expects($this->once())
             ->method('getClientCredentialsIdentifier')
@@ -106,58 +109,52 @@ class RequestConfigTest extends TestCase
         $this->nonceGeneratorStub
             ->expects($this->once())
             ->method('generate')
-            ->willReturn('random');
+            ->willReturn('random_nonce');
 
         $this->signerStub
             ->expects($this->once())
             ->method('getMethod')
             ->willReturn('HMAC-SHA1');
 
-        $baseProtocolParameter = $this->requestConfig->getBaseProtocolParameters();
+        $requestConfigStub
+            ->expects($this->once())
+            ->method('getCurrentTimestamp')
+            ->willReturn(12345678);
 
-        $this->assertArraySubset([
+        $this->assertSame([
             'oauth_consumer_key' => 'client_id',
-            'oauth_nonce' => 'random',
+            'oauth_nonce' => 'random_nonce',
             'oauth_signature_method' => 'HMAC-SHA1',
+            'oauth_timestamp' => '12345678',
             'oauth_version' => '1.0',
-        ], $baseProtocolParameter);
-
-        $this->assertArrayHasKey('oauth_timestamp', $baseProtocolParameter);
-
-        $this->assertEquals((new DateTime)->getTimestamp(), (int) $baseProtocolParameter['oauth_timestamp'], '' , 3);
+        ], $requestConfigStub->getBaseProtocolParameters());
     }
 
     /** @test */
     function request_config_can_add_signature_parameter()
     {
         $parameters = ['oauth_consumer_key' => 'client_id'];
+        $formParams = ['name' => 'john'];
+        $query = ['age' => 20];
 
         $this->signerStub
             ->expects($this->once())
             ->method('sign')
-            ->with(
-                'http://example.com',
-                array_merge($parameters, [
-                    'name' => 'john',
-                    'age' => 20,
-                ]),
-                'POST'
-            )
+            ->with('http://example.com', array_merge($parameters, $formParams, $query), 'POST')
             ->willReturn('signature');
+
+        $parametersWithSignature = $this->requestConfig->addSignatureParameter(
+            $parameters,
+            'http://example.com',
+            null,
+            ['form_params' => $formParams, 'query' => $query],
+            'POST'
+        );
 
         $this->assertEquals([
             'oauth_consumer_key' => 'client_id',
             'oauth_signature' => 'signature',
-        ], $this->requestConfig->addSignatureParameter(
-            $parameters,
-            'http://example.com',
-            null,
-            [
-                'form_params' => ['name' => 'john'],
-                'query' => ['age' => 20],
-            ],
-            'POST'
-        ));
+        ], $parametersWithSignature);
     }
 
     /** @test */
@@ -338,5 +335,16 @@ class RequestConfigTest extends TestCase
                 'verification_code'
             )
         );
+    }
+
+    function getStub($methods = [])
+    {
+        return $this->getMockBuilder(RequestConfig::class)
+            ->setConstructorArgs([$this->configStub, $this->signerStub, $this->nonceGeneratorStub])
+            ->setMethods($methods)
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
     }
 }
