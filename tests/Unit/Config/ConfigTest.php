@@ -1,5 +1,7 @@
 <?php
 
+namespace Risan\OAuth1\Test\Unit\Config;
+
 use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\Config\Config;
 use Psr\Http\Message\UriInterface;

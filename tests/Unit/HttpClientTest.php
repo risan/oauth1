@@ -1,5 +1,7 @@
 <?php
 
+namespace Risan\OAuth1\Test\Unit;
+
 use Risan\OAuth1\HttpClient;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;

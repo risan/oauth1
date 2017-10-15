@@ -1,5 +1,7 @@
 <?php
 
+namespace Risan\OAuth1\Test\Unit\Signature;
+
 use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\Signature\CanBuildBaseString;
 use Risan\OAuth1\Signature\BaseStringBuilderInterface;

@@ -1,11 +1,14 @@
 <?php
 
+namespace Risan\OAuth1\Test\Unit;
+
 use Risan\OAuth1\Config;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\ConfigInterface;
 use Risan\OAuth1\Credentials\ClientCredentials;
 
-class OldConfigTest extends TestCase
+class ConfigTest extends TestCase
 {
     private $clientCredentialsIdentifier;
     private $clientCredentialsSecret;

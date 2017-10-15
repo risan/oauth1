@@ -1,5 +1,7 @@
 <?php
 
+namespace Risan\OAuth1\Test\Unit;
+
 use Risan\OAuth1\OAuth1;
 use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\OAuth1Interface;

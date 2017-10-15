@@ -1,5 +1,7 @@
 <?php
 
+namespace Risan\OAuth1\Test\Unit\Signature;
+
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UriInterface;
 use Risan\OAuth1\Request\UriParser;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Signature;
+namespace Risan\OAuth1\Test\Unit\Signature;
 
 use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\Signature\HmacSha1Signer;

@@ -26,6 +26,11 @@
             "Risan\\OAuth1\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Risan\\OAuth1\\Test\\": "tests"
+        }
+    },
     "require": {
         "php": ">=5.6.4",
         "guzzlehttp/guzzle": "~6.3",

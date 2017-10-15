@@ -1,5 +1,7 @@
 <?php
 
+namespace Risan\OAuth1\Test\Unit\Credentials;
+
 use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\Credentials\ClientCredentials;
 use Risan\OAuth1\Credentials\CredentialsInterface;

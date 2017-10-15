@@ -1,5 +1,8 @@
 <?php
 
+namespace Risan\OAuth1\Test\Unit\Request;
+
+use DateTime;
 use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\Config\ConfigInterface;
 use Risan\OAuth1\Request\ProtocolParameter;
