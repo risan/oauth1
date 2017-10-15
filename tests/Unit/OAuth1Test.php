@@ -1,5 +1,7 @@
 <?php
 
+namespace Risan\OAuth1\Test\Unit;
+
 use Risan\OAuth1\OAuth1;
 use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\OAuth1Interface;
@@ -29,31 +31,31 @@ class OAuth1Test extends TestCase
     }
 
     /** @test */
-    function oauth1_is_an_instance_of_oauth1_interface()
+    function it_implements_oauth1_interface()
     {
         $this->assertInstanceOf(OAuth1Interface::class, $this->oauth1);
     }
 
     /** @test */
-    function oauth1_can_get_request_config()
+    function it_can_get_request_config()
     {
         $this->assertInstanceOf(RequestConfigInterface::class, $this->oauth1->getRequestConfig());
     }
 
     /** @test */
-    function oauth1_can_get_http_client()
+    function it_can_get_http_client()
     {
         $this->assertInstanceOf(HttpClientInterface::class, $this->oauth1->getHttpClient());
     }
 
     /** @test */
-    function oauth1_can_get_credentials_factory()
+    function it_can_get_credentials_factory()
     {
         $this->assertInstanceOf(CredentialsFactoryInterface::class, $this->oauth1->getCredentialsFactory());
     }
 
     /** @test */
-    function oauth1_can_obtain_temporary_credentials()
+    function it_can_obtain_temporary_credentials()
     {
         $this->requestConfigStub
             ->expects($this->once())

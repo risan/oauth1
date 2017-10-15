@@ -1,11 +1,15 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
-use Risan\OAuth1\Request\RequestConfigFactory;
-use Risan\OAuth1\Request\RequestConfigInterface;
+namespace Risan\OAuth1\Test\Unit;
 
-class RequestConfigFactoryTest extends TestCase
+use Risan\OAuth1\OAuth1;
+use PHPUnit\Framework\TestCase;
+use Risan\OAuth1\OAuth1Factory;
+
+class OAuth1FactoryTest extends TestCase
 {
+    private $configParams;
+
     function setUp()
     {
         $this->configParams = [
@@ -19,11 +23,8 @@ class RequestConfigFactoryTest extends TestCase
     }
 
     /** @test */
-    function request_config_factory_can_create_request_config_instance()
+    function it_can_create_oauth1_instance()
     {
-        $this->assertInstanceOf(
-            RequestConfigInterface::class,
-            RequestConfigFactory::create($this->configParams)
-        );
+        $this->assertInstanceOf(OAuth1::class, OAuth1Factory::create($this->configParams));
     }
 }

@@ -1,6 +1,9 @@
 <?php
 
+namespace Risan\OAuth1\Test\Unit;
+
 use Risan\OAuth1\Config;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\ConfigInterface;
 use Risan\OAuth1\Credentials\ClientCredentials;
@@ -55,13 +58,13 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function config_is_an_instance_of_config_interface()
+    function it_implements_config_interface()
     {
         $this->assertInstanceOf(ConfigInterface::class, $this->config);
     }
 
     /** @test */
-    function config_can_get_client_credentials()
+    function it_can_get_client_credentials()
     {
         $this->assertInstanceOf(ClientCredentials::class, $this->config->getClientCredentials());
 
@@ -69,7 +72,7 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function config_can_get_client_credentials_identifier()
+    function it_can_get_client_credentials_identifier()
     {
         $this->assertEquals(
             $this->clientCredentials->getIdentifier(),
@@ -78,7 +81,7 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function config_can_get_client_credentials_secret()
+    function it_can_get_client_credentials_secret()
     {
         $this->assertEquals(
             $this->clientCredentials->getSecret(),
@@ -87,7 +90,7 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function config_can_check_if_callback_uri_exists()
+    function it_can_check_if_callback_uri_exists()
     {
         $this->assertTrue($this->config->hasCallbackUri());
 
@@ -95,31 +98,31 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function config_can_get_callback_uri()
+    function it_can_get_callback_uri()
     {
         $this->assertEquals($this->callbackUri, $this->config->getCallbackUri());
     }
 
     /** @test */
-    function config_can_get_temporary_credentials_url()
+    function it_can_get_temporary_credentials_url()
     {
         $this->assertEquals($this->temporaryCredentialsUrl, $this->config->getTemporaryCredentialsUrl());
     }
 
     /** @test */
-    function config_can_get_authorization_url()
+    function it_can_get_authorization_url()
     {
         $this->assertEquals($this->authorizationUrl, $this->config->getAuthorizationUrl());
     }
 
     /** @test */
-    function config_can_get_token_credentials_url()
+    function it_can_get_token_credentials_url()
     {
         $this->assertEquals($this->tokenCredentialsUrl, $this->config->getTokenCredentialsUrl());
     }
 
     /** @test */
-    function config_can_create_from_array()
+    function it_can_be_created_from_array()
     {
         $config = Config::createFromArray($this->configParams);
 
@@ -159,7 +162,7 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function config_must_throw_exception_if_client_credentials_identifier_is_empty()
+    function it_throws_exception_if_client_credentials_identifier_is_empty()
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -173,7 +176,7 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function config_must_throw_exception_if_client_credentials_secret_is_empty()
+    function it_throws_exception_if_client_credentials_secret_is_empty()
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -187,7 +190,7 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function config_must_throw_exception_if_temporary_credentials_url_is_empty()
+    function it_throws_exception_if_temporary_credentials_url_is_empty()
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -201,7 +204,7 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function config_must_throw_exception_if_authorization_url_is_empty()
+    function it_throws_exception_if_authorization_url_is_empty()
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -215,7 +218,7 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function config_must_throw_exception_if_token_credentials_url_is_empty()
+    function it_throws_exception_if_token_credentials_url_is_empty()
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -229,7 +232,7 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function config_can_be_created_without_callback_uri()
+    function it_can_be_created_without_callback_uri()
     {
         $config = Config::createFromArray([
             'client_credentials_identifier' => $this->clientCredentialsIdentifier,
