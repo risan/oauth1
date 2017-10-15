@@ -103,6 +103,50 @@ class ProtocolParameterTest extends TestCase
     }
 
     /** @test */
+    function protocol_parameter_can_get_for_temporary_credentials()
+    {
+        $protocolParameter = $this->getStub([
+            'getBase',
+            'getSignature',
+        ]);
+
+        $protocolParameter
+            ->expects($this->once())
+            ->method('getBase')
+            ->willReturn(['foo' => 'bar']);
+
+        $this->configStub
+            ->expects($this->once())
+            ->method('hasCallbackUri')
+            ->willReturn(true);
+
+        $this->configStub
+            ->expects($this->once())
+            ->method('getCallbackUri')
+            ->willReturn('http://johndoe.com');
+
+        $this->configStub
+            ->expects($this->once())
+            ->method('getTemporaryCredentialsUri')
+            ->willReturn('http://example.com/request_token');
+
+        $protocolParameter
+            ->expects($this->once())
+            ->method('getSignature')
+            ->with(
+                ['foo' => 'bar', 'oauth_callback' => 'http://johndoe.com'],
+                'http://example.com/request_token'
+            )
+            ->willReturn('signature');
+
+        $this->assertSame([
+            'foo' => 'bar',
+            'oauth_callback' => 'http://johndoe.com',
+            'oauth_signature' => 'signature',
+        ], $protocolParameter->forTemporaryCredentials());
+    }
+
+    /** @test */
     function protocol_parameter_can_get_for_token_credentials()
     {
         $protocolParameter = $this->getStub([
