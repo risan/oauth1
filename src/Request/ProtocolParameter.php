@@ -128,7 +128,7 @@ class ProtocolParameter implements ProtocolParameterInterface
 
         $parameters['oauth_signature'] = $this->getSignature(
             $parameters,
-            $this->config->getTokenCredentialsUrl(),
+            $this->config->getTokenCredentialsUri(),
             $temporaryCredentials,
             $requestOptions
         );
