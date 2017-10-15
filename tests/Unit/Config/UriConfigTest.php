@@ -30,13 +30,13 @@ class UriConfigTest extends TestCase
     }
 
     /** @test */
-    function uri_config_can_get_parser()
+    function it_can_get_parser()
     {
         $this->assertInstanceOf(UriParserInterface::class, $this->uriConfig->getParser());
     }
 
     /** @test */
-    function uri_config_can_set_from_array()
+    function it_can_be_set_from_array()
     {
         $this->assertSame($this->uriConfig, $this->uriConfig->setFromArray([
             'base_uri' => 'http://example.net',
@@ -54,7 +54,7 @@ class UriConfigTest extends TestCase
     }
 
     /** @test */
-    function uri_config_can_validate_uris()
+    function it_can_validate_uris()
     {
         // Valid uris.
         $this->assertTrue($this->uriConfig->validateUris($this->uris));
@@ -65,7 +65,7 @@ class UriConfigTest extends TestCase
     }
 
     /** @test */
-    function uri_config_can_set_base()
+    function it_can_set_base()
     {
         $baseUri = $this->uriParser->toPsrUri('http://example.net');
         $this->assertSame($this->uriConfig, $this->uriConfig->setBase($baseUri));
@@ -73,7 +73,7 @@ class UriConfigTest extends TestCase
     }
 
     /** @test */
-    function uri_config_throws_exception_if_base_uri_is_relative()
+    function it_throws_exception_if_base_uri_is_relative()
     {
         $relativeUri = $this->uriParser->toPsrUri('/foo');
         $this->expectException(InvalidArgumentException::class);
@@ -81,14 +81,14 @@ class UriConfigTest extends TestCase
     }
 
     /** @test */
-    function uri_config_can_get_base()
+    function it_can_get_base()
     {
         $this->assertInstanceOf(UriInterface::class, $this->uriConfig->base());
         $this->assertEquals('http://example.com', (string) $this->uriConfig->base());
     }
 
     /** @test */
-    function uri_config_can_check_if_base_uri_is_set()
+    function it_can_check_if_base_uri_is_set()
     {
         // Has base URI.
         $this->assertTrue($this->uriConfig->hasBase());
@@ -104,35 +104,35 @@ class UriConfigTest extends TestCase
     }
 
     /** @test */
-    function uri_config_can_get_temporary_credentials()
+    function it_can_get_temporary_credentials()
     {
         $this->assertInstanceOf(UriInterface::class, $this->uriConfig->forTemporaryCredentials());
         $this->assertEquals('http://example.com/request_token', (string) $this->uriConfig->forTemporaryCredentials());
     }
 
     /** @test */
-    function uri_config_can_get_authorization()
+    function it_can_get_authorization()
     {
         $this->assertInstanceOf(UriInterface::class, $this->uriConfig->forAuthorization());
         $this->assertEquals('http://example.com/authorize', (string) $this->uriConfig->forAuthorization());
     }
 
     /** @test */
-    function uri_config_can_get_token_credentials()
+    function it_can_get_token_credentials()
     {
         $this->assertInstanceOf(UriInterface::class, $this->uriConfig->forTokenCredentials());
         $this->assertEquals('http://example.com/access_token', (string) $this->uriConfig->forTokenCredentials());
     }
 
     /** @test */
-    function uri_config_can_get_callback()
+    function it_can_get_callback()
     {
         $this->assertInstanceOf(UriInterface::class, $this->uriConfig->callback());
         $this->assertEquals('http://johndoe.com', (string) $this->uriConfig->callback());
     }
 
     /** @test */
-    function uri_config_can_check_if_callback_uri_is_set()
+    function it_can_check_if_callback_uri_is_set()
     {
         // Has base URI.
         $this->assertTrue($this->uriConfig->hasCallback());
@@ -148,7 +148,7 @@ class UriConfigTest extends TestCase
     }
 
     /** @test */
-    function uri_config_can_build_uri()
+    function it_can_build_uri()
     {
         // Resolve relative URI.
         $uri = $this->uriConfig->build('/foo');
@@ -168,7 +168,7 @@ class UriConfigTest extends TestCase
     }
 
     /** @test */
-    function uri_config_can_check_if_uri_should_be_resolved_to_absolute_uri()
+    function it_can_check_if_uri_should_be_resolved_to_absolute_uri()
     {
         // Resolve relative URI.
         $uri = $this->uriParser->toPsrUri('/foo');

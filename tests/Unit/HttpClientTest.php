@@ -23,19 +23,19 @@ class HttpClientTest extends TestCase
     }
 
     /** @test */
-    function http_client_is_an_instance_of_http_client_interface()
+    function it_implements_http_client_interface()
     {
         $this->assertInstanceOf(HttpClientInterface::class, $this->httpClient);
     }
 
     /** @test */
-    function http_client_can_get_guzzle_instance()
+    function it_can_get_guzzle_instance()
     {
         $this->assertInstanceOf(Guzzle::class, $this->httpClient->getGuzzle());
     }
 
     /** @test */
-    function http_client_can_create_and_send_http_request()
+    function it_can_create_and_send_http_request()
     {
         $this->guzzleStub->expects($this->once())
             ->method('request')
@@ -49,7 +49,7 @@ class HttpClientTest extends TestCase
     }
 
     /** @test */
-    function http_client_can_create_and_send_http_post_request()
+    function it_can_create_and_send_http_post_request()
     {
         $this->guzzleStub->expects($this->once())
             ->method('request')

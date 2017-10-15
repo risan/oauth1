@@ -36,43 +36,43 @@ class ProtocolParameterTest extends TestCase
     }
 
     /** @test */
-    function protocol_parameter_implements_protocol_parameter_interface()
+    function it_implements_protocol_parameter_interface()
     {
         $this->assertInstanceOf(ProtocolParameterInterface::class, $this->protocolParameter);
     }
 
     /** @test */
-    function protocol_parameter_can_get_config()
+    function it_can_get_config()
     {
         $this->assertSame($this->configStub, $this->protocolParameter->getConfig());
     }
 
     /** @test */
-    function protocol_parameter_can_get_signer()
+    function it_can_get_signer()
     {
         $this->assertSame($this->signerStub, $this->protocolParameter->getSigner());
     }
 
     /** @test */
-    function protocol_parameter_can_get_nonce_generator()
+    function it_can_get_nonce_generator()
     {
         $this->assertSame($this->nonceGeneratorStub, $this->protocolParameter->getNonceGenerator());
     }
 
     /** @test */
-    function protocol_parameter_can_get_current_timestamp()
+    function it_can_get_current_timestamp()
     {
         $this->assertEquals((new DateTime)->getTimestamp(), $this->protocolParameter->getCurrentTimestamp(), '' , 3);
     }
 
     /** @test */
-    function protocol_parameter_can_get_version()
+    function it_can_get_version()
     {
         $this->assertEquals('1.0', $this->protocolParameter->getVersion());
     }
 
     /** @test */
-    function protocol_parameter_can_get_base()
+    function it_can_get_base()
     {
         $protocolParameter = $this->getStub(['getCurrentTimestamp']);
 
@@ -106,7 +106,7 @@ class ProtocolParameterTest extends TestCase
     }
 
     /** @test */
-    function protocol_parameter_can_get_for_temporary_credentials()
+    function it_can_get_for_temporary_credentials()
     {
         $protocolParameter = $this->getStub([
             'getBase',
@@ -150,7 +150,7 @@ class ProtocolParameterTest extends TestCase
     }
 
     /** @test */
-    function protocol_parameter_can_get_for_token_credentials()
+    function it_can_get_for_token_credentials()
     {
         $protocolParameter = $this->getStub([
             'getBase',
@@ -185,7 +185,7 @@ class ProtocolParameterTest extends TestCase
     }
 
     /** @test */
-    function protocol_parameter_can_get_signature()
+    function it_can_get_signature()
     {
         $protocolParameter = $this->getStub(['signatureParameters', 'setupSigner']);
 
@@ -219,7 +219,7 @@ class ProtocolParameterTest extends TestCase
     }
 
     /** @test */
-    function protocol_parameter_can_get_signature_parameters()
+    function it_can_get_signature_parameters()
     {
         $this->assertEquals([
             'foo' => '1',
@@ -235,7 +235,7 @@ class ProtocolParameterTest extends TestCase
     }
 
     /** @test */
-    function protocol_parameter_can_setup_signer()
+    function it_can_setup_signer()
     {
         $signerStub = $this->createMock(KeyBasedSigner::class);
 
@@ -273,7 +273,7 @@ class ProtocolParameterTest extends TestCase
     }
 
      /** @test */
-    function protocol_parameter_can_check_if_signer_should_be_signed_with_client_credentials()
+    function it_can_check_if_signer_should_be_signed_with_client_credentials()
     {
         $this->signerStub
             ->expects($this->once())
@@ -284,7 +284,7 @@ class ProtocolParameterTest extends TestCase
     }
 
      /** @test */
-    function protocol_parameter_can_check_if_signer_should_not_be_signed_with_client_credentials()
+    function it_can_check_if_signer_should_not_be_signed_with_client_credentials()
     {
         $this->signerStub
             ->expects($this->once())
@@ -295,7 +295,7 @@ class ProtocolParameterTest extends TestCase
     }
 
     /** @test */
-    function protocol_parameter_can_check_if_signer_should_be_signed_with_server_issued_credentials()
+    function it_can_check_if_signer_should_be_signed_with_server_issued_credentials()
     {
         $this->signerStub
             ->expects($this->once())
@@ -306,7 +306,7 @@ class ProtocolParameterTest extends TestCase
     }
 
     /** @test */
-    function protocol_parameter_can_check_if_signer_should_not_be_signed_with_server_issued_credentials()
+    function it_can_check_if_signer_should_not_be_signed_with_server_issued_credentials()
     {
         $this->signerStub
             ->expects($this->once())
@@ -317,7 +317,7 @@ class ProtocolParameterTest extends TestCase
     }
 
     /** @test */
-    function protocol_parameter_can_check_if_request_options_has_the_given_key()
+    function it_can_check_if_request_options_has_the_given_key()
     {
         $this->assertTrue($this->protocolParameter->requestOptionsHas(['foo' => ['bar' => 'baz']], 'foo'));
         $this->assertFalse($this->protocolParameter->requestOptionsHas(['foo' => 'bar'], 'baz'));

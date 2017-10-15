@@ -22,7 +22,7 @@ class RequestConfigFactoryTest extends TestCase
     }
 
     /** @test */
-    function request_config_factory_can_create_request_config_instance()
+    function it_can_create_request_config_instance()
     {
         $this->assertInstanceOf(
             RequestConfigInterface::class,

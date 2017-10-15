@@ -24,37 +24,37 @@ class HmacSha1SignerTest extends TestCase
     }
 
     /** @test */
-    function hmac_sha1_signer_is_an_instance_of_signer_interface()
+    function it_is_implements_signer_interface()
     {
         $this->assertInstanceOf(SignerInterface::class, $this->hmacSha1Signer);
     }
 
     /** @test */
-    function hmac_sha1_signer_is_an_instance_of_base_string_signer_interface()
+    function it_is_an_instance_of_base_string_signer_interface()
     {
         $this->assertInstanceOf(BaseStringSignerInterface::class, $this->hmacSha1Signer);
     }
 
     /** @test */
-    function hmac_sha1_signer_is_an_instance_of_key_based_signer_interface()
+    function it_is_an_instance_of_key_based_signer_interface()
     {
         $this->assertInstanceOf(KeyBasedSignerInterface::class, $this->hmacSha1Signer);
     }
 
     /** @test */
-    function hmac_sha1_signer_can_get_valid_method()
+    function it_can_get_valid_method()
     {
         $this->assertEquals('HMAC-SHA1', $this->hmacSha1Signer->getMethod());
     }
 
      /** @test */
-    function hmac_sha1_signer_is_key_based()
+    function it_is_key_based()
     {
         $this->assertTrue($this->hmacSha1Signer->isKeyBased());
     }
 
     /** @test */
-    function hmac_sha1_signer_can_build_base_string()
+    function it_can_build_base_string()
     {
         $baseString = $this->hmacSha1Signer->buildBaseString('http://example.com/path', ['foo' => 'bar'], 'POST');
 
@@ -62,7 +62,7 @@ class HmacSha1SignerTest extends TestCase
     }
 
     /** @test */
-    function hmac_sha1_signer_can_set_and_get_client_credentials()
+    function it_can_set_and_get_client_credentials()
     {
         $this->assertNull($this->hmacSha1Signer->getClientCredentials());
 
@@ -72,7 +72,7 @@ class HmacSha1SignerTest extends TestCase
     }
 
     /** @test */
-    function hmac_sha1_signer_can_set_and_get_server_issued_credentials()
+    function it_can_set_and_get_server_issued_credentials()
     {
         $this->assertNull($this->hmacSha1Signer->getServerIssuedCredentials());
 
@@ -82,7 +82,7 @@ class HmacSha1SignerTest extends TestCase
     }
 
     /** @test */
-    function hmac_sha1_signer_can_get_valid_key()
+    function it_can_get_valid_key()
     {
         // No keys.
         $this->assertEquals('&', $this->hmacSha1Signer->getKey());
@@ -97,7 +97,7 @@ class HmacSha1SignerTest extends TestCase
     }
 
     /** @test */
-    function hmac_sha1_signer_can_hash_data()
+    function it_can_hash_data()
     {
         // Client credentials only.
         $this->hmacSha1Signer->setClientCredentials($this->clientCredentials);
@@ -109,7 +109,7 @@ class HmacSha1SignerTest extends TestCase
     }
 
     /** @test */
-    function hmac_sha1_signer_can_create_valid_signature()
+    function it_can_create_valid_signature()
     {
         // Client credentials only.
         $this->hmacSha1Signer->setClientCredentials($this->clientCredentials);

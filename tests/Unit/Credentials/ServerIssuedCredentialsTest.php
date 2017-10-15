@@ -16,19 +16,19 @@ class ServerIssuedCredentialsTest extends TestCase
     }
 
     /** @test */
-    function server_issued_credentials_must_be_an_instance_of_credentials_interface()
+    function it_implements_credentials_interface()
     {
         $this->assertInstanceOf(CredentialsInterface::class, $this->serverIssuedCredentialsStub);
     }
 
     /** @test */
-    function server_issued_credentials_can_get_identifier()
+    function it_can_get_identifier()
     {
         $this->assertEquals('foo', $this->serverIssuedCredentialsStub->getIdentifier());
     }
 
     /** @test */
-    function server_issued_credentials_can_get_secret()
+    function it_can_get_secret()
     {
         $this->assertEquals('bar', $this->serverIssuedCredentialsStub->getSecret());
     }

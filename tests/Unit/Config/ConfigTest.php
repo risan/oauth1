@@ -34,37 +34,37 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function config_implements_config_interface()
+    function it_implements_config_interface()
     {
         $this->assertInstanceOf(ConfigInterface::class, $this->config);
     }
 
     /** @test */
-    function config_can_get_client_credentials()
+    function it_can_get_client_credentials()
     {
         $this->assertSame($this->clientCredentials, $this->config->getClientCredentials());
     }
 
     /** @test */
-    function config_can_get_client_credentials_identifier()
+    function it_can_get_client_credentials_identifier()
     {
         $this->assertEquals('client_id', $this->config->getClientCredentialsIdentifier());
     }
 
     /** @test */
-    function config_can_get_client_credentials_secret()
+    function it_can_get_client_credentials_secret()
     {
         $this->assertEquals('client_secret', $this->config->getClientCredentialsSecret());
     }
 
     /** @test */
-    function config_can_get_uri()
+    function it_can_get_uri()
     {
         $this->assertSame($this->uriConfig, $this->config->getUri());
     }
 
     /** @test */
-    function config_can_get_temporary_credentials_uri()
+    function it_can_get_temporary_credentials_uri()
     {
         $uri = $this->config->getTemporaryCredentialsUri();
         $this->assertInstanceOf(UriInterface::class, $uri);
@@ -72,7 +72,7 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function config_can_get_authorization_uri()
+    function it_can_get_authorization_uri()
     {
         $uri = $this->config->getAuthorizationUri();
         $this->assertInstanceOf(UriInterface::class, $uri);
@@ -80,7 +80,7 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function config_can_get_token_credentials_uri()
+    function it_can_get_token_credentials_uri()
     {
         $uri = $this->config->getTokenCredentialsUri();
         $this->assertInstanceOf(UriInterface::class, $uri);
@@ -88,7 +88,7 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function config_can_get_callback_uri()
+    function it_can_get_callback_uri()
     {
         $uri = $this->config->getCallbackUri();
         $this->assertInstanceOf(UriInterface::class, $uri);
@@ -96,13 +96,13 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function config_can_check_if_callback_uri_is_set()
+    function it_can_check_if_callback_uri_is_set()
     {
         $this->assertTrue($this->config->hasCallbackUri());
     }
 
      /** @test */
-    function config_can_check_if_callback_uri_is_not_set()
+    function it_can_check_if_callback_uri_is_not_set()
     {
         $uriConfig = new UriConfig([
             'base_uri' => 'http://example.com',

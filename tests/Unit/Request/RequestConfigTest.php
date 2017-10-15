@@ -48,37 +48,37 @@ class RequestConfigTest extends TestCase
     }
 
     /** @test */
-    function request_config_implements_request_config_interface()
+    function it_implements_request_config_interface()
     {
         $this->assertInstanceOf(RequestConfigInterface::class, $this->requestConfig);
     }
 
     /** @test */
-    function request_config_can_get_config()
+    function it_can_get_config()
     {
         $this->assertSame($this->configStub, $this->requestConfig->getConfig());
     }
 
     /** @test */
-    function request_config_can_get_signer()
+    function it_can_get_signer()
     {
         $this->assertSame($this->signerStub, $this->requestConfig->getSigner());
     }
 
     /** @test */
-    function request_config_can_get_nonce_generator()
+    function it_can_get_nonce_generator()
     {
         $this->assertSame($this->nonceGeneratorStub, $this->requestConfig->getNonceGenerator());
     }
 
     /** @test */
-    function request_config_can_get_current_timestamp()
+    function it_can_get_current_timestamp()
     {
         $this->assertEquals((new DateTime)->getTimestamp(), $this->requestConfig->getCurrentTimestamp(), '' , 3);
     }
 
     /** @test */
-    function request_config_can_get_temporary_credentials_url()
+    function it_can_get_temporary_credentials_url()
     {
         $this->configStub
             ->expects($this->once())
@@ -89,7 +89,7 @@ class RequestConfigTest extends TestCase
     }
 
     /** @test */
-    function request_config_can_get_token_credentials_url()
+    function it_can_get_token_credentials_url()
     {
         $this->configStub
             ->expects($this->once())
@@ -100,7 +100,7 @@ class RequestConfigTest extends TestCase
     }
 
     /** @test */
-    function request_config_can_get_base_protocol_parameters()
+    function it_can_get_base_protocol_parameters()
     {
         $requestConfigStub = $this->getStub(['getCurrentTimestamp']);
 
@@ -134,7 +134,7 @@ class RequestConfigTest extends TestCase
     }
 
     /** @test */
-    function request_config_can_add_signature_parameter()
+    function it_can_add_signature_parameter()
     {
         $parameters = ['oauth_consumer_key' => 'client_id'];
         $formParams = ['name' => 'john'];
@@ -161,7 +161,7 @@ class RequestConfigTest extends TestCase
     }
 
     /** @test */
-    function request_config_can_normalize_protocol_parameter()
+    function it_can_normalize_protocol_parameter()
     {
         $this->assertEquals(
             'OAuth foo="bar"',
@@ -179,7 +179,7 @@ class RequestConfigTest extends TestCase
     }
 
     /** @test */
-    function request_config_can_check_request_options_key()
+    function it_can_check_request_options_key()
     {
         // Key not found.
         $this->assertFalse(
@@ -202,7 +202,7 @@ class RequestConfigTest extends TestCase
     }
 
     /** @test */
-    function request_config_can_append_query_parameters_to_uri()
+    function it_can_append_query_parameters_to_uri()
     {
         // The given URI without query.
         $this->assertEquals('http://example.com?name=john&age=20',
@@ -222,7 +222,7 @@ class RequestConfigTest extends TestCase
     }
 
     /** @test */
-    function request_config_can_get_temporary_credentials_authorization_header()
+    function it_can_get_temporary_credentials_authorization_header()
     {
         $this->requestConfigStub
             ->expects($this->once())
@@ -268,7 +268,7 @@ class RequestConfigTest extends TestCase
     }
 
     /** @test */
-    function request_config_can_build_authorization_url()
+    function it_can_build_authorization_url()
     {
         $this->configStub
             ->expects($this->once())
@@ -287,7 +287,7 @@ class RequestConfigTest extends TestCase
     }
 
     /** @test */
-    function request_config_can_get_token_credentials_authorization_header()
+    function it_can_get_token_credentials_authorization_header()
     {
         $this->requestConfigStub
             ->expects($this->once())

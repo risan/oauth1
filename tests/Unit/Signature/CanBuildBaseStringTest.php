@@ -16,13 +16,13 @@ class CanBuildBaseStringTest extends TestCase
     }
 
     /** @test */
-    function can_build_base_string_trait_can_get_base_string_builder_interface_instance()
+    function it_can_get_base_string_builder_interface_instance()
     {
         $this->assertInstanceOf(BaseStringBuilderInterface::class, $this->canBuildBaseStringStub->getBaseStringBuilder());
     }
 
     /** @test */
-    function can_build_base_string_trait_can_build_base_string()
+    function it_can_build_base_string()
     {
         $baseString = $this->canBuildBaseStringStub->buildBaseString('http://example.com/path', ['foo' => 'bar'], 'POST');
 

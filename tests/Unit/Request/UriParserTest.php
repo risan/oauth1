@@ -20,13 +20,13 @@ class UriParserTest extends TestCase
     }
 
     /** @test */
-    function uri_parser_implements_uri_parser_interface()
+    function it_implements_uri_parser_interface()
     {
         $this->assertInstanceOf(UriParserInterface::class, $this->uriParser);
     }
 
      /** @test */
-    function uri_parser_can_parse_to_psr_uri()
+    function it_can_parse_to_psr_uri()
     {
         $this->assertSame($this->psrUriStub, $this->uriParser->toPsrUri($this->psrUriStub));
 
@@ -34,7 +34,7 @@ class UriParserTest extends TestCase
     }
 
      /** @test */
-    function uri_parser_will_throw_invalid_argument_exception_when_converting_invalid_type()
+    function it_throws_invalid_argument_exception_when_converting_invalid_type()
     {
         // Boolean.
         $this->expectException(InvalidArgumentException::class);
@@ -50,35 +50,35 @@ class UriParserTest extends TestCase
     }
 
     /** @test */
-    function uri_parser_can_check_if_uri_is_absolute()
+    function it_can_check_if_uri_is_absolute()
     {
         $absoluteUri = $this->uriParser->toPsrUri('http://example.com');
         $this->assertTrue($this->uriParser->isAbsolute($absoluteUri));
     }
 
     /** @test */
-    function uri_parser_can_check_if_uri_is_not_absolute()
+    function it_can_check_if_uri_is_not_absolute()
     {
         $relativeUri = $this->uriParser->toPsrUri('/foo');
         $this->assertFalse($this->uriParser->isAbsolute($relativeUri));
     }
 
     /** @test */
-    function uri_parser_can_check_if_scheme_is_missing()
+    function it_can_check_if_scheme_is_missing()
     {
         $missingScheme = $this->uriParser->toPsrUri('http://example.com')->withScheme('');
         $this->assertTrue($this->uriParser->isMissingScheme($missingScheme));
     }
 
     /** @test */
-    function uri_parser_can_check_if_scheme_is_not_missing()
+    function it_can_check_if_scheme_is_not_missing()
     {
         $withScheme = $this->uriParser->toPsrUri('http://example.com');
         $this->assertFalse($this->uriParser->isMissingScheme($withScheme));
     }
 
     /** @test */
-    function uri_parser_can_be_built_from_parts()
+    function it_can_be_built_from_parts()
     {
         $uri = $this->uriParser->buildFromParts([
             'scheme' => 'http',
@@ -93,7 +93,7 @@ class UriParserTest extends TestCase
     }
 
     /** @test */
-    function uri_parser_can_resolve_relative_uri()
+    function it_can_resolve_relative_uri()
     {
         $baseUri = $this->uriParser->toPsrUri('http://example.com');
         $relativeUri = $this->uriParser->toPsrUri('/foo');
@@ -101,7 +101,7 @@ class UriParserTest extends TestCase
     }
 
     /** @test */
-    function uri_parser_can_resolve_absolute_uri()
+    function it_can_resolve_absolute_uri()
     {
         $baseUri = $this->uriParser->toPsrUri('http://example.com');
         $absoluteUri = $this->uriParser->toPsrUri('http://foo.bar/baz');

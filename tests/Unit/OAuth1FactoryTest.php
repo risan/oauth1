@@ -23,7 +23,7 @@ class OAuth1FactoryTest extends TestCase
     }
 
     /** @test */
-    function oauth1_factory_can_create_oauth1_instance()
+    function it_can_create_oauth1_instance()
     {
         $this->assertInstanceOf(OAuth1::class, OAuth1Factory::create($this->configParams));
     }

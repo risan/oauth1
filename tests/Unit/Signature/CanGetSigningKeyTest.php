@@ -20,13 +20,13 @@ class CanGetSigningKeyTest extends TestCase
     }
 
     /** @test */
-    function can_get_signing_key_trait_is_key_based()
+    function it_is_key_based()
     {
         $this->assertTrue($this->canGetSigningKeyStub->isKeyBased());
     }
 
     /** @test */
-    function can_get_signing_key_trait_can_set_and_get_client_credentials()
+    function it_can_set_and_get_client_credentials()
     {
         $this->assertNull($this->canGetSigningKeyStub->getClientCredentials());
 
@@ -36,7 +36,7 @@ class CanGetSigningKeyTest extends TestCase
     }
 
     /** @test */
-    function can_get_signing_key_trait_can_set_and_get_server_issued_credentials()
+    function it_can_set_and_get_server_issued_credentials()
     {
         $this->assertNull($this->canGetSigningKeyStub->getServerIssuedCredentials());
 
@@ -46,7 +46,7 @@ class CanGetSigningKeyTest extends TestCase
     }
 
     /** @test */
-    function can_get_signing_key_trait_can_get_valid_key()
+    function it_can_get_valid_key()
     {
         // Without any key.
         $this->assertEquals('&', $this->canGetSigningKeyStub->getKey());

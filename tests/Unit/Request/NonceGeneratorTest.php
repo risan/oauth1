@@ -16,13 +16,13 @@ class NonceGeneratorTest extends TestCase
     }
 
     /** @test */
-    function nonce_generator_is_an_instance_of_nonce_generator_interface()
+    function it_implements_nonce_generator_interface()
     {
         $this->assertInstanceOf(NonceGeneratorInterface::class, $this->nonceGenerator);
     }
 
     /** @test */
-    function nonce_generator_can_generate_base_64_encoded_random_bytes()
+    function it_can_generate_base_64_encoded_random_bytes()
     {
         // Must be a string.
         $this->assertInternalType('string', $this->nonceGenerator->base64EncodedRandomBytes(10));
@@ -38,13 +38,13 @@ class NonceGeneratorTest extends TestCase
     }
 
     /** @test */
-    function nonce_generator_can_extract_alpha_numeric_from_base_64_encoded_string()
+    function it_can_extract_alpha_numeric_from_base_64_encoded_string()
     {
         $this->assertEquals('foobarbaz', $this->nonceGenerator->extractAlphaNumericFromBase64EncodedString('foo+bar/baz='));
     }
 
     /** @test */
-    function nonce_generator_can_generate_random_string()
+    function it_can_generate_random_string()
     {
         // Must be alphanumeric with 32 characters.
         $this->assertRegExp('/^[\w]{32}$/', $this->nonceGenerator->generate(32));

@@ -16,19 +16,19 @@ class ClientCredentialsTest extends TestCase
     }
 
     /** @test */
-    function client_credentials_must_be_an_instance_of_credentials_interface()
+    function it_must_be_an_instance_of_credentials_interface()
     {
         $this->assertInstanceOf(CredentialsInterface::class, $this->clientCredentials);
     }
 
     /** @test */
-    function client_credentials_can_get_identifier()
+    function it_can_get_identifier()
     {
         $this->assertEquals('foo', $this->clientCredentials->getIdentifier());
     }
 
     /** @test */
-    function client_credentials_can_get_secret()
+    function it_can_get_secret()
     {
         $this->assertEquals('bar', $this->clientCredentials->getSecret());
     }
