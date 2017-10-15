@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\ConfigInterface;
 use Risan\OAuth1\Credentials\ClientCredentials;
 
-class ConfigTest extends TestCase
+class OldConfigTest extends TestCase
 {
     private $clientCredentialsIdentifier;
     private $clientCredentialsSecret;
