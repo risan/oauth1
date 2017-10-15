@@ -110,7 +110,7 @@ class ProtocolParameter implements ProtocolParameterInterface
             $parameters['oauth_callback'] = $this->config->getCallbackUri();
         }
 
-        $parameters['oauth_signature'] = $this->getSignature($parameters, $this->config->getTemporaryCredentialsUrl());
+        $parameters['oauth_signature'] = $this->getSignature($parameters, $this->config->getTemporaryCredentialsUri());
 
         return $parameters;
     }
