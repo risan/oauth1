@@ -2,6 +2,8 @@
 
 namespace Risan\OAuth1\Signature;
 
+use Risan\OAuth1\Request\UriParser;
+
 trait CanBuildBaseString
 {
     /**
@@ -35,6 +37,6 @@ trait CanBuildBaseString
             return $this->baseStringBuilder;
         }
 
-        return $this->baseStringBuilder = new BaseStringBuilder;
+        return $this->baseStringBuilder = new BaseStringBuilder(new UriParser);
     }
 }

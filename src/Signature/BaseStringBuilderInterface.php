@@ -7,6 +7,13 @@ use Psr\Http\Message\UriInterface;
 interface BaseStringBuilderInterface
 {
     /**
+     * Get the UriParserInterface instance.
+     *
+     * @return \Risan\OAuth1\Request\UriParserInterface
+     */
+    public function getUriParser();
+
+    /**
      * Build the signature base string.
      *
      * @param string $httpMethod
