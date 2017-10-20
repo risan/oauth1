@@ -196,10 +196,7 @@ class UriConfig implements UriConfigInterface
     }
 
     /**
-     * Parse and build the given URI.
-     *
-     * @param  \Psr\Http\Message\UriInterface|string $uri
-     * @return \Psr\Http\Message\UriInterface
+     * {@inheritDoc}
      */
     public function build($uri)
     {
