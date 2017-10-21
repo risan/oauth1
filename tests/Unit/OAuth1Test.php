@@ -5,6 +5,7 @@ namespace Risan\OAuth1\Test\Unit;
 use Risan\OAuth1\OAuth1;
 use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\OAuth1Interface;
+use Psr\Http\Message\UriInterface;
 use Risan\OAuth1\HttpClientInterface;
 use Psr\Http\Message\ResponseInterface;
 use Risan\OAuth1\Request\RequestInterface;
@@ -21,6 +22,7 @@ class OAuth1Test extends TestCase
     private $oauth1;
     private $requestStub;
     private $responseStub;
+    private $psrUriStub;
 
     function setUp()
     {
@@ -30,6 +32,7 @@ class OAuth1Test extends TestCase
         $this->temporaryCredentialsStub = $this->createMock(TemporaryCredentials::class);
         $this->requestStub = $this->createMock(RequestInterface::class);
         $this->responseStub = $this->createMock(ResponseInterface::class);
+        $this->psrUriStub = $this->createMock(UriInterface::class);
         $this->oauth1 = new OAuth1($this->httpClientStub, $this->requestFactoryStub, $this->credentialsFactoryStub);
     }
 
@@ -78,5 +81,25 @@ class OAuth1Test extends TestCase
             ->willReturn($this->temporaryCredentialsStub);
 
         $this->assertSame($this->temporaryCredentialsStub, $this->oauth1->getTemporaryCredentials());
+    }
+
+    /** @test */
+    function it_can_build_authorization_uri()
+    {
+        $this->requestFactoryStub
+            ->expects($this->once())
+            ->method('buildAuthorizationUri')
+            ->with($this->temporaryCredentialsStub)
+            ->willReturn($this->psrUriStub);
+
+        $this->psrUriStub
+            ->expects($this->once())
+            ->method('__toString')
+            ->willReturn('http://example.com');
+
+        $this->assertEquals(
+            'http://example.com',
+            $this->oauth1->buildAuthorizationUri($this->temporaryCredentialsStub)
+        );
     }
 }
