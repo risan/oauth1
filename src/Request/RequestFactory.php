@@ -71,6 +71,17 @@ class RequestFactory implements RequestFactoryInterface
     /**
      * {@inheritDoc}
      */
+    public function buildAuthorizationUri(TemporaryCredentials $temporaryCredentials)
+    {
+        return $this->uriParser->appendQueryParameters(
+            $this->getConfig()->getAuthorizationUri(),
+            ['oauth_token' => $temporaryCredentials->getIdentifier()]
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function createForTokenCredentials(TemporaryCredentials $temporaryCredentials, $verificationCode)
     {
         return $this->create('POST', $this->getConfig()->getTokenCredentialsUri(), [

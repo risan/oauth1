@@ -35,6 +35,14 @@ interface RequestFactoryInterface
     public function createForTemporaryCredentials();
 
     /**
+     * Build the authorization URI.
+     *
+     * @param  \Risan\OAuth1\Credentials\TemporaryCredentials $temporaryCredentials
+     * @return \Psr\Http\Message\UriInterface
+     */
+    public function buildAuthorizationUri(TemporaryCredentials $temporaryCredentials);
+
+    /**
      * Create request for obtaining token credentials.
      *
      * @param  \Risan\OAuth1\Credentials\TemporaryCredentials $temporaryCredentials
