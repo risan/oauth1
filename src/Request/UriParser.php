@@ -44,6 +44,18 @@ class UriParser implements UriParserInterface
     /**
      * {@inheritDoc}
      */
+    public function appendQueryParameters(UriInterface $uri, array $parameters = [])
+    {
+        parse_str($uri->getQuery(), $existedParameters);
+
+        $mergedParameters = array_merge($existedParameters, $parameters);
+
+        return $uri->withQuery(http_build_query($mergedParameters));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function toPsrUri($uri)
     {
         if ($uri instanceof UriInterface) {

@@ -40,6 +40,15 @@ interface UriParserInterface
     public function resolve(UriInterface $baseUri, UriInterface $uri);
 
     /**
+     * Append query parameters to the URI.
+     *
+     * @param  \Psr\Http\Message\UriInterface $uri
+     * @param  array $parameters
+     * @return \Psr\Http\Message\UriInterface
+     */
+    public function appendQueryParameters(UriInterface $uri, array $parameters = []);
+
+    /**
      * Parse the given uri to the PSR URIInterface instance.
      *
      * @param  \Psr\Http\Message\UriInterface|string $uri
