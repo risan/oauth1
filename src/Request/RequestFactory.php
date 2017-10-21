@@ -14,13 +14,22 @@ class RequestFactory implements RequestFactoryInterface
     protected $authorizationHeader;
 
     /**
+     * The UriParserInterface instance.
+     *
+     * @var \Risan\OAuth1\Request\UriParserInterface
+     */
+    protected $uriParser;
+
+    /**
      * Create the new instance of RequestFactory class.
      *
      * @param \Risan\OAuth1\Request\AuthorizationHeaderInterface $authorizationHeader
+     * @param \Risan\OAuth1\Request\UriParserInterface $uriParser
      */
-    public function __construct(AuthorizationHeaderInterface $authorizationHeader)
+    public function __construct(AuthorizationHeaderInterface $authorizationHeader, UriParserInterface $uriParser)
     {
         $this->authorizationHeader = $authorizationHeader;
+        $this->uriParser = $uriParser;
     }
 
     /**
@@ -31,12 +40,20 @@ class RequestFactory implements RequestFactoryInterface
         return $this->authorizationHeader;
     }
 
-   /**
+    /**
      * {@inheritDoc}
      */
     public function getConfig()
     {
         return $this->authorizationHeader->getConfig();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUriParser()
+    {
+        return $this->uriParser;
     }
 
     /**

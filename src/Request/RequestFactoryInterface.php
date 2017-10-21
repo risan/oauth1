@@ -21,6 +21,13 @@ interface RequestFactoryInterface
     public function getConfig();
 
     /**
+     * Get the UriParserInterface instance.
+     *
+     * @return \Risan\OAuth1\Request\UriParserInterface
+     */
+    public function getUriParser();
+
+    /**
      * Create request for obtaining temporary credentials.
      *
      * @return \Risan\OAuth1\Request\RequestInterface

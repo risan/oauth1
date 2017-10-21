@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\Config\ConfigInterface;
 use Risan\OAuth1\Request\RequestFactory;
 use Risan\OAuth1\Request\RequestInterface;
+use Risan\OAuth1\Request\UriParserInterface;
 use Risan\OAuth1\Request\RequestFactoryInterface;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
 use Risan\OAuth1\Request\AuthorizationHeaderInterface;
@@ -13,6 +14,7 @@ use Risan\OAuth1\Request\AuthorizationHeaderInterface;
 class RequestFactoryTest extends TestCase
 {
     private $authorizationHeaderStub;
+    private $uriParserStub;
     private $configStub;
     private $requestFactory;
     private $requestFactoryStub;
@@ -22,13 +24,14 @@ class RequestFactoryTest extends TestCase
     function setUp()
     {
         $this->authorizationHeaderStub = $this->createMock(AuthorizationHeaderInterface::class);
+        $this->uriParserStub = $this->createMock(UriParserInterface::class);
         $this->configStub = $this->createMock(ConfigInterface::class);
-        $this->requestFactory = new RequestFactory($this->authorizationHeaderStub);
+        $this->requestFactory = new RequestFactory($this->authorizationHeaderStub, $this->uriParserStub);
         $this->requestStub = $this->createMock(RequestInterface::class);
         $this->temporaryCredentialsStub = $this->createMock(TemporaryCredentials::class);
 
         $this->requestFactoryStub = $this->getMockBuilder(RequestFactory::class)
-            ->setConstructorArgs([$this->authorizationHeaderStub])
+            ->setConstructorArgs([$this->authorizationHeaderStub, $this->uriParserStub])
             ->setMethods(['getConfig', 'create'])
             ->disableOriginalClone()
             ->disableArgumentCloning()
@@ -46,6 +49,12 @@ class RequestFactoryTest extends TestCase
     function it_can_get_authorization_header()
     {
         $this->assertSame($this->authorizationHeaderStub, $this->requestFactory->getAuthorizationHeader());
+    }
+
+    /** @test */
+    function it_can_get_uri_parser()
+    {
+        $this->assertSame($this->uriParserStub, $this->requestFactory->getUriParser());
     }
 
     /** @test */
