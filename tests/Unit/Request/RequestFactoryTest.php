@@ -85,7 +85,7 @@ class RequestFactoryTest extends TestCase
             ])
             ->willReturn($this->requestStub);
 
-        $this->assertSame($this->requestStub, $this->requestFactoryStub->forTemporaryCredentials());
+        $this->assertSame($this->requestStub, $this->requestFactoryStub->createForTemporaryCredentials());
     }
 
     /** @test */
@@ -118,7 +118,7 @@ class RequestFactoryTest extends TestCase
 
         $this->assertSame(
             $this->requestStub,
-            $this->requestFactoryStub->forTokenCredentials($this->temporaryCredentialsStub, 'verification_code')
+            $this->requestFactoryStub->createForTokenCredentials($this->temporaryCredentialsStub, 'verification_code')
         );
     }
 }
