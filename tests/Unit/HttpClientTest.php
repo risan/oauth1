@@ -44,7 +44,7 @@ class HttpClientTest extends TestCase
     }
 
     /** @test */
-    function it_can_create_and_send_http_request()
+    function it_can_send_request()
     {
         $this->guzzleStub
             ->expects($this->once())
@@ -59,7 +59,7 @@ class HttpClientTest extends TestCase
     }
 
     /** @test */
-    function it_can_create_and_send_http_post_request()
+    function it_can_send_post_request()
     {
         $this->httpClientStub
             ->expects($this->once())
