@@ -8,10 +8,12 @@ use PHPUnit\Framework\TestCase;
 use GuzzleHttp\Client as Guzzle;
 use Risan\OAuth1\HttpClientInterface;
 use Psr\Http\Message\ResponseInterface;
+use Risan\OAuth1\Request\RequestConfigInterface;
 
 class HttpClientTest extends TestCase
 {
     private $guzzleStub;
+    private $requestConfigStub;
     private $responseStub;
     private $httpClient;
     private $httpClientStub;
@@ -20,6 +22,7 @@ class HttpClientTest extends TestCase
     {
         $this->guzzleStub = $this->createMock(Guzzle::class);
         $this->responseStub = $this->createMock(Response::class);
+        $this->requestConfigStub = $this->createMock(RequestConfigInterface::class);
         $this->httpClient = new HttpClient($this->guzzleStub);
 
         $this->httpClientStub = $this->getMockBuilder(HttpClient::class)
@@ -55,6 +58,36 @@ class HttpClientTest extends TestCase
         $this->assertInstanceOf(
             ResponseInterface::class,
             $this->httpClient->request('POST', 'http://example.com', ['foo' => 'bar'])
+        );
+    }
+
+    /** @test */
+    function it_can_send_request_with_request_config()
+    {
+        $this->requestConfigStub
+            ->expects($this->once())
+            ->method('getMethod')
+            ->willReturn('POST');
+
+        $this->requestConfigStub
+            ->expects($this->once())
+            ->method('getUri')
+            ->willReturn('http://example.com');
+
+        $this->requestConfigStub
+            ->expects($this->once())
+            ->method('getOptions')
+            ->willReturn(['foo' => 'bar']);
+
+        $this->httpClientStub
+            ->expects($this->once())
+            ->method('request')
+            ->with('POST', 'http://example.com', ['foo' => 'bar'])
+            ->willReturn($this->responseStub);
+
+        $this->assertInstanceOf(
+            ResponseInterface::class,
+            $this->httpClientStub->send($this->requestConfigStub)
         );
     }
 
