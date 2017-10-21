@@ -2,7 +2,7 @@
 
 namespace Risan\OAuth1\Request;
 
-class RequestConfig implements RequestConfigInterface
+class Request implements RequestInterface
 {
     /**
      * The request HTTP method.
@@ -26,7 +26,7 @@ class RequestConfig implements RequestConfigInterface
     protected $options;
 
     /**
-     * Create the new instance of RequestConfig class.
+     * Create a new instance of Request class.
      *
      * @param string $method
      * @param string $uri

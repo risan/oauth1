@@ -2,7 +2,7 @@
 
 namespace Risan\OAuth1;
 
-use Risan\OAuth1\Request\RequestConfigInterface;
+use Risan\OAuth1\Request\RequestInterface;
 
 interface HttpClientInterface
 {
@@ -19,10 +19,10 @@ interface HttpClientInterface
     /**
      * Send HTTP request.
      *
-     * @param  \Risan\OAuth1\Request\RequestConfigInterface $requestConfig
+     * @param  \Risan\OAuth1\Request\RequestInterface $request
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function send(RequestConfigInterface $requestConfig);
+    public function send(RequestInterface $request);
 
     /**
      * Create and send HTTP POST request.

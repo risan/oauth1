@@ -2,7 +2,7 @@
 
 namespace Risan\OAuth1\Request;
 
-interface RequestConfigInterface
+interface RequestInterface
 {
     /**
      * Get the request HTTP method.
