@@ -27,6 +27,17 @@ class AuthorizationHeaderTest extends TestCase
     }
 
     /** @test */
+    function it_can_get_config()
+    {
+        $this->protocolParameterStub
+            ->expects($this->once())
+            ->method('getConfig')
+            ->willReturn(['foo' => 'bar']);
+
+        $this->assertSame(['foo' => 'bar'], $this->authorizationHeader->getConfig());
+    }
+
+    /** @test */
     function it_can_normalize_protocol_parameters()
     {
         $parameters = [
