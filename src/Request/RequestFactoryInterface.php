@@ -25,7 +25,7 @@ interface RequestFactoryInterface
      *
      * @return \Risan\OAuth1\Request\RequestInterface
      */
-    public function forTemporaryCredentials();
+    public function createForTemporaryCredentials();
 
     /**
      * Create request for obtaining token credentials.
@@ -34,5 +34,5 @@ interface RequestFactoryInterface
      * @param  string $verificationCode
      * @return \Risan\OAuth1\Request\RequestInterface
      */
-    public function forTokenCredentials(TemporaryCredentials $temporaryCredentials, $verificationCode);
+    public function createForTokenCredentials(TemporaryCredentials $temporaryCredentials, $verificationCode);
 }

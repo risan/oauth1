@@ -42,7 +42,7 @@ class RequestFactory implements RequestFactoryInterface
     /**
      * {@inheritDoc}
      */
-    public function forTemporaryCredentials()
+    public function createForTemporaryCredentials()
     {
         return $this->create('POST', $this->getConfig()->getTemporaryCredentialsUri(), [
             'headers' => [
@@ -54,7 +54,7 @@ class RequestFactory implements RequestFactoryInterface
     /**
      * {@inheritDoc}
      */
-    public function forTokenCredentials(TemporaryCredentials $temporaryCredentials, $verificationCode)
+    public function createForTokenCredentials(TemporaryCredentials $temporaryCredentials, $verificationCode)
     {
         return $this->create('POST', $this->getConfig()->getTokenCredentialsUri(), [
             'headers' => [
