@@ -7,18 +7,18 @@ use Risan\OAuth1\Credentials\TemporaryCredentials;
 interface RequestFactoryInterface
 {
     /**
-     * Get the ConfigInterface instance.
-     *
-     * @return \Risan\OAuth1\Config\ConfigInterface
-     */
-    public function getConfig();
-
-    /**
      * Get the AuthorizationHeaderInterface instance.
      *
      * @return \Risan\OAuth1\Request\AuthorizationHeaderInterface
      */
     public function getAuthorizationHeader();
+
+    /**
+     * Get the ConfigInterface instance.
+     *
+     * @return \Risan\OAuth1\Config\ConfigInterface
+     */
+    public function getConfig();
 
     /**
      * Create request for obtaining temporary credentials.
