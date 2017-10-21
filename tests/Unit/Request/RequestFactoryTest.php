@@ -3,6 +3,7 @@
 namespace Risan\OAuth1\Test\Unit\Request;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\UriInterface;
 use Risan\OAuth1\Config\ConfigInterface;
 use Risan\OAuth1\Request\RequestFactory;
 use Risan\OAuth1\Request\RequestInterface;
@@ -20,6 +21,7 @@ class RequestFactoryTest extends TestCase
     private $requestFactoryStub;
     private $requestStub;
     private $temporaryCredentialsStub;
+    private $psrUriStub;
 
     function setUp()
     {
@@ -29,6 +31,7 @@ class RequestFactoryTest extends TestCase
         $this->requestFactory = new RequestFactory($this->authorizationHeaderStub, $this->uriParserStub);
         $this->requestStub = $this->createMock(RequestInterface::class);
         $this->temporaryCredentialsStub = $this->createMock(TemporaryCredentials::class);
+        $this->psrUriStub = $this->createMock(UriInterface::class);
 
         $this->requestFactoryStub = $this->getMockBuilder(RequestFactory::class)
             ->setConstructorArgs([$this->authorizationHeaderStub, $this->uriParserStub])
@@ -95,6 +98,36 @@ class RequestFactoryTest extends TestCase
             ->willReturn($this->requestStub);
 
         $this->assertSame($this->requestStub, $this->requestFactoryStub->createForTemporaryCredentials());
+    }
+
+    /** @test */
+    function it_can_build_authorization_uri()
+    {
+        $this->requestFactoryStub
+            ->expects($this->once())
+            ->method('getConfig')
+            ->willReturn($this->configStub);
+
+        $this->configStub
+            ->expects($this->once())
+            ->method('getAuthorizationUri')
+            ->willReturn($this->psrUriStub);
+
+        $this->temporaryCredentialsStub
+            ->expects($this->once())
+            ->method('getIdentifier')
+            ->willReturn('temporary_id');
+
+        $this->uriParserStub
+            ->expects($this->once())
+            ->method('appendQueryParameters')
+            ->with($this->psrUriStub, ['oauth_token' => 'temporary_id'])
+            ->willReturn($this->psrUriStub);
+
+        $this->assertSame(
+            $this->psrUriStub,
+            $this->requestFactoryStub->buildAuthorizationUri($this->temporaryCredentialsStub)
+        );
     }
 
     /** @test */
