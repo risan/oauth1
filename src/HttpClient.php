@@ -3,6 +3,7 @@
 namespace Risan\OAuth1;
 
 use GuzzleHttp\Client as Guzzle;
+use Risan\OAuth1\Request\RequestInterface;
 
 class HttpClient implements HttpClientInterface
 {
@@ -32,6 +33,18 @@ class HttpClient implements HttpClientInterface
     public function request($method, $uri, array $options = [])
     {
         return $this->guzzle->request($method, $uri, $options);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function send(RequestInterface $request)
+    {
+        return $this->request(
+            $request->getMethod(),
+            $request->getUri(),
+            $request->getOptions()
+        );
     }
 
     /**

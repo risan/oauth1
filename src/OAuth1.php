@@ -3,26 +3,25 @@
 namespace Risan\OAuth1;
 
 use InvalidArgumentException;
-use Risan\OAuth1\Credentials\ClientCredentials;
-use Risan\OAuth1\Request\RequestConfigInterface;
+use Risan\OAuth1\Request\RequestFactoryInterface;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
 use Risan\OAuth1\Credentials\CredentialsFactoryInterface;
 
 class OAuth1 implements OAuth1Interface
 {
     /**
-     * The RequestConfigInterface instance.
-     *
-     * @var \Risan\OAuth1\Request\RequestConfigInterface
-     */
-    protected $requestConfig;
-
-    /**
      * The HttpClientInterface instance.
      *
      * @var \Risan\OAuth1\HttpClientInterface
      */
     protected $httpClient;
+
+    /**
+     * The RequestFactoryInterface instance.
+     *
+     * @var \Risan\OAuth1\Request\RequestFactoryInterface
+     */
+    protected $requestFactory;
 
     /**
      * The CredentialsFactoryInterface instance.
@@ -34,23 +33,15 @@ class OAuth1 implements OAuth1Interface
     /**
      * Create a new OAuth1 instance.
      *
-     * @param \Risan\OAuth1\Request\RequestConfigInterface $requestConfig
      * @param \Risan\OAuth1\HttpClientInterface $httpClient
+     * @param \Risan\OAuth1\Request\RequestFactoryInterface $request
      * @param \Risan\OAuth1\Credentials\CredentialsFactoryInterface $credentialsFactory
      */
-    public function __construct(RequestConfigInterface $requestConfig, HttpClientInterface $httpClient, CredentialsFactoryInterface $credentialsFactory)
+    public function __construct(HttpClientInterface $httpClient, RequestFactoryInterface $requestFactory, CredentialsFactoryInterface $credentialsFactory)
     {
-        $this->requestConfig = $requestConfig;
         $this->httpClient = $httpClient;
+        $this->requestFactory = $requestFactory;
         $this->credentialsFactory = $credentialsFactory;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getRequestConfig()
-    {
-        return $this->requestConfig;
     }
 
     /**
@@ -59,6 +50,14 @@ class OAuth1 implements OAuth1Interface
     public function getHttpClient()
     {
         return $this->httpClient;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getRequestFactory()
+    {
+        return $this->requestFactory;
     }
 
     /**
@@ -74,11 +73,7 @@ class OAuth1 implements OAuth1Interface
      */
     public function getTemporaryCredentials()
     {
-        $response = $this->httpClient->post($this->requestConfig->getTemporaryCredentialsUrl(), [
-            'headers' => [
-                'Authorization' => $this->requestConfig->getTemporaryCredentialsAuthorizationHeader(),
-            ],
-        ]);
+        $response = $this->httpClient->send($this->requestFactory->createForTemporaryCredentials());
 
         return $this->credentialsFactory->createTemporaryCredentialsFromResponse($response);
     }
@@ -86,9 +81,9 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritDoc}
      */
-    public function buildAuthorizationUrl(TemporaryCredentials $temporaryCredentials)
+    public function buildAuthorizationUri(TemporaryCredentials $temporaryCredentials)
     {
-        return $this->requestConfig->buildAuthorizationUrl($temporaryCredentials);
+        return (string) $this->requestFactory->buildAuthorizationUri($temporaryCredentials);
     }
 
     /**
@@ -100,14 +95,9 @@ class OAuth1 implements OAuth1Interface
             throw new InvalidArgumentException('The given temporary identifier does not match the temporary credentials.');
         }
 
-        $response = $this->httpClient->post($this->requestConfig->getTokenCredentialsUrl(), [
-            'headers' => [
-                'Authorization' => $this->requestConfig->getTokenCredentialsAuthorizationHeader($temporaryCredentials, $verificationCode),
-            ],
-            'form_params' => [
-                'oauth_verifier' => $verificationCode,
-            ],
-        ]);
+        $response = $this->httpClient->send(
+            $this->requestFactory->createForTemporaryCredentials($temporaryCredentials, $verificationCode)
+        );
 
         return $response;
     }

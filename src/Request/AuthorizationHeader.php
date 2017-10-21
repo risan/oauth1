@@ -34,6 +34,14 @@ class AuthorizationHeader implements AuthorizationHeaderInterface
     /**
      * {@inheritDoc}
      */
+    public function getConfig()
+    {
+        return $this->protocolParameter->getConfig();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function forTemporaryCredentials()
     {
         return $this->normalizeProtocolParameters(

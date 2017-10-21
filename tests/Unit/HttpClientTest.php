@@ -8,18 +8,30 @@ use PHPUnit\Framework\TestCase;
 use GuzzleHttp\Client as Guzzle;
 use Risan\OAuth1\HttpClientInterface;
 use Psr\Http\Message\ResponseInterface;
+use Risan\OAuth1\Request\RequestInterface;
 
 class HttpClientTest extends TestCase
 {
     private $guzzleStub;
+    private $requestStub;
     private $responseStub;
     private $httpClient;
+    private $httpClientStub;
 
     function setUp()
     {
         $this->guzzleStub = $this->createMock(Guzzle::class);
         $this->responseStub = $this->createMock(Response::class);
+        $this->requestStub = $this->createMock(RequestInterface::class);
         $this->httpClient = new HttpClient($this->guzzleStub);
+
+        $this->httpClientStub = $this->getMockBuilder(HttpClient::class)
+            ->setConstructorArgs([$this->guzzleStub])
+            ->setMethods(['request'])
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
     }
 
     /** @test */
@@ -35,9 +47,10 @@ class HttpClientTest extends TestCase
     }
 
     /** @test */
-    function it_can_create_and_send_http_request()
+    function it_can_send_request()
     {
-        $this->guzzleStub->expects($this->once())
+        $this->guzzleStub
+            ->expects($this->once())
             ->method('request')
             ->with('POST', 'http://example.com', ['foo' => 'bar'])
             ->willReturn($this->responseStub);
@@ -49,16 +62,47 @@ class HttpClientTest extends TestCase
     }
 
     /** @test */
-    function it_can_create_and_send_http_post_request()
+    function it_can_send_request_with_request_instance()
     {
-        $this->guzzleStub->expects($this->once())
+        $this->requestStub
+            ->expects($this->once())
+            ->method('getMethod')
+            ->willReturn('POST');
+
+        $this->requestStub
+            ->expects($this->once())
+            ->method('getUri')
+            ->willReturn('http://example.com');
+
+        $this->requestStub
+            ->expects($this->once())
+            ->method('getOptions')
+            ->willReturn(['foo' => 'bar']);
+
+        $this->httpClientStub
+            ->expects($this->once())
             ->method('request')
             ->with('POST', 'http://example.com', ['foo' => 'bar'])
             ->willReturn($this->responseStub);
 
         $this->assertInstanceOf(
             ResponseInterface::class,
-            $this->httpClient->post('http://example.com', ['foo' => 'bar'])
+            $this->httpClientStub->send($this->requestStub)
+        );
+    }
+
+    /** @test */
+    function it_can_send_post_request()
+    {
+        $this->httpClientStub
+            ->expects($this->once())
+            ->method('request')
+            ->with('POST', 'http://example.com', ['foo' => 'bar'])
+            ->willReturn($this->responseStub);
+
+        $this->assertInstanceOf(
+            ResponseInterface::class,
+            $this->httpClientStub->post('http://example.com', ['foo' => 'bar'])
         );
     }
 }

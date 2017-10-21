@@ -2,6 +2,8 @@
 
 namespace Risan\OAuth1;
 
+use Risan\OAuth1\Request\RequestInterface;
+
 interface HttpClientInterface
 {
     /**
@@ -13,6 +15,14 @@ interface HttpClientInterface
      * @return Psr\Http\Message\ResponseInterface
      */
     public function request($method, $uri, array $options = []);
+
+    /**
+     * Send HTTP request.
+     *
+     * @param  \Risan\OAuth1\Request\RequestInterface $request
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function send(RequestInterface $request);
 
     /**
      * Create and send HTTP POST request.

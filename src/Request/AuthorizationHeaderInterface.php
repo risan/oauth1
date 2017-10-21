@@ -14,6 +14,13 @@ interface AuthorizationHeaderInterface
     public function getProtocolParameter();
 
     /**
+     * Get the ConfigInterface instance.
+     *
+     * @return \Risan\OAuth1\Config\ConfigInterface
+     */
+    public function getConfig();
+
+    /**
      * Get authorization header for obtaining temporary credentials.
      *
      * @return string

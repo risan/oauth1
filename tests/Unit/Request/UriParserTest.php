@@ -97,7 +97,11 @@ class UriParserTest extends TestCase
     {
         $baseUri = $this->uriParser->toPsrUri('http://example.com');
         $relativeUri = $this->uriParser->toPsrUri('/foo');
-        $this->assertEquals('http://example.com/foo', (string) $this->uriParser->resolve($baseUri, $relativeUri));
+
+        $this->assertEquals(
+            'http://example.com/foo',
+            (string) $this->uriParser->resolve($baseUri, $relativeUri)
+        );
     }
 
     /** @test */
@@ -105,6 +109,21 @@ class UriParserTest extends TestCase
     {
         $baseUri = $this->uriParser->toPsrUri('http://example.com');
         $absoluteUri = $this->uriParser->toPsrUri('http://foo.bar/baz');
-        $this->assertEquals('http://foo.bar/baz', (string) $this->uriParser->resolve($baseUri, $absoluteUri));
+
+        $this->assertEquals(
+            'http://foo.bar/baz',
+            (string) $this->uriParser->resolve($baseUri, $absoluteUri)
+        );
+    }
+
+    /** @test */
+    function it_can_append_query_parameters()
+    {
+        $uri = $this->uriParser->toPsrUri('http://example.com?foo=bar');
+
+        $this->assertEquals(
+            'http://example.com?foo=bar&baz=qux',
+            (string) $this->uriParser->appendQueryParameters($uri, ['baz' => 'qux'])
+        );
     }
 }

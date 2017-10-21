@@ -5,29 +5,35 @@ namespace Risan\OAuth1\Test\Unit;
 use Risan\OAuth1\OAuth1;
 use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\OAuth1Interface;
+use Psr\Http\Message\UriInterface;
 use Risan\OAuth1\HttpClientInterface;
 use Psr\Http\Message\ResponseInterface;
-use Risan\OAuth1\Request\RequestConfigInterface;
+use Risan\OAuth1\Request\RequestInterface;
+use Risan\OAuth1\Request\RequestFactoryInterface;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
 use Risan\OAuth1\Credentials\CredentialsFactoryInterface;
 
 class OAuth1Test extends TestCase
 {
-    private $requestConfigStub;
     private $httpClientStub;
+    private $requestFactoryStub;
     private $credentialsFactoryStub;
     private $temporaryCredentialsStub;
     private $oauth1;
+    private $requestStub;
     private $responseStub;
+    private $psrUriStub;
 
     function setUp()
     {
-        $this->requestConfigStub = $this->createMock(RequestConfigInterface::class);
         $this->httpClientStub = $this->createMock(HttpClientInterface::class);
+        $this->requestFactoryStub = $this->createMock(RequestFactoryInterface::class);
         $this->credentialsFactoryStub = $this->createMock(CredentialsFactoryInterface::class);
         $this->temporaryCredentialsStub = $this->createMock(TemporaryCredentials::class);
-        $this->oauth1 = new OAuth1($this->requestConfigStub, $this->httpClientStub, $this->credentialsFactoryStub);
+        $this->requestStub = $this->createMock(RequestInterface::class);
         $this->responseStub = $this->createMock(ResponseInterface::class);
+        $this->psrUriStub = $this->createMock(UriInterface::class);
+        $this->oauth1 = new OAuth1($this->httpClientStub, $this->requestFactoryStub, $this->credentialsFactoryStub);
     }
 
     /** @test */
@@ -37,43 +43,35 @@ class OAuth1Test extends TestCase
     }
 
     /** @test */
-    function it_can_get_request_config()
+    function it_can_get_http_client()
     {
-        $this->assertInstanceOf(RequestConfigInterface::class, $this->oauth1->getRequestConfig());
+        $this->assertSame($this->httpClientStub, $this->oauth1->getHttpClient());
     }
 
     /** @test */
-    function it_can_get_http_client()
+    function it_can_get_request_factory()
     {
-        $this->assertInstanceOf(HttpClientInterface::class, $this->oauth1->getHttpClient());
+        $this->assertSame($this->requestFactoryStub, $this->oauth1->getRequestFactory());
     }
 
     /** @test */
     function it_can_get_credentials_factory()
     {
-        $this->assertInstanceOf(CredentialsFactoryInterface::class, $this->oauth1->getCredentialsFactory());
+        $this->assertSame($this->credentialsFactoryStub, $this->oauth1->getCredentialsFactory());
     }
 
     /** @test */
     function it_can_obtain_temporary_credentials()
     {
-        $this->requestConfigStub
+        $this->requestFactoryStub
             ->expects($this->once())
-            ->method('getTemporaryCredentialsUrl')
-            ->willReturn('http://example.com/temporary_credentials_url');
-
-        $this->requestConfigStub
-            ->expects($this->once())
-            ->method('getTemporaryCredentialsAuthorizationHeader')
-            ->willReturn('Authorization Header');
+            ->method('createForTemporaryCredentials')
+            ->willReturn($this->requestStub);
 
         $this->httpClientStub
             ->expects($this->once())
-            ->method('post')
-            ->with(
-                'http://example.com/temporary_credentials_url',
-                ['headers' => ['Authorization' => 'Authorization Header']]
-            )
+            ->method('send')
+            ->with($this->requestStub)
             ->willReturn($this->responseStub);
 
         $this->credentialsFactoryStub
@@ -82,21 +80,26 @@ class OAuth1Test extends TestCase
             ->with($this->responseStub)
             ->willReturn($this->temporaryCredentialsStub);
 
-        $this->assertInstanceOf(TemporaryCredentials::class, $this->oauth1->getTemporaryCredentials());
+        $this->assertSame($this->temporaryCredentialsStub, $this->oauth1->getTemporaryCredentials());
     }
 
     /** @test */
-    function request_config_can_build_authorization_url()
+    function it_can_build_authorization_uri()
     {
-        $this->requestConfigStub
+        $this->requestFactoryStub
             ->expects($this->once())
-            ->method('buildAuthorizationUrl')
+            ->method('buildAuthorizationUri')
             ->with($this->temporaryCredentialsStub)
-            ->willReturn('http://example.com/authorize?oauth_token=id_temporary');
+            ->willReturn($this->psrUriStub);
+
+        $this->psrUriStub
+            ->expects($this->once())
+            ->method('__toString')
+            ->willReturn('http://example.com');
 
         $this->assertEquals(
-            'http://example.com/authorize?oauth_token=id_temporary',
-            $this->oauth1->buildAuthorizationUrl($this->temporaryCredentialsStub)
+            'http://example.com',
+            $this->oauth1->buildAuthorizationUri($this->temporaryCredentialsStub)
         );
     }
 }
