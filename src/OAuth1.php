@@ -81,9 +81,9 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritDoc}
      */
-    public function buildAuthorizationUrl(TemporaryCredentials $temporaryCredentials)
+    public function buildAuthorizationUri(TemporaryCredentials $temporaryCredentials)
     {
-        return;
+        return (string) $this->requestFactory->buildAuthorizationUri($temporaryCredentials);
     }
 
     /**
