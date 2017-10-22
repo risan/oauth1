@@ -82,6 +82,11 @@ class RequestFactoryTest extends TestCase
         $this->configStub
             ->expects($this->once())
             ->method('getTemporaryCredentialsUri')
+            ->willReturn($this->psrUriStub);
+
+        $this->psrUriStub
+            ->expects($this->once())
+            ->method('__toString')
             ->willReturn('http://example.com');
 
         $this->authorizationHeaderStub
@@ -141,6 +146,11 @@ class RequestFactoryTest extends TestCase
         $this->configStub
             ->expects($this->once())
             ->method('getTokenCredentialsUri')
+            ->willReturn($this->psrUriStub);
+
+        $this->psrUriStub
+            ->expects($this->once())
+            ->method('__toString')
             ->willReturn('http://example.com');
 
         $this->authorizationHeaderStub
