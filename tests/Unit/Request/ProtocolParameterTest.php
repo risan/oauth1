@@ -162,6 +162,11 @@ class ProtocolParameterTest extends TestCase
             ->method('getBase')
             ->willReturn(['foo' => 'bar']);
 
+        $this->temporaryCredentialsStub
+            ->expects($this->once())
+            ->method('getIdentifier')
+            ->willReturn('temporary_id');
+
         $this->configStub
             ->expects($this->once())
             ->method('getTokenCredentialsUri')
@@ -171,7 +176,7 @@ class ProtocolParameterTest extends TestCase
             ->expects($this->once())
             ->method('getSignature')
             ->with(
-                ['foo' => 'bar'],
+                ['foo' => 'bar', 'oauth_token' => 'temporary_id'],
                 'http://example.com/access_token',
                 $this->temporaryCredentialsStub,
                 ['form_params' => ['oauth_verifier' => 'verification_code']]
@@ -180,6 +185,7 @@ class ProtocolParameterTest extends TestCase
 
         $this->assertSame([
             'foo' => 'bar',
+            'oauth_token' => 'temporary_id',
             'oauth_signature' => 'signature',
         ], $protocolParameter->forTokenCredentials($this->temporaryCredentialsStub, 'verification_code'));
     }
