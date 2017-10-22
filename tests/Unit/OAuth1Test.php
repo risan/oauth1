@@ -3,12 +3,14 @@
 namespace Risan\OAuth1\Test\Unit;
 
 use Risan\OAuth1\OAuth1;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\OAuth1Interface;
 use Psr\Http\Message\UriInterface;
 use Risan\OAuth1\HttpClientInterface;
 use Psr\Http\Message\ResponseInterface;
 use Risan\OAuth1\Request\RequestInterface;
+use Risan\OAuth1\Credentials\TokenCredentials;
 use Risan\OAuth1\Request\RequestFactoryInterface;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
 use Risan\OAuth1\Credentials\CredentialsFactoryInterface;
@@ -19,6 +21,7 @@ class OAuth1Test extends TestCase
     private $requestFactoryStub;
     private $credentialsFactoryStub;
     private $temporaryCredentialsStub;
+    private $tokenCredentialsStub;
     private $oauth1;
     private $requestStub;
     private $responseStub;
@@ -30,6 +33,7 @@ class OAuth1Test extends TestCase
         $this->requestFactoryStub = $this->createMock(RequestFactoryInterface::class);
         $this->credentialsFactoryStub = $this->createMock(CredentialsFactoryInterface::class);
         $this->temporaryCredentialsStub = $this->createMock(TemporaryCredentials::class);
+        $this->tokenCredentialsStub = $this->createMock(TokenCredentials::class);
         $this->requestStub = $this->createMock(RequestInterface::class);
         $this->responseStub = $this->createMock(ResponseInterface::class);
         $this->psrUriStub = $this->createMock(UriInterface::class);
@@ -100,6 +104,51 @@ class OAuth1Test extends TestCase
         $this->assertEquals(
             'http://example.com',
             $this->oauth1->buildAuthorizationUri($this->temporaryCredentialsStub)
+        );
+    }
+
+    /** @test */
+    function it_throws_exception_when_getting_token_credentials_but_temporary_credentials_identifier_does_not_match()
+    {
+        $this->temporaryCredentialsStub
+            ->expects($this->once())
+            ->method('getIdentifier')
+            ->willReturn('invalid');
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->oauth1->getTokenCredentials($this->temporaryCredentialsStub, 'temporary_id', 'verification_code');
+    }
+
+    /** @test */
+    function it_can_obtain_token_credentials()
+    {
+        $this->temporaryCredentialsStub
+            ->expects($this->once())
+            ->method('getIdentifier')
+            ->willReturn('temporary_id');
+
+        $this->requestFactoryStub
+            ->expects($this->once())
+            ->method('createForTokenCredentials')
+            ->with($this->temporaryCredentialsStub, 'verification_code')
+            ->willReturn($this->requestStub);
+
+        $this->httpClientStub
+            ->expects($this->once())
+            ->method('send')
+            ->with($this->requestStub)
+            ->willReturn($this->responseStub);
+
+        $this->credentialsFactoryStub
+            ->expects($this->once())
+            ->method('createTokenCredentialsFromResponse')
+            ->with($this->responseStub)
+            ->willReturn($this->tokenCredentialsStub);
+
+        $this->assertSame(
+            $this->tokenCredentialsStub,
+            $this->oauth1->getTokenCredentials($this->temporaryCredentialsStub, 'temporary_id', 'verification_code')
         );
     }
 }
