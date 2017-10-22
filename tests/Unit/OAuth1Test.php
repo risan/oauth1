@@ -65,6 +65,16 @@ class OAuth1Test extends TestCase
     }
 
     /** @test */
+    function it_can_get_and_set_token_credentials()
+    {
+        $this->assertNull($this->oauth1->getTokenCredentials());
+
+        $this->assertSame($this->oauth1, $this->oauth1->setTokenCredentials($this->tokenCredentialsStub));
+
+        $this->assertSame($this->tokenCredentialsStub, $this->oauth1->getTokenCredentials());
+    }
+
+    /** @test */
     function it_can_request_for_temporary_credentials()
     {
         $this->requestFactoryStub
