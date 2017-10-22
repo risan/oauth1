@@ -79,6 +79,14 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritDoc}
      */
+    public function getConfig()
+    {
+        return $this->requestFactory->getConfig();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getTokenCredentials()
     {
         return $this->tokenCredentials;

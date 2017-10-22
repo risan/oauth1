@@ -29,6 +29,13 @@ interface OAuth1Interface
     public function getCredentialsFactory();
 
     /**
+     * Get the ConfigInterface instance.
+     *
+     * @return \Risan\OAuth1\Config\ConfigInterface
+     */
+    public function getConfig();
+
+    /**
      * Get TokenCredentials instance.
      *
      * @return \Risan\OAuth1\Credentials\TokenCredentials|null
