@@ -65,7 +65,7 @@ class OAuth1Test extends TestCase
     }
 
     /** @test */
-    function it_can_obtain_temporary_credentials()
+    function it_can_request_for_temporary_credentials()
     {
         $this->requestFactoryStub
             ->expects($this->once())
@@ -84,7 +84,7 @@ class OAuth1Test extends TestCase
             ->with($this->responseStub)
             ->willReturn($this->temporaryCredentialsStub);
 
-        $this->assertSame($this->temporaryCredentialsStub, $this->oauth1->getTemporaryCredentials());
+        $this->assertSame($this->temporaryCredentialsStub, $this->oauth1->requestTemporaryCredentials());
     }
 
     /** @test */
@@ -108,7 +108,7 @@ class OAuth1Test extends TestCase
     }
 
     /** @test */
-    function it_throws_exception_when_getting_token_credentials_but_temporary_credentials_identifier_does_not_match()
+    function it_throws_exception_when_requesting_token_credentials_but_temporary_credentials_identifier_does_not_match()
     {
         $this->temporaryCredentialsStub
             ->expects($this->once())
@@ -117,11 +117,11 @@ class OAuth1Test extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
-        $this->oauth1->getTokenCredentials($this->temporaryCredentialsStub, 'temporary_id', 'verification_code');
+        $this->oauth1->requestTokenCredentials($this->temporaryCredentialsStub, 'temporary_id', 'verification_code');
     }
 
     /** @test */
-    function it_can_obtain_token_credentials()
+    function it_can_request_for_token_credentials()
     {
         $this->temporaryCredentialsStub
             ->expects($this->once())
@@ -148,7 +148,7 @@ class OAuth1Test extends TestCase
 
         $this->assertSame(
             $this->tokenCredentialsStub,
-            $this->oauth1->getTokenCredentials($this->temporaryCredentialsStub, 'temporary_id', 'verification_code')
+            $this->oauth1->requestTokenCredentials($this->temporaryCredentialsStub, 'temporary_id', 'verification_code')
         );
     }
 }
