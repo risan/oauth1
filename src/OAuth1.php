@@ -92,13 +92,13 @@ class OAuth1 implements OAuth1Interface
     public function getTokenCredentials(TemporaryCredentials $temporaryCredentials, $temporaryIdentifier, $verificationCode)
     {
         if ($temporaryCredentials->getIdentifier() !== $temporaryIdentifier) {
-            throw new InvalidArgumentException('The given temporary identifier does not match the temporary credentials.');
+            throw new InvalidArgumentException('The given temporary credentials identifier does not match the temporary credentials.');
         }
 
         $response = $this->httpClient->send(
             $this->requestFactory->createForTokenCredentials($temporaryCredentials, $verificationCode)
         );
 
-        return $response;
+        return $this->credentialsFactory->createTokenCredentialsFromResponse($response);
     }
 }
