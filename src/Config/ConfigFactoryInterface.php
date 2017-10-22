@@ -7,8 +7,9 @@ interface ConfigFactoryInterface
     /**
      * Create ConfigInterface instance from array.
      *
-     * @param  array  $params
+     * @param  array  $config
      * @return \Risan\OAuth1\Config\ConfigInterface
+     * @throws \InvalidArgumentException
      */
-    public function createFromArray(array $params);
+    public function createFromArray(array $config);
 }
