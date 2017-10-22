@@ -32,6 +32,25 @@ class CredentialsFactory implements CredentialsFactoryInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function createTokenCredentialsFromResponse(ResponseInterface $response)
+    {
+        $parameters = $this->getParametersFromResponse($response);
+
+        $missingParameterKey = $this->getMissingParameterKey($parameters, [
+            'oauth_token',
+            'oauth_token_secret',
+        ]);
+
+        if (null !== $missingParameterKey) {
+            throw new CredentialsException("Unable to parse token credentials response. Missing parameter: {$missingParameterKey}.");
+        }
+
+        return new TokenCredentials($parameters['oauth_token'], $parameters['oauth_token_secret']);
+    }
+
+    /**
      * Get parameters from response.
      *
      * @param  \Psr\Http\Message\ResponseInterface $response
