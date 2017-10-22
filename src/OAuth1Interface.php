@@ -28,11 +28,11 @@ interface OAuth1Interface
     public function getCredentialsFactory();
 
     /**
-     * Obtain the temporary credentials.
+     * Send request for obtaining temporary credentials.
      *
      * @return \Risan\OAuth1\Credentials\TemporaryCredentials
      */
-    public function getTemporaryCredentials();
+    public function requestTemporaryCredentials();
 
     /**
      * Build the authorization URI.
@@ -43,7 +43,7 @@ interface OAuth1Interface
     public function buildAuthorizationUri(TemporaryCredentials $temporaryCredentials);
 
     /**
-     * Obtain the token credentials.
+     * Send request for obtaining token credentials.
      *
      * @param  \Risan\OAuth1\Credentials\TemporaryCredentials $temporaryCredentials
      * @param  string $temporaryIdentifier
@@ -51,5 +51,5 @@ interface OAuth1Interface
      * @return \Risan\OAuth1\Credentials\TokenCredentials
      * @throws \InvalidArgumentException
      */
-    public function getTokenCredentials(TemporaryCredentials $temporaryCredentials, $temporaryIdentifier, $verificationCode);
+    public function requestTokenCredentials(TemporaryCredentials $temporaryCredentials, $temporaryIdentifier, $verificationCode);
 }

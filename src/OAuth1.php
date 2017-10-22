@@ -71,7 +71,7 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritDoc}
      */
-    public function getTemporaryCredentials()
+    public function requestTemporaryCredentials()
     {
         $response = $this->httpClient->send($this->requestFactory->createForTemporaryCredentials());
 
@@ -89,7 +89,7 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritDoc}
      */
-    public function getTokenCredentials(TemporaryCredentials $temporaryCredentials, $temporaryIdentifier, $verificationCode)
+    public function requestTokenCredentials(TemporaryCredentials $temporaryCredentials, $temporaryIdentifier, $verificationCode)
     {
         if ($temporaryCredentials->getIdentifier() !== $temporaryIdentifier) {
             throw new InvalidArgumentException('The given temporary credentials identifier does not match the temporary credentials.');
