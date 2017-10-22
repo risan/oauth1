@@ -3,6 +3,7 @@
 namespace Risan\OAuth1;
 
 use InvalidArgumentException;
+use Risan\OAuth1\Credentials\TokenCredentials;
 use Risan\OAuth1\Request\RequestFactoryInterface;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
 use Risan\OAuth1\Credentials\CredentialsFactoryInterface;
@@ -29,6 +30,13 @@ class OAuth1 implements OAuth1Interface
      * @var \Risan\OAuth1\Credentials\CredentialsFactoryInterface
      */
     protected $credentialsFactory;
+
+    /**
+     * The TokenCredentials instance.
+     *
+     * @var \Risan\OAuth1\Credentials\TokenCredentials
+     */
+    protected $tokenCredentials;
 
     /**
      * Create a new OAuth1 instance.
@@ -66,6 +74,24 @@ class OAuth1 implements OAuth1Interface
     public function getCredentialsFactory()
     {
         return $this->credentialsFactory;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTokenCredentials()
+    {
+        return $this->tokenCredentials;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setTokenCredentials(TokenCredentials $tokenCredentials)
+    {
+        $this->tokenCredentials = $tokenCredentials;
+
+        return $this;
     }
 
     /**

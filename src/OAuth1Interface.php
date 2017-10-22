@@ -2,6 +2,7 @@
 
 namespace Risan\OAuth1;
 
+use Risan\OAuth1\Credentials\TokenCredentials;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
 
 interface OAuth1Interface
@@ -26,6 +27,21 @@ interface OAuth1Interface
      * @return \Risan\OAuth1\Credentials\CredentialsFactoryInterface
      */
     public function getCredentialsFactory();
+
+    /**
+     * Get TokenCredentials instance.
+     *
+     * @return \Risan\OAuth1\Credentials\TokenCredentials|null
+     */
+    public function getTokenCredentials();
+
+    /**
+     * Set the granted token credentials.
+     *
+     * @param \Risan\OAuth1\Credentials\TokenCredentials $tokenCredentials
+     * @return $this
+     */
+    public function setTokenCredentials(TokenCredentials $tokenCredentials);
 
     /**
      * Send request for obtaining temporary credentials.
