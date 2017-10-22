@@ -34,7 +34,7 @@ class OAuth1 implements OAuth1Interface
      * Create a new OAuth1 instance.
      *
      * @param \Risan\OAuth1\HttpClientInterface $httpClient
-     * @param \Risan\OAuth1\Request\RequestFactoryInterface $request
+     * @param \Risan\OAuth1\Request\RequestFactoryInterface $requestFactory
      * @param \Risan\OAuth1\Credentials\CredentialsFactoryInterface $credentialsFactory
      */
     public function __construct(HttpClientInterface $httpClient, RequestFactoryInterface $requestFactory, CredentialsFactoryInterface $credentialsFactory)
@@ -96,7 +96,7 @@ class OAuth1 implements OAuth1Interface
         }
 
         $response = $this->httpClient->send(
-            $this->requestFactory->createForTemporaryCredentials($temporaryCredentials, $verificationCode)
+            $this->requestFactory->createForTokenCredentials($temporaryCredentials, $verificationCode)
         );
 
         return $response;
