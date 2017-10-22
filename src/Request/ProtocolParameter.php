@@ -122,6 +122,8 @@ class ProtocolParameter implements ProtocolParameterInterface
     {
         $parameters = $this->getBase();
 
+        $parameters['oauth_token'] = $temporaryCredentials->getIdentifier();
+
         $requestOptions = [
             'form_params' => ['oauth_verifier' => $verificationCode],
         ];
