@@ -9,6 +9,7 @@ use Risan\OAuth1\OAuth1Interface;
 use Psr\Http\Message\UriInterface;
 use Risan\OAuth1\HttpClientInterface;
 use Psr\Http\Message\ResponseInterface;
+use Risan\OAuth1\Config\ConfigInterface;
 use Risan\OAuth1\Request\RequestInterface;
 use Risan\OAuth1\Credentials\TokenCredentials;
 use Risan\OAuth1\Request\RequestFactoryInterface;
@@ -19,6 +20,7 @@ class OAuth1Test extends TestCase
 {
     private $httpClientStub;
     private $requestFactoryStub;
+    private $configStub;
     private $credentialsFactoryStub;
     private $temporaryCredentialsStub;
     private $tokenCredentialsStub;
@@ -31,6 +33,7 @@ class OAuth1Test extends TestCase
     {
         $this->httpClientStub = $this->createMock(HttpClientInterface::class);
         $this->requestFactoryStub = $this->createMock(RequestFactoryInterface::class);
+        $this->configStub = $this->createMock(ConfigInterface::class);
         $this->credentialsFactoryStub = $this->createMock(CredentialsFactoryInterface::class);
         $this->temporaryCredentialsStub = $this->createMock(TemporaryCredentials::class);
         $this->tokenCredentialsStub = $this->createMock(TokenCredentials::class);
@@ -62,6 +65,17 @@ class OAuth1Test extends TestCase
     function it_can_get_credentials_factory()
     {
         $this->assertSame($this->credentialsFactoryStub, $this->oauth1->getCredentialsFactory());
+    }
+
+    /** @test */
+    function it_can_get_config()
+    {
+        $this->requestFactoryStub
+            ->expects($this->once())
+            ->method('getConfig')
+            ->willReturn($this->configStub);
+
+        $this->assertSame($this->configStub, $this->oauth1->getConfig());
     }
 
     /** @test */
