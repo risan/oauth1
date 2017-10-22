@@ -5,6 +5,7 @@ namespace Risan\OAuth1\Test\Unit\Credentials;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
+use Risan\OAuth1\Credentials\TokenCredentials;
 use Risan\OAuth1\Credentials\CredentialsFactory;
 use Risan\OAuth1\Credentials\CredentialsException;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
@@ -90,10 +91,35 @@ class CredentialsFactoryTest extends TestCase
     {
         $this->setupResponseStub('oauth_token=token_id&oauth_token_secret=token_secret&oauth_callback_confirmed=true');
         $temporaryCredentials = $this->credentialsFactory->createTemporaryCredentialsFromResponse($this->responseStub);
-
         $this->assertInstanceOf(TemporaryCredentials::class, $temporaryCredentials);
         $this->assertEquals('token_id', $temporaryCredentials->getIdentifier());
         $this->assertEquals('token_secret', $temporaryCredentials->getSecret());
+    }
+
+     /** @test */
+    function it_throws_exception_when_creating_token_credentials_and_oauth_token_is_missing()
+    {
+        $this->setupResponseStub('oauth_token_secret=token_secret');
+        $this->expectException(CredentialsException::class);
+        $this->credentialsFactory->createTokenCredentialsFromResponse($this->responseStub);
+    }
+
+    /** @test */
+    function it_throws_exception_when_creating_token_credentials_and_oauth_token_secret_is_missing()
+    {
+        $this->setupResponseStub('oauth_token=token_id');
+        $this->expectException(CredentialsException::class);
+        $this->credentialsFactory->createTokenCredentialsFromResponse($this->responseStub);
+    }
+
+    /** @test */
+    function it_can_create_token_credentials_from_response()
+    {
+        $this->setupResponseStub('oauth_token=token_id&oauth_token_secret=token_secret');
+        $tokenCredentials = $this->credentialsFactory->createTokenCredentialsFromResponse($this->responseStub);
+        $this->assertInstanceOf(TokenCredentials::class, $tokenCredentials);
+        $this->assertEquals('token_id', $tokenCredentials->getIdentifier());
+        $this->assertEquals('token_secret', $tokenCredentials->getSecret());
     }
 
     function setupResponseStub($body)
