@@ -61,7 +61,7 @@ class RequestFactory implements RequestFactoryInterface
      */
     public function createForTemporaryCredentials()
     {
-        return $this->create('POST', $this->getConfig()->getTemporaryCredentialsUri(), [
+        return $this->create('POST', (string) $this->getConfig()->getTemporaryCredentialsUri(), [
             'headers' => [
                 'Authorization' => $this->authorizationHeader->forTemporaryCredentials(),
             ],
@@ -84,7 +84,7 @@ class RequestFactory implements RequestFactoryInterface
      */
     public function createForTokenCredentials(TemporaryCredentials $temporaryCredentials, $verificationCode)
     {
-        return $this->create('POST', $this->getConfig()->getTokenCredentialsUri(), [
+        return $this->create('POST', (string) $this->getConfig()->getTokenCredentialsUri(), [
             'headers' => [
                 'Authorization' => $this->authorizationHeader->forTokenCredentials($temporaryCredentials, $verificationCode),
             ],
@@ -98,7 +98,7 @@ class RequestFactory implements RequestFactoryInterface
      * Create a new instance of Request class.
      *
      * @param  string $method
-     * @param  strin $uri
+     * @param  string $uri
      * @param  array  $options [description]
      * @return \Risan\OAuth1\Request\RequestInterface
      */
