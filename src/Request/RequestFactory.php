@@ -95,6 +95,21 @@ class RequestFactory implements RequestFactoryInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function createForProtectedResource(TokenCredentials $tokenCredentials, $method, $uri, array $options = [])
+    {
+        return $this->create($method, (string) $this->getConfig()->getTokenCredentialsUri(), [
+            'headers' => [
+                'Authorization' => $this->authorizationHeader->forTokenCredentials($temporaryCredentials, $verificationCode),
+            ],
+            'form_params' => [
+                'oauth_verifier' => $verificationCode,
+            ],
+        ]);
+    }
+
+    /**
      * Create a new instance of Request class.
      *
      * @param  string $method

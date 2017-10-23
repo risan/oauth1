@@ -2,6 +2,7 @@
 
 namespace Risan\OAuth1\Request;
 
+use Risan\OAuth1\Credentials\TokenCredentials;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
 
 interface RequestFactoryInterface
@@ -50,4 +51,15 @@ interface RequestFactoryInterface
      * @return \Risan\OAuth1\Request\RequestInterface
      */
     public function createForTokenCredentials(TemporaryCredentials $temporaryCredentials, $verificationCode);
+
+    /**
+     * Create an authenticated request for obtaining protected resource.
+     *
+     * @param  \Risan\OAuth1\Credentials\TokenCredentials $tokenCredentials
+     * @param  string $method
+     * @param  string $uri
+     * @param  array $options
+     * @return \Risan\OAuth1\Request\RequestInterface
+     */
+    public function createForProtectedResource(TokenCredentials $tokenCredentials, $method, $uri, array $options = []);
 }
