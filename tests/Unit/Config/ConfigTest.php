@@ -115,4 +115,18 @@ class ConfigTest extends TestCase
 
         $this->assertFalse($config->hasCallbackUri());
     }
+
+    /** @test */
+    function it_can_build_uri()
+    {
+        // Resolve relative URI.
+        $uri = $this->config->buildUri('/foo');
+        $this->assertInstanceOf(UriInterface::class, $uri);
+        $this->assertEquals('http://example.com/foo', (string) $uri);
+
+        // Resolve absolute URI.
+        $uri = $this->uriConfig->build('http://example.net/foo');
+        $this->assertInstanceOf(UriInterface::class, $uri);
+        $this->assertEquals('http://example.net/foo', (string) $uri);
+    }
 }
