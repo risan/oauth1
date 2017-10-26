@@ -128,5 +128,11 @@ class ConfigTest extends TestCase
         $uri = $this->uriConfig->build('http://example.net/foo');
         $this->assertInstanceOf(UriInterface::class, $uri);
         $this->assertEquals('http://example.net/foo', (string) $uri);
+
+        // Missing scheme.
+        $missingScheme = $this->uriParser->toPsrUri('http://example.net')->withScheme('');
+        $uri = $this->uriConfig->build($missingScheme);
+        $this->assertInstanceOf(UriInterface::class, $uri);
+        $this->assertEquals('http://example.net', (string) $uri);
     }
 }

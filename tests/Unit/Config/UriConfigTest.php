@@ -153,18 +153,18 @@ class UriConfigTest extends TestCase
         // Resolve relative URI.
         $uri = $this->uriConfig->build('/foo');
         $this->assertInstanceOf(UriInterface::class, $uri);
-        $this->assertEquals('http://example.com/foo', $uri);
+        $this->assertEquals('http://example.com/foo', (string) $uri);
 
         // Resolve absolute URI.
         $uri = $this->uriConfig->build('http://example.net/foo');
         $this->assertInstanceOf(UriInterface::class, $uri);
-        $this->assertEquals('http://example.net/foo', $uri);
+        $this->assertEquals('http://example.net/foo', (string) $uri);
 
         // Missing scheme.
         $missingScheme = $this->uriParser->toPsrUri('http://example.net')->withScheme('');
         $uri = $this->uriConfig->build($missingScheme);
         $this->assertInstanceOf(UriInterface::class, $uri);
-        $this->assertEquals('http://example.net', $uri);
+        $this->assertEquals('http://example.net', (string) $uri);
     }
 
     /** @test */
