@@ -5,6 +5,7 @@ namespace Risan\OAuth1\Request;
 use DateTime;
 use Risan\OAuth1\Config\ConfigInterface;
 use Risan\OAuth1\Signature\SignerInterface;
+use Risan\OAuth1\Credentials\TokenCredentials;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
 use Risan\OAuth1\Credentials\ServerIssuedCredentials;
 
@@ -133,6 +134,26 @@ class ProtocolParameter implements ProtocolParameterInterface
             $this->config->getTokenCredentialsUri(),
             $temporaryCredentials,
             $requestOptions
+        );
+
+        return $parameters;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function forProtectedResource(TokenCredentials $tokenCredentials, $httpMethod, $uri, array $requestOptions = [])
+    {
+        $parameters = $this->getBase();
+
+        $parameters['oauth_token'] = $tokenCredentials->getIdentifier();
+
+        $parameters['oauth_signature'] = $this->getSignature(
+            $parameters,
+            $this->config->buildUri($uri),
+            $tokenCredentials,
+            $requestOptions,
+            $httpMethod
         );
 
         return $parameters;
