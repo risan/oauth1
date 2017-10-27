@@ -4,9 +4,11 @@ namespace Risan\OAuth1\Test\Unit\Request;
 
 use DateTime;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\UriInterface;
 use Risan\OAuth1\Config\ConfigInterface;
 use Risan\OAuth1\Request\ProtocolParameter;
 use Risan\OAuth1\Signature\SignerInterface;
+use Risan\OAuth1\Credentials\TokenCredentials;
 use Risan\OAuth1\Credentials\ClientCredentials;
 use Risan\OAuth1\Request\NonceGeneratorInterface;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
@@ -22,6 +24,8 @@ class ProtocolParameterTest extends TestCase
     private $clientCredentialsStub;
     private $temporaryCredentialsStub;
     private $serverIssuedCredentialsStub;
+    private $tokenCredentialsStub;
+    private $psrUriStub;
     private $protocolParameter;
 
     function setUp()
@@ -32,6 +36,8 @@ class ProtocolParameterTest extends TestCase
         $this->clientCredentialsStub = $this->createMock(ClientCredentials::class);
         $this->temporaryCredentialsStub = $this->createMock(TemporaryCredentials::class);
         $this->serverIssuedCredentialsStub = $this->createMock(ServerIssuedCredentials::class);
+        $this->tokenCredentialsStub = $this->createMock(TokenCredentials::class);
+        $this->psrUriStub = $this->createMock(UriInterface::class);
         $this->protocolParameter = new ProtocolParameter($this->configStub, $this->signerStub, $this->nonceGeneratorStub);
     }
 
@@ -62,7 +68,7 @@ class ProtocolParameterTest extends TestCase
     /** @test */
     function it_can_get_current_timestamp()
     {
-        $this->assertEquals((new DateTime)->getTimestamp(), $this->protocolParameter->getCurrentTimestamp(), '' , 3);
+        $this->assertEquals((new DateTime)->getTimestamp(), $this->protocolParameter->getCurrentTimestamp(), '', 3);
     }
 
     /** @test */
@@ -191,6 +197,49 @@ class ProtocolParameterTest extends TestCase
     }
 
     /** @test */
+    function it_can_get_for_protected_resource()
+    {
+        $protocolParameter = $this->getStub([
+            'getBase',
+            'getSignature',
+        ]);
+
+        $protocolParameter
+            ->expects($this->once())
+            ->method('getBase')
+            ->willReturn(['foo' => 'bar']);
+
+        $this->tokenCredentialsStub
+            ->expects($this->once())
+            ->method('getIdentifier')
+            ->willReturn('token_id');
+
+        $this->configStub
+            ->expects($this->once())
+            ->method('buildUri')
+            ->with('http://example.com/protected')
+            ->willReturn($this->psrUriStub);
+
+        $protocolParameter
+            ->expects($this->once())
+            ->method('getSignature')
+            ->with(
+                ['foo' => 'bar', 'oauth_token' => 'token_id'],
+                $this->psrUriStub,
+                $this->tokenCredentialsStub,
+                ['baz' => 'qux'],
+                'GET'
+            )
+            ->willReturn('signature');
+
+        $this->assertSame([
+            'foo' => 'bar',
+            'oauth_token' => 'token_id',
+            'oauth_signature' => 'signature',
+        ], $protocolParameter->forProtectedResource($this->tokenCredentialsStub, 'GET', 'http://example.com/protected', ['baz' => 'qux']));
+    }
+
+    /** @test */
     function it_can_get_signature()
     {
         $protocolParameter = $this->getStub(['signatureParameters', 'setupSigner']);
@@ -278,7 +327,7 @@ class ProtocolParameterTest extends TestCase
         $this->assertSame($signerStub, $protocolParameter->setupSigner($this->serverIssuedCredentialsStub));
     }
 
-     /** @test */
+    /** @test */
     function it_can_check_if_signer_should_be_signed_with_client_credentials()
     {
         $this->signerStub
@@ -289,7 +338,7 @@ class ProtocolParameterTest extends TestCase
         $this->assertTrue($this->protocolParameter->shouldSignWithClientCredentials());
     }
 
-     /** @test */
+    /** @test */
     function it_can_check_if_signer_should_not_be_signed_with_client_credentials()
     {
         $this->signerStub
@@ -343,6 +392,7 @@ class ProtocolParameterTest extends TestCase
     }
 }
 
-interface KeyBasedSigner extends SignerInterface, KeyBasedSignerInterface {
+interface KeyBasedSigner extends SignerInterface, KeyBasedSignerInterface
+{
     //
 }
