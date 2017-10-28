@@ -2,6 +2,7 @@
 
 namespace Risan\OAuth1\Request;
 
+use Risan\OAuth1\Credentials\TokenCredentials;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
 
 interface AuthorizationHeaderInterface
@@ -35,6 +36,17 @@ interface AuthorizationHeaderInterface
      * @return string
      */
     public function forTokenCredentials(TemporaryCredentials $temporaryCredentials, $verificationCode);
+
+    /**
+     * Get authorization header for accessing protected resource.
+     *
+     * @param  \Risan\OAuth1\Credentials\TokenCredentials $tokenCredentials
+     * @param  string $httpMethod
+     * @param  string $uri
+     * @param  array $requestOptions
+     * @return string
+     */
+    public function forProtectedResource(TokenCredentials $tokenCredentials, $httpMethod, $uri, array $requestOptions = []);
 
     /**
      * Normalize protocol parameters to be used as HTTP authorization header.

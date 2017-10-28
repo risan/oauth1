@@ -2,6 +2,7 @@
 
 namespace Risan\OAuth1\Request;
 
+use Risan\OAuth1\Credentials\TokenCredentials;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
 
 class AuthorizationHeader implements AuthorizationHeaderInterface
@@ -58,6 +59,17 @@ class AuthorizationHeader implements AuthorizationHeaderInterface
             $this->protocolParameter->forTokenCredentials($temporaryCredentials, $verificationCode)
         );
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function forProtectedResource(TokenCredentials $tokenCredentials, $httpMethod, $uri, array $requestOptions = [])
+    {
+        return $this->normalizeProtocolParameters(
+            $this->protocolParameter->forProtectedResource($tokenCredentials, $httpMethod, $uri, $requestOptions)
+        );
+    }
+
 
     /**
      * {@inheritDoc}
