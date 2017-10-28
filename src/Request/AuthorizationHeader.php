@@ -70,7 +70,6 @@ class AuthorizationHeader implements AuthorizationHeaderInterface
         );
     }
 
-
     /**
      * {@inheritDoc}
      */
