@@ -4,6 +4,7 @@ namespace Risan\OAuth1\Test\Unit\Request;
 
 use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\Request\AuthorizationHeader;
+use Risan\OAuth1\Credentials\TokenCredentials;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
 use Risan\OAuth1\Request\ProtocolParameterInterface;
 
@@ -12,12 +13,14 @@ class AuthorizationHeaderTest extends TestCase
     private $protocolParameterStub;
     private $authorizationHeader;
     private $temporaryCredentialsStub;
+    private $tokenCredentialsStub;
 
     function setUp()
     {
         $this->protocolParameterStub = $this->createMock(ProtocolParameterInterface::class);
         $this->authorizationHeader = new AuthorizationHeader($this->protocolParameterStub);
         $this->temporaryCredentialsStub = $this->createMock(TemporaryCredentials::class);
+        $this->tokenCredentialsStub = $this->createMock(TokenCredentials::class);
     }
 
     /** @test */
@@ -77,6 +80,21 @@ class AuthorizationHeaderTest extends TestCase
         $this->assertEquals(
             'OAuth foo="bar"',
             $this->authorizationHeader->forTokenCredentials($this->temporaryCredentialsStub, 'verification_code')
+        );
+    }
+
+    /** @test */
+    function it_can_build_for_protected_resource()
+    {
+        $this->protocolParameterStub
+            ->expects($this->once())
+            ->method('forProtectedResource')
+            ->with($this->tokenCredentialsStub, 'GET', 'http://example.com', ['foo' => 'bar'])
+            ->willReturn(['foo' => 'bar']);
+
+        $this->assertEquals(
+            'OAuth foo="bar"',
+            $this->authorizationHeader->forProtectedResource($this->tokenCredentialsStub, 'GET', 'http://example.com', ['foo' => 'bar'])
         );
     }
 }
