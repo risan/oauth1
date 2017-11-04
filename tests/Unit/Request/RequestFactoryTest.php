@@ -8,6 +8,7 @@ use Risan\OAuth1\Config\ConfigInterface;
 use Risan\OAuth1\Request\RequestFactory;
 use Risan\OAuth1\Request\RequestInterface;
 use Risan\OAuth1\Request\UriParserInterface;
+use Risan\OAuth1\Credentials\TokenCredentials;
 use Risan\OAuth1\Request\RequestFactoryInterface;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
 use Risan\OAuth1\Request\AuthorizationHeaderInterface;
@@ -21,6 +22,7 @@ class RequestFactoryTest extends TestCase
     private $requestFactoryStub;
     private $requestStub;
     private $temporaryCredentialsStub;
+    private $tokenCredentialsStub;
     private $psrUriStub;
 
     function setUp()
@@ -31,6 +33,7 @@ class RequestFactoryTest extends TestCase
         $this->requestFactory = new RequestFactory($this->authorizationHeaderStub, $this->uriParserStub);
         $this->requestStub = $this->createMock(RequestInterface::class);
         $this->temporaryCredentialsStub = $this->createMock(TemporaryCredentials::class);
+        $this->tokenCredentialsStub = $this->createMock(TokenCredentials::class);
         $this->psrUriStub = $this->createMock(UriInterface::class);
 
         $this->requestFactoryStub = $this->getMockBuilder(RequestFactory::class)
@@ -171,6 +174,46 @@ class RequestFactoryTest extends TestCase
         $this->assertSame(
             $this->requestStub,
             $this->requestFactoryStub->createForTokenCredentials($this->temporaryCredentialsStub, 'verification_code')
+        );
+    }
+
+    /** @test */
+    function it_can_create_for_protected_resource()
+    {
+        $this->requestFactoryStub
+            ->expects($this->once())
+            ->method('getConfig')
+            ->willReturn($this->configStub);
+
+        $this->configStub
+            ->expects($this->once())
+            ->method('buildUri')
+            ->with('http://example.com')
+            ->willReturn($this->psrUriStub);
+
+        $this->psrUriStub
+            ->expects($this->once())
+            ->method('__toString')
+            ->willReturn('http://example.com');
+
+        $this->authorizationHeaderStub
+            ->expects($this->once())
+            ->method('forProtectedResource')
+            ->with($this->tokenCredentialsStub, 'GET', 'http://example.com', ['foo' => 'bar'])
+            ->willReturn('OAuth1');
+
+        $this->requestFactoryStub
+            ->expects($this->once())
+            ->method('create')
+            ->with('GET', 'http://example.com', [
+                'headers' => ['Authorization' => 'OAuth1'],
+                'foo' => 'bar',
+            ])
+            ->willReturn($this->requestStub);
+
+        $this->assertSame(
+            $this->requestStub,
+            $this->requestFactoryStub->createForProtectedResource($this->tokenCredentialsStub, 'GET', 'http://example.com', ['foo' => 'bar'])
         );
     }
 }
