@@ -5,6 +5,7 @@ namespace Risan\OAuth1;
 use InvalidArgumentException;
 use Risan\OAuth1\Credentials\TokenCredentials;
 use Risan\OAuth1\Request\RequestFactoryInterface;
+use Risan\OAuth1\Credentials\CredentialsException;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
 use Risan\OAuth1\Credentials\CredentialsFactoryInterface;
 
@@ -134,5 +135,19 @@ class OAuth1 implements OAuth1Interface
         );
 
         return $this->credentialsFactory->createTokenCredentialsFromResponse($response);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function request($method, $uri, array $options = [])
+    {
+        if (null === $this->getTokenCredentials()) {
+            throw new CredentialsException('No token credential has been set.');
+        }
+
+        return $this->httpClient->send(
+            $this->requestFactory->createForProtectedResource($this->getTokenCredentials(), $method, $uri, $options)
+        );
     }
 }

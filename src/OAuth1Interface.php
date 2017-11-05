@@ -75,4 +75,15 @@ interface OAuth1Interface
      * @throws \InvalidArgumentException
      */
     public function requestTokenCredentials(TemporaryCredentials $temporaryCredentials, $temporaryIdentifier, $verificationCode);
+
+    /**
+     * Send request for accessing protected resource.
+     *
+     * @param  string $method
+     * @param  string $uri
+     * @param  array $options
+     * @return \Psr\Http\Message\ResponseInterface
+     * @throws \Risan\OAuth1\Credentials\CredentialsException
+     */
+    public function request($method, $uri, array $options = []);
 }
