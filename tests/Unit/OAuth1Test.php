@@ -15,6 +15,7 @@ use Risan\OAuth1\Credentials\TokenCredentials;
 use Risan\OAuth1\Request\RequestFactoryInterface;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
 use Risan\OAuth1\Credentials\CredentialsFactoryInterface;
+use Risan\OAuth1\Credentials\CredentialsException;
 
 class OAuth1Test extends TestCase
 {
@@ -173,6 +174,36 @@ class OAuth1Test extends TestCase
         $this->assertSame(
             $this->tokenCredentialsStub,
             $this->oauth1->requestTokenCredentials($this->temporaryCredentialsStub, 'temporary_id', 'verification_code')
+        );
+    }
+
+    /** @test */
+    function it_throws_exception_if_token_credential_is_not_set()
+    {
+        $this->expectException(CredentialsException::class);
+        $this->oauth1->request('GET', 'http://example.com', ['foo' => 'bar']);
+    }
+
+    /** @test */
+    function it_can_request_for_protected_resource()
+    {
+        $this->oauth1->setTokenCredentials($this->tokenCredentialsStub);
+
+        $this->requestFactoryStub
+            ->expects($this->once())
+            ->method('createForProtectedResource')
+            ->with($this->tokenCredentialsStub, 'GET', 'http://example.com', ['foo' => 'bar'])
+            ->willReturn($this->requestStub);
+
+        $this->httpClientStub
+            ->expects($this->once())
+            ->method('send')
+            ->with($this->requestStub)
+            ->willReturn($this->responseStub);
+
+        $this->assertSame(
+            $this->responseStub,
+            $this->oauth1->request('GET', 'http://example.com', ['foo' => 'bar'])
         );
     }
 }
