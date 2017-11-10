@@ -60,6 +60,8 @@ class CredentialsFactory implements CredentialsFactoryInterface
     {
         $contents = $response->getBody()->getContents();
 
+        $parameters = [];
+
         parse_str($contents, $parameters);
 
         return $parameters;
