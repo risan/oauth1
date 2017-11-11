@@ -140,6 +140,14 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritDoc}
      */
+    public function get($uri, array $options = [])
+    {
+        return $this->request('GET', $uri, $options);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function request($method, $uri, array $options = [])
     {
         if (null === $this->getTokenCredentials()) {
