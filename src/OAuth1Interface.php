@@ -84,6 +84,15 @@ interface OAuth1Interface
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function get($uri, array $options = []);
+
+    /**
+     * Send HTTP POST request for accessing protected resource.
+     *
+     * @param  string $uri
+     * @param  array $options
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function post($uri, array $options = []);
     
     /**
      * Send request for accessing protected resource.
