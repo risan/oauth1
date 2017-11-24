@@ -224,6 +224,24 @@ class OAuth1Test extends TestCase
         );
     }
 
+    /** @test */
+    function it_can_send_post_request()
+    {
+        $oauth1 = $this->getStubWithRequestMethod();
+
+        $oauth1
+            ->expects($this->once())
+            ->method('request')
+            ->with('POST', 'http://example.com', ['foo' => 'bar'])
+            ->willReturn($this->responseStub);
+        
+        $this->assertSame(
+            $this->responseStub,
+            $oauth1->post('http://example.com', ['foo' => 'bar'])
+        );
+    }
+
+
     function getStubWithRequestMethod()
     {
         return $this->getMockBuilder(OAuth1::class)
