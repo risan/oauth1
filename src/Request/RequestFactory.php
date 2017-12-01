@@ -2,6 +2,7 @@
 
 namespace Risan\OAuth1\Request;
 
+use Risan\OAuth1\Credentials\TokenCredentials;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
 
 class RequestFactory implements RequestFactoryInterface
@@ -92,6 +93,18 @@ class RequestFactory implements RequestFactoryInterface
                 'oauth_verifier' => $verificationCode,
             ],
         ]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function createForProtectedResource(TokenCredentials $tokenCredentials, $method, $uri, array $options = [])
+    {
+        return $this->create($method, (string) $this->getConfig()->buildUri($uri), array_replace_recursive([
+            'headers' => [
+                'Authorization' => $this->authorizationHeader->forProtectedResource($tokenCredentials, $method, $uri, $options),
+            ]
+        ], $options));
     }
 
     /**

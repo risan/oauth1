@@ -2,6 +2,7 @@
 
 namespace Risan\OAuth1\Request;
 
+use Risan\OAuth1\Credentials\TokenCredentials;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
 use Risan\OAuth1\Credentials\ServerIssuedCredentials;
 
@@ -76,4 +77,15 @@ interface ProtocolParameterInterface
      * @return array
      */
     public function forTokenCredentials(TemporaryCredentials $temporaryCredentials, $verificationCode);
+
+    /**
+     * Get protocol parameters for accessing protected resource.
+     *
+     * @param  \Risan\OAuth1\Credentials\TokenCredentials $tokenCredentials
+     * @param  string $httpMethod
+     * @param  string $uri
+     * @param  array $requestOptions
+     * @return array
+     */
+    public function forProtectedResource(TokenCredentials $tokenCredentials, $httpMethod, $uri, array $requestOptions = []);
 }

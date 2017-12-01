@@ -61,4 +61,12 @@ interface UriConfigInterface
      * @return boolean
      */
     public function hasCallback();
+
+    /**
+     * Parse and build the given URI.
+     *
+     * @param  \Psr\Http\Message\UriInterface|string $uri
+     * @return \Psr\Http\Message\UriInterface
+     */
+    public function build($uri);
 }

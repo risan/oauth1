@@ -3,7 +3,9 @@
 namespace Risan\OAuth1;
 
 use InvalidArgumentException;
+use Risan\OAuth1\Credentials\TokenCredentials;
 use Risan\OAuth1\Request\RequestFactoryInterface;
+use Risan\OAuth1\Credentials\CredentialsException;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
 use Risan\OAuth1\Credentials\CredentialsFactoryInterface;
 
@@ -29,6 +31,13 @@ class OAuth1 implements OAuth1Interface
      * @var \Risan\OAuth1\Credentials\CredentialsFactoryInterface
      */
     protected $credentialsFactory;
+
+    /**
+     * The TokenCredentials instance.
+     *
+     * @var \Risan\OAuth1\Credentials\TokenCredentials
+     */
+    protected $tokenCredentials;
 
     /**
      * Create a new OAuth1 instance.
@@ -71,7 +80,33 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritDoc}
      */
-    public function getTemporaryCredentials()
+    public function getConfig()
+    {
+        return $this->requestFactory->getConfig();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTokenCredentials()
+    {
+        return $this->tokenCredentials;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setTokenCredentials(TokenCredentials $tokenCredentials)
+    {
+        $this->tokenCredentials = $tokenCredentials;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function requestTemporaryCredentials()
     {
         $response = $this->httpClient->send($this->requestFactory->createForTemporaryCredentials());
 
@@ -89,16 +124,30 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritDoc}
      */
-    public function getTokenCredentials(TemporaryCredentials $temporaryCredentials, $temporaryIdentifier, $verificationCode)
+    public function requestTokenCredentials(TemporaryCredentials $temporaryCredentials, $temporaryIdentifier, $verificationCode)
     {
         if ($temporaryCredentials->getIdentifier() !== $temporaryIdentifier) {
-            throw new InvalidArgumentException('The given temporary identifier does not match the temporary credentials.');
+            throw new InvalidArgumentException('The given temporary credentials identifier does not match the temporary credentials.');
         }
 
         $response = $this->httpClient->send(
             $this->requestFactory->createForTokenCredentials($temporaryCredentials, $verificationCode)
         );
 
-        return $response;
+        return $this->credentialsFactory->createTokenCredentialsFromResponse($response);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function request($method, $uri, array $options = [])
+    {
+        if (null === $this->getTokenCredentials()) {
+            throw new CredentialsException('No token credential has been set.');
+        }
+
+        return $this->httpClient->send(
+            $this->requestFactory->createForProtectedResource($this->getTokenCredentials(), $method, $uri, $options)
+        );
     }
 }

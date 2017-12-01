@@ -103,4 +103,12 @@ class Config implements ConfigInterface
     {
         return $this->uri->hasCallback();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function buildUri($uri)
+    {
+        return $this->uri->build($uri);
+    }
 }
