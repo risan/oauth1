@@ -195,6 +195,8 @@ This `requestToken()` method will return an instance of `OAuth`\Tokens\RequestTo
 
 ### Authorize Access
 
+**THIS METHOD HAS BEEN DEPRECIATED AND REMOVED**
+
 Step 2 is to authorize access. Once you have the request token, the next step is to ask user's permission to grant access for your application. To redirect user to your OAuth provider's authorization page, you need to call `authorize()` method:
 
 ```php
