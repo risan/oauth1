@@ -13,9 +13,9 @@ use Risan\OAuth1\Config\ConfigInterface;
 use Risan\OAuth1\Request\RequestInterface;
 use Risan\OAuth1\Credentials\TokenCredentials;
 use Risan\OAuth1\Request\RequestFactoryInterface;
+use Risan\OAuth1\Credentials\CredentialsException;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
 use Risan\OAuth1\Credentials\CredentialsFactoryInterface;
-use Risan\OAuth1\Credentials\CredentialsException;
 
 class OAuth1Test extends TestCase
 {
@@ -205,5 +205,101 @@ class OAuth1Test extends TestCase
             $this->responseStub,
             $this->oauth1->request('GET', 'http://example.com', ['foo' => 'bar'])
         );
+    }
+
+    /** @test */
+    function it_can_send_get_request()
+    {
+        $oauth1 = $this->getStubWithRequestMethod();
+
+        $oauth1
+            ->expects($this->once())
+            ->method('request')
+            ->with('GET', 'http://example.com', ['foo' => 'bar'])
+            ->willReturn($this->responseStub);
+        
+        $this->assertSame(
+            $this->responseStub,
+            $oauth1->get('http://example.com', ['foo' => 'bar'])
+        );
+    }
+
+    /** @test */
+    function it_can_send_post_request()
+    {
+        $oauth1 = $this->getStubWithRequestMethod();
+
+        $oauth1
+            ->expects($this->once())
+            ->method('request')
+            ->with('POST', 'http://example.com', ['foo' => 'bar'])
+            ->willReturn($this->responseStub);
+        
+        $this->assertSame(
+            $this->responseStub,
+            $oauth1->post('http://example.com', ['foo' => 'bar'])
+        );
+    }
+
+    /** @test */
+    function it_can_send_put_request()
+    {
+        $oauth1 = $this->getStubWithRequestMethod();
+
+        $oauth1
+            ->expects($this->once())
+            ->method('request')
+            ->with('PUT', 'http://example.com', ['foo' => 'bar'])
+            ->willReturn($this->responseStub);
+        
+        $this->assertSame(
+            $this->responseStub,
+            $oauth1->put('http://example.com', ['foo' => 'bar'])
+        );
+    }
+
+    /** @test */
+    function it_can_send_patch_request()
+    {
+        $oauth1 = $this->getStubWithRequestMethod();
+
+        $oauth1
+            ->expects($this->once())
+            ->method('request')
+            ->with('PATCH', 'http://example.com', ['foo' => 'bar'])
+            ->willReturn($this->responseStub);
+        
+        $this->assertSame(
+            $this->responseStub,
+            $oauth1->patch('http://example.com', ['foo' => 'bar'])
+        );
+    }
+
+    /** @test */
+    function it_can_send_delete_request()
+    {
+        $oauth1 = $this->getStubWithRequestMethod();
+
+        $oauth1
+            ->expects($this->once())
+            ->method('request')
+            ->with('DELETE', 'http://example.com', ['foo' => 'bar'])
+            ->willReturn($this->responseStub);
+        
+        $this->assertSame(
+            $this->responseStub,
+            $oauth1->delete('http://example.com', ['foo' => 'bar'])
+        );
+    }
+
+    function getStubWithRequestMethod()
+    {
+        return $this->getMockBuilder(OAuth1::class)
+            ->setConstructorArgs([$this->httpClientStub, $this->requestFactoryStub, $this->credentialsFactoryStub])
+            ->setMethods(['request'])
+            ->disableOriginalClone()
+            ->disableArgumentCloning()
+            ->disallowMockingUnknownTypes()
+            ->getMock();
     }
 }

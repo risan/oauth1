@@ -77,6 +77,51 @@ interface OAuth1Interface
     public function requestTokenCredentials(TemporaryCredentials $temporaryCredentials, $temporaryIdentifier, $verificationCode);
 
     /**
+     * Send HTTP GET request for accessing protected resource.
+     *
+     * @param  string $uri
+     * @param  array $options
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function get($uri, array $options = []);
+
+    /**
+     * Send HTTP POST request for accessing protected resource.
+     *
+     * @param  string $uri
+     * @param  array $options
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function post($uri, array $options = []);
+
+    /**
+     * Send HTTP PUT request for accessing protected resource.
+     *
+     * @param  string $uri
+     * @param  array $options
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function put($uri, array $options = []);
+
+    /**
+     * Send HTTP PATCH request for accessing protected resource.
+     *
+     * @param  string $uri
+     * @param  array $options
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function patch($uri, array $options = []);
+
+    /**
+     * Send HTTP DELETE request for accessing protected resource.
+     *
+     * @param  string $uri
+     * @param  array $options
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function delete($uri, array $options = []);
+    
+    /**
      * Send request for accessing protected resource.
      *
      * @param  string $method
