@@ -2,9 +2,11 @@
 
 namespace Risan\OAuth1\Test\Unit;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\OAuth1Factory;
 use Risan\OAuth1\OAuth1Interface;
+use Risan\OAuth1\Signature\HmacSha1Signer;
 
 class OAuth1FactoryTest extends TestCase
 {
@@ -29,5 +31,18 @@ class OAuth1FactoryTest extends TestCase
         $oauth1 = OAuth1Factory::create($this->config);
 
         $this->assertInstanceOf(OAuth1Interface::class, $oauth1);
+
+        $this->assertInstanceOf(
+            HmacSha1Signer::class, 
+            $oauth1->getRequestFactory()->getAuthorizationHeader()->getProtocolParameter()->getSigner()
+        );
+    }
+
+    /** @test */
+    function it_throws_exception_if_signer_not_implements_signer_interface()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        OAuth1Factory::create($this->config, 'foo');
     }
 }
