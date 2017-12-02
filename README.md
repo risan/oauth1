@@ -1,352 +1,161 @@
-# OAuth1 Client Library
+# OAuth 1.0 Client Library for PHP
 
-[![Build Status](https://travis-ci.org/risan/oauth1.svg?branch=master)](https://travis-ci.org/risan/oauth1)
-[![HHVM Status](http://hhvm.h4cc.de/badge/risan/oauth1.svg?style=flat)](http://hhvm.h4cc.de/package/risan/oauth1)
-[![StyleCI](https://styleci.io/repos/48460990/shield?style=flat)](https://styleci.io/repos/48460990)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/risan/oauth1/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/risan/oauth1/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/risan/oauth1/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/risan/oauth1/?branch=master)
-[![SensioLabs Insight](https://img.shields.io/sensiolabs/i/258a9ce7-94cf-4a9d-a8ae-1add8fa5b8be.svg)](https://insight.sensiolabs.com/projects/258a9ce7-94cf-4a9d-a8ae-1add8fa5b8be)
-[![Latest Stable Version](https://poser.pugx.org/risan/oauth1/v/stable)](https://packagist.org/packages/risan/oauth1)
-[![License](https://poser.pugx.org/risan/oauth1/license)](https://packagist.org/packages/risan/oauth1)
+[![Latest Stable Version](https://poser.pugx.org/risan/oauth1/v/stable?format=flat-square)](https://packagist.org/packages/risan/oauth1)
+[![Build Status](https://img.shields.io/travis/risan/oauth1.svg?style=flat-square)](https://travis-ci.org/risan/oauth1)
+[![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/risan/oauth1.svg?style=flat-square)](https://scrutinizer-ci.com/g/risan/oauth1/)
+[![Code Quality](https://img.shields.io/scrutinizer/g/risan/oauth1.svg?style=flat-square)](https://scrutinizer-ci.com/g/risan/oauth1/)
+[![StyleCI](https://styleci.io/repos/48460990/shield)](https://styleci.io/repos/48460990)
+[![SensioLabs Insight](https://img.shields.io/sensiolabs/i/258a9ce7-94cf-4a9d-a8ae-1add8fa5b8be.svg?style=flat-square)](https://insight.sensiolabs.com/projects/258a9ce7-94cf-4a9d-a8ae-1add8fa5b8be)
+[![License](https://img.shields.io/packagist/l/risan/oauth1.svg?style=flat-square)](LICENSE.md)
+[![Total Downloads](https://img.shields.io/packagist/dt/risan/oauth1.svg?style=flat-square)](https://packagist.org/packages/risan/oauth1)
 
-Simple, fluent and extensible OAuth 1 client library for PHP.
+Simple, fluent and extensible OAuth 1.0 client library for PHP.
 
 ## Table of Contents
 
-* [Dependencies](#dependencies)
 * [Installation](#installation)
-* [Basic Usage](#basic-usage)
+* [Quick Start Guide](#quick-start-guide)
 * [Configuration](#configuration)
-* [OAuth 1 Flow](#get-delivery-options)
-  * [Get Request Token](#get-request-token)
-  * [Authorize Access](#authorize-access)
-  * [Get Access Token](#get-access-token)
-  * [Access Protected Resource](#access-protected-resource)
-* [Built In Providers](#built-in-providers)
-  * [Twitter](#twitter)
-  * [Tumblr](#tumblr)
-  * [Upwork](#upwork)
-
-## Dependencies
-
-This package relies on the following library to work:
-
-* [Guzzle](https://github.com/guzzle/guzzle)
-
-All dependencies will be automatically downloaded if you are using [Composer](https://getcomposer.org/) to install this package.
+* [OAuth 1.0 Flow](#oauth-10-flow)
+    * [Step 1: Obtaining Temporary Credentials](#step-1-obtaining-temporary-credentials)
 
 ## Installation
 
-To install this library using [Composer](https://getcomposer.org/), simply run the following command inside your project directory:
+The recommended way to install this package is through [Composer](https://getcomposer.org). Run the following command in your terminal to install this package:
 
 ```bash
 composer require risan/oauth1
 ```
 
-Or you may also add `risan\oauth1` package into your `composer.json` file like so:
+## Quick Start Guide
 
-```bash
-"require": {
-  "risan/oauth1": "~1.3"
-}
-```
+This package is flexible. You can use it to interact with any providers that implement OAuth 1.0 protocol, like Twitter.
 
-And then don't forget to run the following command to install the library:
-
-```bash
-composer install
-```
-
-## Basic Usage
-
-OAuth1 client library is very flexible, thus you may use this library for various providers that implement OAuth version 1 such as [Twitter](https://twitter.com) or [Tumblr](https://www.tumblr.com).
-
-Here is some basic example of how to use OAuth1 client library to communicate with Twitter API.
+Here's a quick example of how to use this package to interact with Twitter API: fetching the authorized user's tweets.
 
 ```php
-// Start session.
-session_start();
+<?php
 
-// Include Composer autoload file.
+// Includes the Composer autoload file. 
 require 'vendor/autoload.php';
 
-// Create a new instance of OAuth1 client for Twitter.
-$oauth1 = new OAuth1\OAuth1([
-    'consumer_key'      => 'YOUR_TWITTER_CONSUMER_KEY',
-    'consumer_secret'   => 'YOUR_TWITTER_CONSUMER_SECRET',
-    'request_token_url' => 'https://api.twitter.com/oauth/request_token',
-    'authorize_url'     => 'https://api.twitter.com/oauth/authorize',
-    'access_token_url'  => 'https://api.twitter.com/oauth/access_token',
-    'callback_url'      => 'YOUR_CALLBACK_URL', // Optional
-    'resource_base_url' => 'https://api.twitter.com/1.1/'
+// Start the session.
+session_start();
+
+// Create an instance of Risan\OAuth1\OAuth1 class.
+$oauth1 = Risan\OAuth1\OAuth1Factory::create([
+    'client_credentials_identifier' => 'YOUR_TWITTER_API_KEY',
+    'client_credentials_secret' => 'YOUR_TWITTER_API_SECRET',
+    'temporary_credentials_uri' => 'https://api.twitter.com/oauth/request_token',
+    'authorization_uri' => 'https://api.twitter.com/oauth/authorize',
+    'token_credentials_uri' => 'https://api.twitter.com/oauth/access_token',
+    'callback_uri' => 'YOUR_CALLBACK_URI',
 ]);
 
-// STEP 4: ACCESS PROTECTED RESOURCE.
-if (isset($_SESSION['access_token'])) {
-    // Retrieve the saved AccessToken instance (see STEP 3).
-    $accessToken = unserialize($_SESSION['access_token']);
+if (isset($_SESSION['token_credentials'])) {
+    // Get back the previosuly obtain token credentials (step 3).
+    $tokenCredentials = unserialize($_SESSION['token_credentials']);
+    $oauth1->setTokenCredentials($tokenCredentials);
 
-    // Set access token.
-    $oauth1->setGrantedAccessToken($accessToken);
+    // STEP 4: Retrieve the user's tweets.
+    // It will return the Psr\Http\Message\ResponseInterface instance.
+    $response = $oauth1->request('GET', 'https://api.twitter.com/1.1/statuses/user_timeline.json');
+    
+    // Convert the response to array and display it.
+    var_dump(json_decode($response->getBody()->getContents(), true));
+} elseif (isset($_GET['oauth_token']) && isset($_GET['oauth_verifier'])) {
+    // Get back the previosuly generated temporary credentials (step 1).
+    $temporaryCredentials = unserialize($_SESSION['temporary_credentials']);
+    unset($_SESSION['temporary_credentials']);
 
-    // Get authenticated user's timeline.
-    // @return Psr\Http\Message\ResponseInterface instance
-    $response = $oauth1->get('statuses/user_timeline.json');
+    // STEP 3: Obtain the token credentials (also known as access token).
+    $tokenCredentials = $oauth1->requestTokenCredentials($temporaryCredentials, $_GET['oauth_token'], $_GET['oauth_verifier']);
 
-    echo $response->getBody()->getContents();
-}
-
-// STEP 3: GET ACCESS TOKEN.
-elseif (isset($_GET['oauth_token']) && isset($_GET['oauth_verifier'])) {
-    // Retrieve the previously generated request token (see STEP 1).
-    $requestToken = unserialize($_SESSION['request_token']);
-
-    // Get access token.
-    // @return OAuth1\Tokens\AccessToken instance
-    $accessToken = $oauth1->accessToken($requestToken, $_GET['oauth_token'], $_GET['oauth_verifier']);
-
-    // Serialize AccessToken instance and save it to session.
-    $_SESSION['access_token'] = serialize($accessToken);
-
-    // No longer need request token.
-    unset($_SESSION['request_token']);
-
-    // Reload page.
-    header("Location: {$_SERVER['PHP_SELF']}");
+    // Store the token credentials in session for later use.
+    $_SESSION['token_credentials'] = serialize($tokenCredentials);
+    
+    // this basically just redirecting to the current page so that the query string is removed.
+    header('Location: ' . (string) $oauth1->getConfig()->getCallbackUri());
     exit();
-}
+} else {
+    // STEP 1: Obtain a temporary credentials (also known as the request token)  
+    $temporaryCredentials = $oauth1->requestTemporaryCredentials();
 
-// STEP 1: Get request token.
-// STEP 2: Redirect to authorization page.
-else {
-    // Get request token.
-    // @return OAuth1\Tokens\RequestToken instance
-    $requestToken = $oauth1->requestToken();
+    // Store the temporary credentials in session so we can use it on step 3.
+    $_SESSION['temporary_credentials'] = serialize($temporaryCredentials);
 
-    // Serialize RequestToken instance and save to session.
-    $_SESSION['request_token'] = serialize($requestToken);
-
-    // Redirect to authorization url.
-    $authorizationUrl = $oauth1->buildAuthorizationUrl($requestToken);
-    header("Location: {$authorizationUrl}");
+    // STEP 2: Generate and redirect user to authorization URI.
+    $authorizationUri = $oauth1->buildAuthorizationUri($temporaryCredentials);
+    header("Location: {$authorizationUri}");
     exit();
 }
 ```
 
 ## Configuration
 
-To create an instance of `OAuth1\Oauth1` class you have to pass an instance of `OAuth1\Config` class as an argument. For ease of use, you may also pass an array that reflects your OAuth 1 provider configuration. Your configuration array should be an associative array that contains the following keys:
+You can use the static `create` method on `Risan\OAuth1\OAuth1Factory` class to easily create an instance of `Risan\OAuth1\Auth1` class. It requires you to pass a configuration array with the following keys:
 
-* `consumer_key` (String)
+* `client_credentials_identifier`: The client credentials identifier, also known as a consumer key or API key.
+* `client_credentials_secret`: The client credentials secret, also known as a consumer secret or API secret.
+* `temporary_credentials_uri`: The URI for obtaining the temporary credentials (also known as request token).
+* `authorization_uri`: The URI for authorizing user.
+* `token_credentials_uri`: The URI for obtaining the token credentials (also known as access token).
 
-  Your OAuth provider's consumer key, sometimes it is also called API Key.
+There are also two optional configuration that you can pass:
+* `callback_uri`: The URI where the user will be redirected to after successfull authorization.
+* `base_uri`: The base URI that will be used to build an absolute URI if you pass a relative URI to configuration array or when sending a request to the protected resource.
 
-* `consumer_secret` (String)
+## OAuth 1.0 Flow
 
-  Your OAuth provider's consumer secret, sometimes it is also called API Secret.
+In order to access a protected resource, the OAuth 1.0 flow can be broken down into four steps:
 
-* `request_token_url` (String)
+### Step 1: Obtaining Temporary Credentials
 
-  Your OAuth provider's request token url. This is an endpoint where your application will request for a temporary token (request token) from your provider.
-
-* `authorize_url` (String)
-
-  Your OAuth provider's authorize url. This is a url where your OAuth provider will ask user's permission to grant access for your application.
-
-* `access_token_url` (String)
-
-  Your OAuth provider's access token url. This is an endpoint where your application can request for an access token. This access token will be used by your application to access protected resources.
-
-* `callback_url` (String) *Optional*
-
-  Your OAuth callback url. This is a url in your application, where your OAuth provider will redirect user after he/she granted the permission.
-
-* `resource_base_url` (String)
-
-  Your provider's protected resource base url. This is base url for the protected API endpoints.
-
-For example, if you are going to use Twitter API, you'll have a configuration like this:
+The very first step is to obtain the temporary credentials or mostly known as the access token. To obtain it, you need to call the `requestTemporaryCredentials` method on the `Risan\OAuth1\OAuth1` instance:
 
 ```php
-$twitter = new OAuth1\OAuth1([
-    'consumer_key'      => 'YOUR_TWITTER_CONSUMER_KEY',
-    'consumer_secret'   => 'YOUR_TWITTER_CONSUMER_SECRET',
-    'request_token_url' => 'https://api.twitter.com/oauth/request_token',
-    'authorize_url'     => 'https://api.twitter.com/oauth/authorize',
-    'access_token_url'  => 'https://api.twitter.com/oauth/access_token',
-    'callback_url'      => 'YOUR_CALLBACK_URL', // Optional
-    'resource_base_url' => 'https://api.twitter.com/1.1/'
-]);
+$temporaryCredentials = $oauth1->requestTemporaryCredentials();
 ```
 
-## OAuth 1 Flow
+It will return an instance of `Risan\OAuth1\Credentials\TemporaryCredentials` class, which later you'll use to generate an authorization URI (Step 2) and to obtain the token credentials (Step 3).
 
-OAuth version 1 can be broken down into four distinct steps in order to access protected resources.
+### Step 2: Generate and Redirect User to Authorization URI
 
-### Get Request Token
-
-Step 1 is to retrieve for a request token. A request token is used as a temporary credentials for generating authorization url. To retrieve a request token from your OAuth provider, simply call `requestToken()` method like so:
+Once you've got the temporary credentials, the second step is to generate and redirect the user to the authorization page. This is where the user will be asked to grant their permission to your application. You need to pass the previously obtained `Risan\OAuth1\Credentials\TemporaryCredentials` class instance to the `buildAuthorizationUri` method to generate the authorization URI:
 
 ```php
-$requestToken = $oauth1->requestToken();
+$authorizationUri = $oauth1->buildAuthorizationUri($temporaryCredentials);
+
+// Redirect user to the authorization URI.
+header("Location: {$authorizationUri}");
+exit();
 ```
 
-This `requestToken()` method will return an instance of `OAuth`\Tokens\RequestToken` class which will be needed in the authorization step.
+### Step 3: Obtaining Token Credentials
 
-### Authorize Access
-
-Step 2 is to authorize access. Once you have the request token, the next step is to ask user's permission to grant access for your application. To redirect user to your OAuth provider's authorization page, you need to call `authorize()` method:
-
-```php
-$oauth1->authorize(OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken);
-```
-
-This method requires an argument which must confront the `RequestTokenInterface`. You may pass an instance of `OAuth1\Tokens\RequestToken` class that you get from the `requestToken()` previously.
-
-This method will not return anything, because it simpy redirects user to authorization page that is provided by your OAuth provider.
-
-### Get Access Token
-
-Step 3 is to get an access token. Once the user has granted his/her permission, he/she will be redirected back to the configured callback url with the additional query string:
+The third step is to obtain the token credentials, or also known as the access token. Upon successful authorization, the provider will redirect the user to the defined callback URI along with at least two additional query parameters:
 
 * `oauth_token`
 * `oauth_verifier`
 
-You will need these returned two paramters to verify and request for access token from OAuth provider. To get an access token, you need to call `accessToken()` method:
+Along with the previously obtained temporary credentials, you'll need to pass these two query parameters to `requestTokenCredentials` method to obtain token credentials:
 
 ```php
-$accessToken = $oauth1->accessToken(OAuth1\Contracts\Tokens\RequestTokenInterface $requestToken, $tokenKey, $verifier);
+$tokenCredentials = $oauth1->requestTokenCredentials($temporaryCredentials, $_GET['oauth_token'], $_GET['oauth_verifier']);
 ```
 
-The `accessToken()` method requires an instance that implements `RequestTokenInterface`. You may pass the `OAuth1\Tokens\RequestToken` class instance which retrieved from step 2. The method is also required `$tokenKey` and `$verifier` arguments. This two arguments are retrieved from the query string like so:
+This method will return an instance of `Risan\OAuth1\Credentials\TokenCredentials` class, which you're going to need to access the protected resource.
+
+### Step 4: Accessing the Protected Resource
+
+Finally, once you've got the token credentials instance, you can start making a request to the protected resource. Pass the obtained `Risan\OAuth1\Credentials\TokenCredentials` instance to the `setTokenCredentials` method before making any requests to the protected resource, or else an exception will be thrown.
 
 ```php
-$accessToken = $oauth1->accessToken($requestToken, $_GET['oauth_token'], $_GET['oauth_verifier']);
+// Set the previously obtained token credentials.
+$oauth1->setTokenCredentials($tokenCredentials);
+
+// Make a request to the protected resource.
+$response = $oauth1->request('GET', 'https://api.twitter.com/1.1/statuses/user_timeline.json');
 ```
 
-The `accessToken()` method will return an instance of `OAuth1\Tokens\AccessToken` class. This `AccessToken` instance will then be used to access protected resources.
-
-### Access Protected Resource
-
-Finally, the last step is to access protected resources! Once you've got the access token, you can start accessing protected resources. First you need to set the granted access token like so:
-
-```php
-$oauth1->setGrantedAccessToken(OAuth1\Contracts\Tokens\AccessTokenInterface $accessToken);
-```
-
-Once the access token is set, you can start sending HTTP request to the protected API endpoints using `request()` method:
-
-```php
-$response = $oauth->request($method, $url, array $options = []);
-```
-
-The `request()` method has three arguments:
-
-* `$method` (String)
-
-  This is the HTTP method to use: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `OPTIONS`, or `HEAD`.
-
-* `$url` (String)
-
-  This is the url or the path of the API endpoint. Note that we have the `resource_base_url` in configuration array, so you don't have to specify a full path url.
-
-* `$options` (Array) *Optional*
-
-  This is a requests options to send along with. You may see the full reference of requests options in [Guzzle requests options documentation](http://docs.guzzlephp.org/en/latest/request-options.html).
-
-The `request()` method will return an instance of `Psr\Http\Message\ResponseInterface`. You may read further about the retured response object in [Guzzle and PSR-7 documentation](http://docs.guzzlephp.org/en/latest/psr7.html#responses).
-
-You may also send HTTP request using various shorthand methods:
-
-```php
-// HTTP GET.
-$oauth->get($url, array $options = []);
-
-// HTTP POST.
-$oauth->post($url, array $options = []);
-
-// HTTP PUT.
-$oauth->put($url, array $options = []);
-
-// HTTP PATCH.
-$oauth->patch($url, array $options = []);
-
-// HTTP DELETE.
-$oauth->delete($url, array $options = []);
-
-// HTTP OPTIONS.
-$oauth->options($url, array $options = []);
-
-// HTTP HEAD.
-$oauth->head($url, array $options = []);
-```
-
-## Built In Providers
-
-OAuth1 library has built in support for the following providers:
-
-* [Twitter](https://twitter.com/)
-* [Tumblr](https://tumblr.com/)
-* [Upwork](https://upwork.com/)
-
-With this providers, you only have to pass `consumer_key` and `consumer_secret` as a configuration array when creating a client instance.
-
-### Twitter
-
-You can the `Oauth1\Providers\Twitter` class to communicate with Twitter Rest API. To create an instance of this class:
-
-```php
-$twitter = new OAuth1\Providers\Twitter([
-    'consumer_key'    => 'YOUR_TWITTER_CONSUMER_KEY',
-    'consumer_secret' => 'YOUR_TWITTER_CONSUMER_SECRET',
-    'callback_url'    => 'YOUR_CALLBACK_URL' // Optional
-]);
-```
-
-Once, you've got the access token, you can use this Twitter client instance to retrieve protected resources. For example to retrieve current user's timeline:
-
-```php
-$twitter->setGrantedAccessToken($accessToken);
-
-$response = $twitter->get('statuses/user_timeline.json');
-```
-
-### Tumblr
-
-You can use the provided `Oauth1\Providers\Tumblr` class to communicate with Tumblr API. To instantiate it:
-
-```php
-$tumblr = new OAuth1\Providers\Tumblr([
-    'consumer_key'    => 'YOUR_TUMBLR_CONSUMER_KEY',
-    'consumer_secret' => 'YOUR_TUMBLR_CONSUMER_SECRET',
-    'callback_url'    => 'YOUR_CALLBACK_URL' // Optional
-]);
-```
-
-Once the user has granted the permission, you can set the given access token and perform a request to Tumblr API. For example, we can retrieve the Tumblr blog information like so:
-
-```php
-$tumblr->setGrantedAccessToken($accessToken);
-
-$response = $tumblr->get('blog/allthingseurope.tumblr.com/info');
-```
-
-### Upwork
-
-You can also use the `OAuth\Providers\Upwork` class to communicate with Upwork API. To instantiate the `Upwork` client:
-
-```php
-$upwork = new OAuth1\Providers\Upwork([
-    'consumer_key'    => 'YOUR_UPWORK_CONSUMER_KEY',
-    'consumer_secret' => 'YOUR_UPWORK_CONSUMER_SECRET',
-    'callback_url'    => 'YOUR_CALLBACK_URL' // Optional
-]);
-```
-
-Once you've got the access token, you may now easily access the Upwork API. For example, if we are about to retrieve the authenticated user information, we can do the following:
-
-```php
-$upwork->setGrantedAccessToken($accessToken);
-
-$response = $upwork->get('api/auth/v1/info.json');
-```
+The `request` method will return an instance of `Psr\Http\Message\ResponseInterface` class.
