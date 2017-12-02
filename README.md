@@ -18,6 +18,9 @@ Simple, fluent and extensible OAuth 1.0 client library for PHP.
 * [Configuration](#configuration)
 * [OAuth 1.0 Flow](#oauth-10-flow)
     * [Step 1: Obtaining Temporary Credentials](#step-1-obtaining-temporary-credentials)
+    * [Step 2: Generate and Redirect User to Authorization URI](#step-2-generate-and-redirect-user-to-authorization-uri)
+    * [Step 3: Obtaining Token Credentials](#step-3-obtaining-token-credentials)
+    * [Step 4: Accessing the Protected Resource](#step-4-accessing-the-protected-resource)
 
 ## Installation
 
