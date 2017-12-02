@@ -258,6 +258,23 @@ class OAuth1Test extends TestCase
         );
     }
 
+    /** @test */
+    function it_can_send_patch_request()
+    {
+        $oauth1 = $this->getStubWithRequestMethod();
+
+        $oauth1
+            ->expects($this->once())
+            ->method('request')
+            ->with('PATCH', 'http://example.com', ['foo' => 'bar'])
+            ->willReturn($this->responseStub);
+        
+        $this->assertSame(
+            $this->responseStub,
+            $oauth1->patch('http://example.com', ['foo' => 'bar'])
+        );
+    }
+
     function getStubWithRequestMethod()
     {
         return $this->getMockBuilder(OAuth1::class)
