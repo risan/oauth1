@@ -111,6 +111,15 @@ interface OAuth1Interface
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function patch($uri, array $options = []);
+
+    /**
+     * Send HTTP DELETE request for accessing protected resource.
+     *
+     * @param  string $uri
+     * @param  array $options
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function delete($uri, array $options = []);
     
     /**
      * Send request for accessing protected resource.

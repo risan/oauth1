@@ -172,6 +172,14 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritDoc}
      */
+    public function delete($uri, array $options = [])
+    {
+        return $this->request('DELETE', $uri, $options);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function request($method, $uri, array $options = [])
     {
         if (null === $this->getTokenCredentials()) {
