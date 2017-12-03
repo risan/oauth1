@@ -57,7 +57,7 @@ interface ProtocolParameterInterface
      * @param string uri
      * @param \Risan\OAuth1\Credentials\ServerIssuedCredentials|null $serverIssuedCredentials
      * @param array                                                  $requestOptions
-     * @param string $httpMethod
+     * @param string                                                 $httpMethod
      *
      * @return string
      */
