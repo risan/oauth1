@@ -18,20 +18,20 @@ class ProviderFactory
     public static function create(ProviderInterface $provider, array $config)
     {
         return OAuth1Factory::create(
-            array_merge($provider->getUriConfig(), $config), 
+            array_merge($provider->getUriConfig(), $config),
             $provider->getSigner()
         );
     }
 
-     /*
-     * Dynamically handle the OAuth1Interface instance creation.
-     *
-     * @param string $name
-     * @param array $arguments
-     *
-     * @return \Risan\OAuth1\OAuth1Interface
-     * @throws \InvalidArgumentException 
-     */
+    /*
+    * Dynamically handle the OAuth1Interface instance creation.
+    *
+    * @param string $name
+    * @param array $arguments
+    *
+    * @return \Risan\OAuth1\OAuth1Interface
+    * @throws \InvalidArgumentException
+    */
     public static function __callStatic($name, array $arguments)
     {
         $providerClassName = '\\Risan\\OAuth1\\Provider\\' . ucfirst($name);
@@ -49,5 +49,5 @@ class ProviderFactory
         }
 
         return static::create(new $providerClassName(), $arguments[0]);
-    }    
+    }
 }
