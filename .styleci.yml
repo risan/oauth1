@@ -11,8 +11,6 @@ enabled:
 
 disabled:
   - concat_without_spaces
-  - new_with_braces
-  - phpdoc_no_empty_return
   - unary_operator_spaces
 
 finder:
