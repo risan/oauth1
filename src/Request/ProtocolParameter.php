@@ -35,7 +35,7 @@ class ProtocolParameter implements ProtocolParameterInterface
     /**
      * Create ProtocolParameter instance.
      *
-     * @param \Risan\OAuth1\ConfigInterface                 $config
+     * @param \Risan\OAuth1\Config\ConfigInterface          $config
      * @param \Risan\OAuth1\Signature\SignerInterface       $signer
      * @param \Risan\OAuth1\Request\NonceGeneratorInterface $nonceGenerator
      */
