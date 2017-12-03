@@ -199,6 +199,25 @@ This method accepts three parameters:
 * `uri` (required): The URI of the API endpoint that you'd like to access. You can also pass a relative URI as long as you pass the `base_uri` in the configuration array.
 * `options` (optional): It's an optional array paramater to configure your request. It's the same [Request Options](https://guzzle.readthedocs.io/en/stable/request-options.html) that you'll pass when making an HTTP request using [Guzzle](https://guzzle.readthedocs.io). You can check all available options that you can pass on [Guzzle documentation](http://guzzle.readthedocs.io/en/stable/request-options.html).
 
+There are also shortcut methods for common HTTP methods:
+
+```php
+// GET method
+$oauth1->get($uri, $options);
+
+// POST method
+$oauth1->post($uri, $options);
+
+// PUT method
+$oauth1->put($uri, $options);
+
+// PATCH method
+$oauth1->patch($uri, $options);
+
+// DELETE method
+$oauth1->delete($uri, $options);
+```
+
 ## Working with the Response
 
 The `request` method will return an instance of `Psr\Http\Message\ResponseInterface`. You can check the returned status code with the `getStatusCode` method:
