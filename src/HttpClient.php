@@ -14,7 +14,7 @@ class HttpClient implements HttpClientInterface
      */
     public function __construct(Guzzle $guzzle = null)
     {
-        $this->guzzle = $guzzle === null ? new Guzzle : $guzzle;
+        $this->guzzle = null === $guzzle ? new Guzzle() : $guzzle;
     }
 
     /**
@@ -28,7 +28,7 @@ class HttpClient implements HttpClientInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function request($method, $uri, array $options = [])
     {
@@ -36,7 +36,7 @@ class HttpClient implements HttpClientInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function send(RequestInterface $request)
     {
@@ -48,7 +48,7 @@ class HttpClient implements HttpClientInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function post($uri, array $options = [])
     {

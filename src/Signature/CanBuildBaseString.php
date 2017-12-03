@@ -17,8 +17,9 @@ trait CanBuildBaseString
      * Build the signature base string.
      *
      * @param \Psr\Http\Message\UriInterface|string $uri
-     * @param array $parameters
-     * @param string $httpMethod
+     * @param array                                 $parameters
+     * @param string                                $httpMethod
+     *
      * @return string
      */
     public function buildBaseString($uri, array $parameters = [], $httpMethod = 'POST')
@@ -37,6 +38,6 @@ trait CanBuildBaseString
             return $this->baseStringBuilder;
         }
 
-        return $this->baseStringBuilder = new BaseStringBuilder(new UriParser);
+        return $this->baseStringBuilder = new BaseStringBuilder(new UriParser());
     }
 }

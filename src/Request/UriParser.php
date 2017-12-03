@@ -10,7 +10,7 @@ use Psr\Http\Message\UriInterface;
 class UriParser implements UriParserInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function isAbsolute(UriInterface $uri)
     {
@@ -18,15 +18,15 @@ class UriParser implements UriParserInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function isMissingScheme(UriInterface $uri)
     {
-        return $uri->getScheme() === '' && $uri->getHost() !== '';
+        return '' === $uri->getScheme() && '' !== $uri->getHost();
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildFromParts(array $parts)
     {
@@ -34,7 +34,7 @@ class UriParser implements UriParserInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function resolve(UriInterface $baseUri, UriInterface $uri)
     {
@@ -42,7 +42,7 @@ class UriParser implements UriParserInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function appendQueryParameters(UriInterface $uri, array $parameters = [])
     {
@@ -54,7 +54,7 @@ class UriParser implements UriParserInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function toPsrUri($uri)
     {

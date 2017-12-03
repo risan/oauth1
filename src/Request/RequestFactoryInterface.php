@@ -38,7 +38,8 @@ interface RequestFactoryInterface
     /**
      * Build the authorization URI.
      *
-     * @param  \Risan\OAuth1\Credentials\TemporaryCredentials $temporaryCredentials
+     * @param \Risan\OAuth1\Credentials\TemporaryCredentials $temporaryCredentials
+     *
      * @return \Psr\Http\Message\UriInterface
      */
     public function buildAuthorizationUri(TemporaryCredentials $temporaryCredentials);
@@ -46,8 +47,9 @@ interface RequestFactoryInterface
     /**
      * Create request for obtaining token credentials.
      *
-     * @param  \Risan\OAuth1\Credentials\TemporaryCredentials $temporaryCredentials
-     * @param  string $verificationCode
+     * @param \Risan\OAuth1\Credentials\TemporaryCredentials $temporaryCredentials
+     * @param string                                         $verificationCode
+     *
      * @return \Risan\OAuth1\Request\RequestInterface
      */
     public function createForTokenCredentials(TemporaryCredentials $temporaryCredentials, $verificationCode);
@@ -55,10 +57,11 @@ interface RequestFactoryInterface
     /**
      * Create an authenticated request for obtaining protected resource.
      *
-     * @param  \Risan\OAuth1\Credentials\TokenCredentials $tokenCredentials
-     * @param  string $method
-     * @param  string $uri
-     * @param  array $options
+     * @param \Risan\OAuth1\Credentials\TokenCredentials $tokenCredentials
+     * @param string                                     $method
+     * @param string                                     $uri
+     * @param array                                      $options
+     *
      * @return \Risan\OAuth1\Request\RequestInterface
      */
     public function createForProtectedResource(TokenCredentials $tokenCredentials, $method, $uri, array $options = []);

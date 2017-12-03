@@ -25,7 +25,7 @@ class RequestFactory implements RequestFactoryInterface
      * Create the new instance of RequestFactory class.
      *
      * @param \Risan\OAuth1\Request\AuthorizationHeaderInterface $authorizationHeader
-     * @param \Risan\OAuth1\Request\UriParserInterface $uriParser
+     * @param \Risan\OAuth1\Request\UriParserInterface           $uriParser
      */
     public function __construct(AuthorizationHeaderInterface $authorizationHeader, UriParserInterface $uriParser)
     {
@@ -34,7 +34,7 @@ class RequestFactory implements RequestFactoryInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getAuthorizationHeader()
     {
@@ -42,7 +42,7 @@ class RequestFactory implements RequestFactoryInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getConfig()
     {
@@ -50,7 +50,7 @@ class RequestFactory implements RequestFactoryInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getUriParser()
     {
@@ -58,7 +58,7 @@ class RequestFactory implements RequestFactoryInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function createForTemporaryCredentials()
     {
@@ -70,7 +70,7 @@ class RequestFactory implements RequestFactoryInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildAuthorizationUri(TemporaryCredentials $temporaryCredentials)
     {
@@ -81,7 +81,7 @@ class RequestFactory implements RequestFactoryInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function createForTokenCredentials(TemporaryCredentials $temporaryCredentials, $verificationCode)
     {
@@ -96,23 +96,24 @@ class RequestFactory implements RequestFactoryInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function createForProtectedResource(TokenCredentials $tokenCredentials, $method, $uri, array $options = [])
     {
         return $this->create($method, (string) $this->getConfig()->buildUri($uri), array_replace_recursive([
             'headers' => [
                 'Authorization' => $this->authorizationHeader->forProtectedResource($tokenCredentials, $method, $uri, $options),
-            ]
+            ],
         ], $options));
     }
 
     /**
      * Create a new instance of Request class.
      *
-     * @param  string $method
-     * @param  string $uri
-     * @param  array  $options [description]
+     * @param string $method
+     * @param string $uri
+     * @param array  $options [description]
+     *
      * @return \Risan\OAuth1\Request\RequestInterface
      */
     public function create($method, $uri, array $options = [])

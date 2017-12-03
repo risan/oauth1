@@ -55,7 +55,7 @@ class UriConfig implements UriConfigInterface
     /**
      * Create UriConfig instance.
      *
-     * @param array $uris
+     * @param array                                    $uris
      * @param \Risan\OAuth1\Request\UriParserInterface $parser
      */
     public function __construct(array $uris, UriParserInterface $parser)
@@ -65,7 +65,7 @@ class UriConfig implements UriConfigInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getParser()
     {
@@ -76,6 +76,7 @@ class UriConfig implements UriConfigInterface
      * Set URIs from an array.
      *
      * @param array $uris
+     *
      * @return \Risan\OAuth1\Config\UriConfig
      */
     public function setFromArray(array $uris)
@@ -100,8 +101,10 @@ class UriConfig implements UriConfigInterface
     /**
      * Validate the given URI array.
      *
-     * @param  array  $uris
-     * @return boolean
+     * @param array $uris
+     *
+     * @return bool
+     *
      * @throws \InvalidArgumentException
      */
     public function validateUris(array $uris)
@@ -124,8 +127,10 @@ class UriConfig implements UriConfigInterface
     /**
      * Set the base URI.
      *
-     * @param  \Psr\Http\Message\UriInterface $uri
+     * @param \Psr\Http\Message\UriInterface $uri
+     *
      * @return \Risan\OAuth1\Config\UriConfig
+     *
      * @throws \InvalidArgumentException
      */
     public function setBase(UriInterface $uri)
@@ -140,7 +145,7 @@ class UriConfig implements UriConfigInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function base()
     {
@@ -148,15 +153,15 @@ class UriConfig implements UriConfigInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasBase()
     {
-        return $this->base !== null;
+        return null !== $this->base;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function forTemporaryCredentials()
     {
@@ -164,7 +169,7 @@ class UriConfig implements UriConfigInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function forAuthorization()
     {
@@ -172,7 +177,7 @@ class UriConfig implements UriConfigInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function forTokenCredentials()
     {
@@ -180,7 +185,7 @@ class UriConfig implements UriConfigInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function callback()
     {
@@ -188,15 +193,15 @@ class UriConfig implements UriConfigInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasCallback()
     {
-        return $this->callback !== null;
+        return null !== $this->callback;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function build($uri)
     {
@@ -212,8 +217,9 @@ class UriConfig implements UriConfigInterface
     /**
      * Check if the given URI should be resolved to absolute URI.
      *
-     * @param  \Psr\Http\Message\UriInterface $uri
-     * @return boolean
+     * @param \Psr\Http\Message\UriInterface $uri
+     *
+     * @return bool
      */
     public function shouldBeResolvedToAbsoluteUri(UriInterface $uri)
     {

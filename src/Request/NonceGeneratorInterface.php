@@ -7,7 +7,8 @@ interface NonceGeneratorInterface
     /**
      * Generate a random string for nonce.
      *
-     * @param  integer $length
+     * @param int $length
+     *
      * @return string
      */
     public function generate($length = 32);

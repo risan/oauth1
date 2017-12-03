@@ -24,7 +24,7 @@ class Config implements ConfigInterface
      * Create new instance of Config class.
      *
      * @param \Risan\OAuth1\Credentials\ClientCredentials $clientCredentials
-     * @param \Risan\OAuth1\Config\UriConfigInterface $uri
+     * @param \Risan\OAuth1\Config\UriConfigInterface     $uri
      */
     public function __construct(ClientCredentials $clientCredentials, UriConfigInterface $uri)
     {
@@ -33,7 +33,7 @@ class Config implements ConfigInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getClientCredentials()
     {
@@ -41,7 +41,7 @@ class Config implements ConfigInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getClientCredentialsIdentifier()
     {
@@ -49,7 +49,7 @@ class Config implements ConfigInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getClientCredentialsSecret()
     {
@@ -57,7 +57,7 @@ class Config implements ConfigInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getUri()
     {
@@ -65,7 +65,7 @@ class Config implements ConfigInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getTemporaryCredentialsUri()
     {
@@ -73,7 +73,7 @@ class Config implements ConfigInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getAuthorizationUri()
     {
@@ -81,7 +81,7 @@ class Config implements ConfigInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getTokenCredentialsUri()
     {
@@ -89,7 +89,7 @@ class Config implements ConfigInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getCallbackUri()
     {
@@ -97,7 +97,7 @@ class Config implements ConfigInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasCallbackUri()
     {
@@ -105,7 +105,7 @@ class Config implements ConfigInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildUri($uri)
     {

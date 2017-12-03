@@ -35,8 +35,8 @@ class ProtocolParameter implements ProtocolParameterInterface
     /**
      * Create ProtocolParameter instance.
      *
-     * @param \Risan\OAuth1\ConfigInterface $config
-     * @param \Risan\OAuth1\Signature\SignerInterface $signer
+     * @param \Risan\OAuth1\Config\ConfigInterface          $config
+     * @param \Risan\OAuth1\Signature\SignerInterface       $signer
      * @param \Risan\OAuth1\Request\NonceGeneratorInterface $nonceGenerator
      */
     public function __construct(ConfigInterface $config, SignerInterface $signer, NonceGeneratorInterface $nonceGenerator)
@@ -47,7 +47,7 @@ class ProtocolParameter implements ProtocolParameterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getConfig()
     {
@@ -55,7 +55,7 @@ class ProtocolParameter implements ProtocolParameterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getSigner()
     {
@@ -63,7 +63,7 @@ class ProtocolParameter implements ProtocolParameterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getNonceGenerator()
     {
@@ -71,15 +71,15 @@ class ProtocolParameter implements ProtocolParameterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getCurrentTimestamp()
     {
-        return (new DateTime)->getTimestamp();
+        return (new DateTime())->getTimestamp();
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getVersion()
     {
@@ -87,7 +87,7 @@ class ProtocolParameter implements ProtocolParameterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getBase()
     {
@@ -101,7 +101,7 @@ class ProtocolParameter implements ProtocolParameterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function forTemporaryCredentials()
     {
@@ -117,7 +117,7 @@ class ProtocolParameter implements ProtocolParameterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function forTokenCredentials(TemporaryCredentials $temporaryCredentials, $verificationCode)
     {
@@ -140,7 +140,7 @@ class ProtocolParameter implements ProtocolParameterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function forProtectedResource(TokenCredentials $tokenCredentials, $httpMethod, $uri, array $requestOptions = [])
     {
@@ -160,7 +160,7 @@ class ProtocolParameter implements ProtocolParameterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getSignature(array $protocolParameters, $uri, ServerIssuedCredentials $serverIssuedCredentials = null, array $requestOptions = [], $httpMethod = 'POST')
     {
@@ -173,8 +173,9 @@ class ProtocolParameter implements ProtocolParameterInterface
     /**
      * Build the signature parameters to be signed.
      *
-     * @param  array  $protocolParameters
-     * @param  array  $requestOptions
+     * @param array $protocolParameters
+     * @param array $requestOptions
+     *
      * @return array
      */
     public function signatureParameters(array $protocolParameters, array $requestOptions = [])
@@ -195,7 +196,8 @@ class ProtocolParameter implements ProtocolParameterInterface
     /**
      * Setup the signer.
      *
-     * @param  \Risan\OAuth1\Credentials\ServerIssuedCredentials|null $serverIssuedCredentials
+     * @param \Risan\OAuth1\Credentials\ServerIssuedCredentials|null $serverIssuedCredentials
+     *
      * @return \Risan\OAuth1\Signature\SignerInterface
      */
     public function setupSigner(ServerIssuedCredentials $serverIssuedCredentials = null)
@@ -214,7 +216,7 @@ class ProtocolParameter implements ProtocolParameterInterface
     /**
      * Should sign with the client credentials.
      *
-     * @return boolean
+     * @return bool
      */
     public function shouldSignWithClientCredentials()
     {
@@ -224,20 +226,22 @@ class ProtocolParameter implements ProtocolParameterInterface
     /**
      * Should sign with the server issued credentials.
      *
-     * @param  \Risan\OAuth1\Credentials\ServerIssuedCredentials|null $serverIssuedCredentials
-     * @return boolean
+     * @param \Risan\OAuth1\Credentials\ServerIssuedCredentials|null $serverIssuedCredentials
+     *
+     * @return bool
      */
     public function shouldSignWithServerIssuedCredentials(ServerIssuedCredentials $serverIssuedCredentials = null)
     {
-        return $this->signer->isKeyBased() && $serverIssuedCredentials !== null;
+        return $this->signer->isKeyBased() && null !== $serverIssuedCredentials;
     }
 
     /**
      * Check if request options has the given key option.
      *
-     * @param  array  $requestOptions
-     * @param  string $key
-     * @return boolean
+     * @param array  $requestOptions
+     * @param string $key
+     *
+     * @return bool
      */
     public function requestOptionsHas(array $requestOptions, $key)
     {

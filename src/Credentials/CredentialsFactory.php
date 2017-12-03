@@ -3,12 +3,11 @@
 namespace Risan\OAuth1\Credentials;
 
 use Psr\Http\Message\ResponseInterface;
-use Risan\OAuth1\Credentials\CredentialsFactoryInterface;
 
 class CredentialsFactory implements CredentialsFactoryInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function createTemporaryCredentialsFromResponse(ResponseInterface $response)
     {
@@ -24,7 +23,7 @@ class CredentialsFactory implements CredentialsFactoryInterface
             throw new CredentialsException("Unable to parse temporary credentials response. Missing parameter: {$missingParameterKey}.");
         }
 
-        if ($parameters['oauth_callback_confirmed'] !== 'true') {
+        if ('true' !== $parameters['oauth_callback_confirmed']) {
             throw new CredentialsException('Unable to parse temporary credentials response. Callback URI is not valid.');
         }
 
@@ -32,7 +31,7 @@ class CredentialsFactory implements CredentialsFactoryInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function createTokenCredentialsFromResponse(ResponseInterface $response)
     {
@@ -53,7 +52,8 @@ class CredentialsFactory implements CredentialsFactoryInterface
     /**
      * Get parameters from response.
      *
-     * @param  \Psr\Http\Message\ResponseInterface $response
+     * @param \Psr\Http\Message\ResponseInterface $response
+     *
      * @return array
      */
     public function getParametersFromResponse(ResponseInterface $response)
@@ -70,8 +70,9 @@ class CredentialsFactory implements CredentialsFactoryInterface
     /**
      * Get missing parameter's key.
      *
-     * @param  array  $parameters
-     * @param  array  $requiredKeys
+     * @param array $parameters
+     * @param array $requiredKeys
+     *
      * @return string|null
      */
     public function getMissingParameterKey(array $parameters, array $requiredKeys = [])

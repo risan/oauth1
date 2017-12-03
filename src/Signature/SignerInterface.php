@@ -14,16 +14,17 @@ interface SignerInterface
     /**
      * Check if the signer is key based.
      *
-     * @return boolean
+     * @return bool
      */
     public function isKeyBased();
 
     /**
      * Create a signature for given request parameters.
      *
-     * @param  string $uri
-     * @param  array  $parameters
-     * @param  string $httpMethod
+     * @param string $uri
+     * @param array  $parameters
+     * @param string $httpMethod
+     *
      * @return string
      */
     public function sign($uri, array $parameters = [], $httpMethod = 'POST');

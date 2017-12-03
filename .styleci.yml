@@ -4,6 +4,15 @@ risky: true
 
 linting: true
 
+enabled:
+  - short_array_syntax
+  - concat_with_spaces
+  - length_ordered_imports
+
+disabled:
+  - concat_without_spaces
+  - unary_operator_spaces
+
 finder:
   path:
     - "src"

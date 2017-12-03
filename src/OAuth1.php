@@ -42,8 +42,8 @@ class OAuth1 implements OAuth1Interface
     /**
      * Create a new OAuth1 instance.
      *
-     * @param \Risan\OAuth1\HttpClientInterface $httpClient
-     * @param \Risan\OAuth1\Request\RequestFactoryInterface $requestFactory
+     * @param \Risan\OAuth1\HttpClientInterface                     $httpClient
+     * @param \Risan\OAuth1\Request\RequestFactoryInterface         $requestFactory
      * @param \Risan\OAuth1\Credentials\CredentialsFactoryInterface $credentialsFactory
      */
     public function __construct(HttpClientInterface $httpClient, RequestFactoryInterface $requestFactory, CredentialsFactoryInterface $credentialsFactory)
@@ -54,7 +54,7 @@ class OAuth1 implements OAuth1Interface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getHttpClient()
     {
@@ -62,7 +62,7 @@ class OAuth1 implements OAuth1Interface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getRequestFactory()
     {
@@ -70,7 +70,7 @@ class OAuth1 implements OAuth1Interface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getCredentialsFactory()
     {
@@ -78,7 +78,7 @@ class OAuth1 implements OAuth1Interface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getConfig()
     {
@@ -86,7 +86,7 @@ class OAuth1 implements OAuth1Interface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getTokenCredentials()
     {
@@ -94,7 +94,7 @@ class OAuth1 implements OAuth1Interface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setTokenCredentials(TokenCredentials $tokenCredentials)
     {
@@ -104,7 +104,7 @@ class OAuth1 implements OAuth1Interface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function requestTemporaryCredentials()
     {
@@ -114,7 +114,7 @@ class OAuth1 implements OAuth1Interface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildAuthorizationUri(TemporaryCredentials $temporaryCredentials)
     {
@@ -122,7 +122,7 @@ class OAuth1 implements OAuth1Interface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function requestTokenCredentials(TemporaryCredentials $temporaryCredentials, $temporaryIdentifier, $verificationCode)
     {
@@ -138,7 +138,7 @@ class OAuth1 implements OAuth1Interface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function get($uri, array $options = [])
     {
@@ -146,7 +146,7 @@ class OAuth1 implements OAuth1Interface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function post($uri, array $options = [])
     {
@@ -154,7 +154,7 @@ class OAuth1 implements OAuth1Interface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function put($uri, array $options = [])
     {
@@ -162,7 +162,7 @@ class OAuth1 implements OAuth1Interface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function patch($uri, array $options = [])
     {
@@ -170,7 +170,7 @@ class OAuth1 implements OAuth1Interface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function delete($uri, array $options = [])
     {
@@ -178,7 +178,7 @@ class OAuth1 implements OAuth1Interface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function request($method, $uri, array $options = [])
     {

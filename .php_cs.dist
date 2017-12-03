@@ -1,0 +1,20 @@
+<?php
+
+$rules = [
+    '@Symfony' => true,
+    '@Symfony:risky' => true,
+    'array_syntax' => ['syntax' => 'short'],
+    'concat_space' => ['spacing' => 'one'],
+    'ordered_imports' => ['sortAlgorithm' => 'length'],
+    'protected_to_private' => false,
+    'unary_operator_spaces' => false,
+];
+
+$finder = PhpCsFixer\Finder::create()
+    ->in(__DIR__ . '/src');
+
+return PhpCsFixer\Config::create()
+    ->setFinder($finder)
+    ->setRules($rules)
+    ->setRiskyAllowed(true)
+    ->setUsingCache(__DIR__ . '/.php_cs.cache');

@@ -24,7 +24,7 @@ trait CanGetSigningKey
     /**
      * Check if the signer is key based.
      *
-     * @return boolean
+     * @return bool
      */
     public function isKeyBased()
     {

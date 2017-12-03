@@ -2,15 +2,13 @@
 
 namespace Risan\OAuth1\Signature;
 
-use Risan\OAuth1\Credentials\ClientCredentials;
-
 class HmacSha1Signer implements SignerInterface, BaseStringSignerInterface, KeyBasedSignerInterface
 {
     use CanBuildBaseString,
         CanGetSigningKey;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getMethod()
     {
@@ -18,7 +16,7 @@ class HmacSha1Signer implements SignerInterface, BaseStringSignerInterface, KeyB
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function sign($uri, array $parameters = [], $httpMethod = 'POST')
     {
@@ -30,7 +28,8 @@ class HmacSha1Signer implements SignerInterface, BaseStringSignerInterface, KeyB
     /**
      * Hash the data with HMAC method.
      *
-     * @param  string $data
+     * @param string $data
+     *
      * @return string
      */
     public function hash($data)

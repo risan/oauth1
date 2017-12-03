@@ -21,7 +21,7 @@ interface UriConfigInterface
     /**
      * Check if base URI is set.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasBase();
 
@@ -58,14 +58,15 @@ interface UriConfigInterface
     /**
      * Check if callback URI is set.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasCallback();
 
     /**
      * Parse and build the given URI.
      *
-     * @param  \Psr\Http\Message\UriInterface|string $uri
+     * @param \Psr\Http\Message\UriInterface|string $uri
+     *
      * @return \Psr\Http\Message\UriInterface
      */
     public function build($uri);
