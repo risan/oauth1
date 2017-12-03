@@ -41,7 +41,6 @@ class OAuth1FactoryTest extends TestCase
             $oauth1->getRequestFactory()->getAuthorizationHeader()->getProtocolParameter()->getSigner()
         );
     }
-
     
     /** @test */
     function it_accepts_custom_signer_parameter()
@@ -55,7 +54,6 @@ class OAuth1FactoryTest extends TestCase
             $oauth1->getRequestFactory()->getAuthorizationHeader()->getProtocolParameter()->getSigner()
         );
     }
-
 
     /** @test */
     function it_throws_exception_if_signer_not_implements_signer_interface()
