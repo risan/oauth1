@@ -18,8 +18,8 @@ class BaseStringBuilder implements BaseStringBuilderInterface
         $this->uriParser = $uriParser;
     }
 
-     /**
-     * {@inheritDoc}
+    /**
+     * {@inheritdoc}
      */
     public function getUriParser()
     {
@@ -27,7 +27,7 @@ class BaseStringBuilder implements BaseStringBuilderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function build($httpMethod, $uri, array $parameters = [])
     {
@@ -47,7 +47,7 @@ class BaseStringBuilder implements BaseStringBuilderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildMethodComponent($httpMethod)
     {
@@ -55,7 +55,7 @@ class BaseStringBuilder implements BaseStringBuilderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildUriComponent($uri)
     {
@@ -70,7 +70,7 @@ class BaseStringBuilder implements BaseStringBuilderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildParametersComponent(array $parameters)
     {
@@ -82,7 +82,8 @@ class BaseStringBuilder implements BaseStringBuilderInterface
     /**
      * Normalize the given request parameters.
      *
-     * @param  array  $parameters
+     * @param array $parameters
+     *
      * @return array
      */
     public function normalizeParameters(array $parameters)
@@ -110,9 +111,10 @@ class BaseStringBuilder implements BaseStringBuilderInterface
     /**
      * Build query string from the given parameters.
      *
-     * @param  array  $parameters
-     * @param  array  $initialQueryParameters
-     * @param  string $previousKey
+     * @param array  $parameters
+     * @param array  $initialQueryParameters
+     * @param string $previousKey
+     *
      * @return string
      */
     public function buildQueryString(array $parameters, array $initialQueryParameters = [], $previousKey = null)
@@ -120,7 +122,7 @@ class BaseStringBuilder implements BaseStringBuilderInterface
         $queryParameters = $initialQueryParameters;
 
         foreach ($parameters as $key => $value) {
-            if ($previousKey !== null) {
+            if (null !== $previousKey) {
                 $key = "{$previousKey}[{$key}]";
             }
 
@@ -131,6 +133,6 @@ class BaseStringBuilder implements BaseStringBuilderInterface
             }
         }
 
-        return $previousKey !== null ? $queryParameters : implode('&', $queryParameters);
+        return null !== $previousKey ? $queryParameters : implode('&', $queryParameters);
     }
 }

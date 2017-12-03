@@ -5,7 +5,7 @@ namespace Risan\OAuth1\Request;
 class NonceGenerator implements NonceGeneratorInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function generate($length = 32)
     {
@@ -23,7 +23,8 @@ class NonceGenerator implements NonceGeneratorInterface
     /**
      * Get cryptographically secure base64 encoded random bytes.
      *
-     * @param  int $length
+     * @param int $length
+     *
      * @return string
      */
     public function base64EncodedRandomBytes($length)
@@ -34,7 +35,8 @@ class NonceGenerator implements NonceGeneratorInterface
     /**
      * Extract the alphanumeric characters from base64 encoded string.
      *
-     * @param  string $string
+     * @param string $string
+     *
      * @return string
      */
     public function extractAlphaNumericFromBase64EncodedString($string)

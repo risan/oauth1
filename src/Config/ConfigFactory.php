@@ -3,14 +3,13 @@
 namespace Risan\OAuth1\Config;
 
 use InvalidArgumentException;
-use Risan\OAuth1\Config\UriConfig;
 use Risan\OAuth1\Request\UriParser;
 use Risan\OAuth1\Credentials\ClientCredentials;
 
 class ConfigFactory implements ConfigFactoryInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function createFromArray(array $config)
     {

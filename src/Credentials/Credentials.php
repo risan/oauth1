@@ -31,7 +31,7 @@ abstract class Credentials implements CredentialsInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getIdentifier()
     {
@@ -39,7 +39,7 @@ abstract class Credentials implements CredentialsInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getSecret()
     {

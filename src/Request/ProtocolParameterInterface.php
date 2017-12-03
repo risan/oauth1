@@ -53,11 +53,12 @@ interface ProtocolParameterInterface
     /**
      * Create the signature.
      *
-     * @param  array $protocolParameters
+     * @param array $protocolParameters
      * @param  string uri
-     * @param  \Risan\OAuth1\Credentials\ServerIssuedCredentials|null $serverIssuedCredentials
-     * @param  array $requestOptions
+     * @param \Risan\OAuth1\Credentials\ServerIssuedCredentials|null $serverIssuedCredentials
+     * @param array                                                  $requestOptions
      * @param  string httpMethod
+     *
      * @return string
      */
     public function getSignature(array $protocolParameters, $uri, ServerIssuedCredentials $serverIssuedCredentials = null, array $requestOptions = [], $httpMethod = 'POST');
@@ -72,8 +73,9 @@ interface ProtocolParameterInterface
     /**
      * Get protocol parameters for obtaining token credentials.
      *
-     * @param  \Risan\OAuth1\Credentials\TemporaryCredentials $temporaryCredentials
-     * @param  string               $verificationCode
+     * @param \Risan\OAuth1\Credentials\TemporaryCredentials $temporaryCredentials
+     * @param string                                         $verificationCode
+     *
      * @return array
      */
     public function forTokenCredentials(TemporaryCredentials $temporaryCredentials, $verificationCode);
@@ -81,10 +83,11 @@ interface ProtocolParameterInterface
     /**
      * Get protocol parameters for accessing protected resource.
      *
-     * @param  \Risan\OAuth1\Credentials\TokenCredentials $tokenCredentials
-     * @param  string $httpMethod
-     * @param  string $uri
-     * @param  array $requestOptions
+     * @param \Risan\OAuth1\Credentials\TokenCredentials $tokenCredentials
+     * @param string                                     $httpMethod
+     * @param string                                     $uri
+     * @param array                                      $requestOptions
+     *
      * @return array
      */
     public function forProtectedResource(TokenCredentials $tokenCredentials, $httpMethod, $uri, array $requestOptions = []);

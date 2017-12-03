@@ -8,8 +8,9 @@ interface BaseStringSignerInterface
      * Build the signature base string.
      *
      * @param \Psr\Http\Message\UriInterface|string $uri
-     * @param array $parameters
-     * @param string $httpMethod
+     * @param array                                 $parameters
+     * @param string                                $httpMethod
+     *
      * @return string
      */
     public function buildBaseString($uri, array $parameters = [], $httpMethod = 'POST');

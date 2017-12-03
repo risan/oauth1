@@ -40,7 +40,7 @@ class Request implements RequestInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getMethod()
     {
@@ -48,7 +48,7 @@ class Request implements RequestInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getUri()
     {
@@ -56,7 +56,7 @@ class Request implements RequestInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getOptions()
     {

@@ -31,8 +31,9 @@ interface AuthorizationHeaderInterface
     /**
      * Get authorization header for obtaining token credentials.
      *
-     * @param  \Risan\OAuth1\Credentials\TemporaryCredentials $temporaryCredentials
-     * @param  string $verificationCode
+     * @param \Risan\OAuth1\Credentials\TemporaryCredentials $temporaryCredentials
+     * @param string                                         $verificationCode
+     *
      * @return string
      */
     public function forTokenCredentials(TemporaryCredentials $temporaryCredentials, $verificationCode);
@@ -40,10 +41,11 @@ interface AuthorizationHeaderInterface
     /**
      * Get authorization header for accessing protected resource.
      *
-     * @param  \Risan\OAuth1\Credentials\TokenCredentials $tokenCredentials
-     * @param  string $httpMethod
-     * @param  string $uri
-     * @param  array $requestOptions
+     * @param \Risan\OAuth1\Credentials\TokenCredentials $tokenCredentials
+     * @param string                                     $httpMethod
+     * @param string                                     $uri
+     * @param array                                      $requestOptions
+     *
      * @return string
      */
     public function forProtectedResource(TokenCredentials $tokenCredentials, $httpMethod, $uri, array $requestOptions = []);
@@ -51,7 +53,8 @@ interface AuthorizationHeaderInterface
     /**
      * Normalize protocol parameters to be used as HTTP authorization header.
      *
-     * @param  array  $parameters
+     * @param array $parameters
+     *
      * @return string
      */
     public function normalizeProtocolParameters(array $parameters);

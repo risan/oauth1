@@ -18,8 +18,9 @@ class OAuth1Factory
     /**
      * Create the new OAuth1Interface instance.
      *
-     * @param  array  $config
-     * @param  \Risan\OAuth1\Signature\SignerInterface|null $signer
+     * @param array                                        $config
+     * @param \Risan\OAuth1\Signature\SignerInterface|null $signer
+     *
      * @return \Risan\OAuth1\OAuth1Interface
      */
     public static function create(array $config, $signer = null)
@@ -31,7 +32,7 @@ class OAuth1Factory
         if (! $signer instanceof SignerInterface) {
             throw new InvalidArgumentException('The signer must implement the \Risan\OAuth1\Signature\SignerInterface.');
         }
-        
+
         $configFactory = new ConfigFactory;
 
         $protocolParameter = new ProtocolParameter(

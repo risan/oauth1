@@ -25,7 +25,7 @@ class AuthorizationHeader implements AuthorizationHeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getProtocolParameter()
     {
@@ -33,7 +33,7 @@ class AuthorizationHeader implements AuthorizationHeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getConfig()
     {
@@ -41,7 +41,7 @@ class AuthorizationHeader implements AuthorizationHeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function forTemporaryCredentials()
     {
@@ -51,7 +51,7 @@ class AuthorizationHeader implements AuthorizationHeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function forTokenCredentials(TemporaryCredentials $temporaryCredentials, $verificationCode)
     {
@@ -61,7 +61,7 @@ class AuthorizationHeader implements AuthorizationHeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function forProtectedResource(TokenCredentials $tokenCredentials, $httpMethod, $uri, array $requestOptions = [])
     {
@@ -71,7 +71,7 @@ class AuthorizationHeader implements AuthorizationHeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function normalizeProtocolParameters(array $parameters)
     {

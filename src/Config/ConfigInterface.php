@@ -55,7 +55,7 @@ interface ConfigInterface
      */
     public function getTokenCredentialsUri();
 
-     /**
+    /**
      * Get the callback URI.
      *
      * @return \Psr\Http\Message\UriInterface|null
@@ -65,14 +65,15 @@ interface ConfigInterface
     /**
      * Check if callback URI is set.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasCallbackUri();
 
     /**
      * Parse and build the given URI.
      *
-     * @param  \Psr\Http\Message\UriInterface|string $uri
+     * @param \Psr\Http\Message\UriInterface|string $uri
+     *
      * @return \Psr\Http\Message\UriInterface
      */
     public function buildUri($uri);
