@@ -13,7 +13,7 @@ interface HttpClientInterface
      * @param string $uri
      * @param array  $options
      *
-     * @return Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function request($method, $uri, array $options = []);
 
