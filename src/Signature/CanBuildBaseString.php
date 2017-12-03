@@ -38,6 +38,6 @@ trait CanBuildBaseString
             return $this->baseStringBuilder;
         }
 
-        return $this->baseStringBuilder = new BaseStringBuilder(new UriParser);
+        return $this->baseStringBuilder = new BaseStringBuilder(new UriParser());
     }
 }

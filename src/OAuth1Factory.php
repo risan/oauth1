@@ -26,25 +26,25 @@ class OAuth1Factory
     public static function create(array $config, $signer = null)
     {
         if (null === $signer) {
-            $signer = new HmacSha1Signer;
+            $signer = new HmacSha1Signer();
         }
 
         if (! $signer instanceof SignerInterface) {
             throw new InvalidArgumentException('The signer must implement the \Risan\OAuth1\Signature\SignerInterface.');
         }
 
-        $configFactory = new ConfigFactory;
+        $configFactory = new ConfigFactory();
 
         $protocolParameter = new ProtocolParameter(
             $configFactory->createFromArray($config),
             $signer,
-            new NonceGenerator
+            new NonceGenerator()
         );
 
         $authorizationHeader = new AuthorizationHeader($protocolParameter);
 
-        $requestFactory = new RequestFactory($authorizationHeader, new UriParser);
+        $requestFactory = new RequestFactory($authorizationHeader, new UriParser());
 
-        return new OAuth1(new HttpClient, $requestFactory, new CredentialsFactory);
+        return new OAuth1(new HttpClient(), $requestFactory, new CredentialsFactory());
     }
 }

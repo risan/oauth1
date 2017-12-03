@@ -75,7 +75,7 @@ class ProtocolParameter implements ProtocolParameterInterface
      */
     public function getCurrentTimestamp()
     {
-        return (new DateTime)->getTimestamp();
+        return (new DateTime())->getTimestamp();
     }
 
     /**

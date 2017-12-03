@@ -32,7 +32,7 @@ class ConfigFactory implements ConfigFactoryInterface
             $config['client_credentials_secret']
         );
 
-        $uriConfig = new UriConfig($config, new UriParser);
+        $uriConfig = new UriConfig($config, new UriParser());
 
         return new Config($clientCredentials, $uriConfig);
     }

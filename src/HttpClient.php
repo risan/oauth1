@@ -14,7 +14,7 @@ class HttpClient implements HttpClientInterface
      */
     public function __construct(Guzzle $guzzle = null)
     {
-        $this->guzzle = null === $guzzle ? new Guzzle : $guzzle;
+        $this->guzzle = null === $guzzle ? new Guzzle() : $guzzle;
     }
 
     /**
