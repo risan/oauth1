@@ -16,7 +16,7 @@ $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__ . '/src');
 
 return PhpCsFixer\Config::create()
-    ->setRules($rules)
     ->setFinder($finder)
+    ->setRules($rules)
     ->setRiskyAllowed(true)
     ->setUsingCache(__DIR__ . '/.php_cs.cache');
