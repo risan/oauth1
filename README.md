@@ -16,11 +16,14 @@ Simple, fluent and extensible OAuth 1.0 client library for PHP.
 * [Installation](#installation)
 * [Quick Start Guide](#quick-start-guide)
 * [Configuration](#configuration)
+* [Signature](#signature)
 * [OAuth 1.0 Flow](#oauth-10-flow)
     * [Step 1: Obtaining Temporary Credentials](#step-1-obtaining-temporary-credentials)
     * [Step 2: Generate and Redirect User to Authorization URI](#step-2-generate-and-redirect-user-to-authorization-uri)
     * [Step 3: Obtaining Token Credentials](#step-3-obtaining-token-credentials)
     * [Step 4: Accessing the Protected Resource](#step-4-accessing-the-protected-resource)
+* [Making HTTP Request](#making-http-request)
+* [Working with the Response](#working-with-the-response)
 
 ## Installation
 
@@ -108,6 +111,25 @@ There are also two optional configuration that you can pass:
 * `callback_uri`: The URI where the user will be redirected to after successfull authorization.
 * `base_uri`: The base URI that will be used to build an absolute URI if you pass a relative URI to configuration array or when sending a request to the protected resource.
 
+## Signature
+
+Each HTTP request must include a signature so that the provider can verify the authenticity of that request. This signing process is handled by the signer instance that implements the `Risan\OAuth1\Signature\SignerInterface` interface. This package includes two signer classes that you can use:
+
+* `Risan\OAuth1\Signature\HmacSha1Signer`: for signing request with HMAC-SHA1 method.
+* `Risan\OAuth1\Signature\PlainTextSigner`: for signing request with PLAIN TEXT method.
+
+You can pass this signer instance as the second argument to the `create` static method on `Risan\OAuth1\OAuth1Factory` class:
+
+```php
+$plainTextSigner = new Risan\OAuth1\Signature\PlainTextSigner();
+
+$oauth1 = Risan\OAuth1\OAuth1Factory::create($config, $plainTextSigner);
+```
+
+If you do not pass any signer instance to the `create` method, the default HMAC-SHA1 signer will be used.
+
+You can also create a custom signer class, as long as it impelements the `Risan\OAuth1\Signature\SignerInterface` interface.
+
 ## OAuth 1.0 Flow
 
 In order to access a protected resource, the OAuth 1.0 flow can be broken down into four steps:
@@ -162,3 +184,53 @@ $response = $oauth1->request('GET', 'https://api.twitter.com/1.1/statuses/user_t
 ```
 
 The `request` method will return an instance of `Psr\Http\Message\ResponseInterface` class.
+
+## Making HTTP Request
+
+Once you've set the obtained token credentials with the `setTokenCredentials` method, you can start making the HTTP request to the protected API endpoints. You can use the `request` method for this purpose:
+
+```php
+$response = $oauth1->request($method, $uri, $options);
+```
+
+This method accepts three parameters:
+
+* `method` (required): The HTTP method that you'd like to use (e.g. `GET`, `POST`, `PUT`, `PATCH`, `DELETE`)
+* `uri` (required): The URI of the API endpoint that you'd like to access. You can also pass a relative URI as long as you pass the `base_uri` in the configuration array.
+* `options` (optional): It's an optional array paramater to configure your request. It's the same [Request Options](https://guzzle.readthedocs.io/en/stable/request-options.html) that you'll pass when making an HTTP request using [Guzzle](https://guzzle.readthedocs.io). You can check all available options that you can pass on [Guzzle documentation](http://guzzle.readthedocs.io/en/stable/request-options.html).
+
+## Working with the Response
+
+The `request` method will return an instance of `Psr\Http\Message\ResponseInterface`. You can check the returned status code with the `getStatusCode` method:
+
+```php
+echo $response->getStatusCode();
+```
+
+Or you can also get the headers on the returned response like so:
+
+```php
+// Get all of the headers
+$headers = $response->getHeaders();
+
+// Or get a specific header
+$header = $response->getHeader('X-Foo');
+```
+
+And to get the response's body, you can use the `getBody` method. Note that it will return a `Psr\Http\Message\StreamInterface` instance. To convert the `StreamInterface` instace into a string, you can call the `getContents` method or simply cast it into a string.
+
+```php
+$bodyStream = $response->getBody();
+
+// Get the string representation of the stream
+$bodyStream = $bodyStream->getContents();
+
+// Or simply cast it
+$bodyString = (string) $bodyStream;
+```
+
+So if the API endpoint returns a JSON formatted response, you can covert the returned response into an associative array like this:
+
+```php
+$result = json_decode($response->getBody()->getContents(), true);
+```
