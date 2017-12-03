@@ -13,7 +13,6 @@ disabled:
   - concat_without_spaces
   - new_with_braces
   - phpdoc_no_empty_return
-  - protected_to_private
   - unary_operator_spaces
 
 finder:
