@@ -15,8 +15,11 @@ matrix:
     - php: 7.0
       env: COMPOSER_STABILITY=lowest
     - php: 7.1
-      env: COLLECT_COVERAGE=true
     - php: 7.1
+      env: COMPOSER_STABILITY=lowest
+    - php: 7.2
+      env: COLLECT_COVERAGE=true
+    - php: 7.2
       env: COMPOSER_STABILITY=lowest
 
 sudo: false
