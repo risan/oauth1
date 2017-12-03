@@ -4,7 +4,6 @@ namespace Risan\OAuth1\Provider;
 
 use Risan\OAuth1\Signature\HmacSha1Signer;
 
-
 class Twitter implements ProviderInterface
 {
     /*
