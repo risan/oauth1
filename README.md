@@ -24,6 +24,11 @@ Simple, fluent and extensible OAuth 1.0 client library for PHP.
     * [Step 4: Accessing the Protected Resource](#step-4-accessing-the-protected-resource)
 * [Making HTTP Request](#making-http-request)
 * [Working with the Response](#working-with-the-response)
+* [Built-In Providers](#built-in-providers)
+    * [Trello](#trello)
+    * [Tumblr](#tumblr)
+    * [Twitter](#twitter)
+    * [Upwork](#upwork)
 
 ## Installation
 
@@ -42,7 +47,7 @@ Here's a quick example of how to use this package to interact with Twitter API: 
 ```php
 <?php
 
-// Includes the Composer autoload file. 
+// Includes the Composer autoload file.
 require 'vendor/autoload.php';
 
 // Start the session.
@@ -66,7 +71,7 @@ if (isset($_SESSION['token_credentials'])) {
     // STEP 4: Retrieve the user's tweets.
     // It will return the Psr\Http\Message\ResponseInterface instance.
     $response = $oauth1->request('GET', 'https://api.twitter.com/1.1/statuses/user_timeline.json');
-    
+
     // Convert the response to array and display it.
     var_dump(json_decode($response->getBody()->getContents(), true));
 } elseif (isset($_GET['oauth_token']) && isset($_GET['oauth_verifier'])) {
@@ -79,12 +84,12 @@ if (isset($_SESSION['token_credentials'])) {
 
     // Store the token credentials in session for later use.
     $_SESSION['token_credentials'] = serialize($tokenCredentials);
-    
+
     // this basically just redirecting to the current page so that the query string is removed.
     header('Location: ' . (string) $oauth1->getConfig()->getCallbackUri());
     exit();
 } else {
-    // STEP 1: Obtain a temporary credentials (also known as the request token)  
+    // STEP 1: Obtain a temporary credentials (also known as the request token)
     $temporaryCredentials = $oauth1->requestTemporaryCredentials();
 
     // Store the temporary credentials in session so we can use it on step 3.
@@ -253,3 +258,83 @@ So if the API endpoint returns a JSON formatted response, you can covert the ret
 ```php
 $result = json_decode($response->getBody()->getContents(), true);
 ```
+
+## Built-In Providers
+
+This package also offers some third-party providers that you can use.
+
+### Trello
+
+Use the `trello` method to create an instance of `OAuth1` configured for Trello.
+
+```php
+$oauth1 = Risan\OAuth1\ProviderFactory::trello([
+    'client_credentials_identifier' => 'YOUR_TRELLO_API_KEY',
+    'client_credentials_secret' => 'YOUR_TRELLO_SECRET',
+    'callback_uri' => 'YOUR_CALLBACK_URI',
+]);
+```
+
+You can get both of your API key and secret from [Developer API Keys](https://trello.com/app-key) page. The base URI is set to `https://api.trello.com/1/` so you can use a relative URI instead:
+
+```php
+$response = $oauth1->request('GET', 'members/johndoe/cards');
+```
+
+### Tumblr
+
+Use the `tumblr` method to create an instance of `OAuth1` configured for Tumblr.
+
+```php
+$oauth1 = Risan\OAuth1\ProviderFactory::tumblr([
+    'client_credentials_identifier' => 'YOUR_TUMBLR_CONSUMER_KEY',
+    'client_credentials_secret' => 'YOUR_TUMBLR_CONSUMER_SECRET',
+    'callback_uri' => 'YOUR_CALLBACK_URI',
+]);
+```
+
+You need to register a Tumblr application [here](https://www.tumblr.com/oauth/apps) to get the consumer key and secret. The base URI is set to `https://api.tumblr.com/v2/` so you can use a relative URI instead:
+
+```php
+$response = $oauth1->request('GET', 'user/info');
+```
+
+### Twitter
+
+Use the `twitter` method to create an instance of `OAuth1` configured for Twitter.
+
+```php
+$oauth1 = Risan\OAuth1\ProviderFactory::twitter([
+    'client_credentials_identifier' => 'YOUR_TWITTER_CONSUMER_KEY',
+    'client_credentials_secret' => 'YOUR_TWITTER_CONSUMER_SECRET',
+    'callback_uri' => 'YOUR_CALLBACK_URI',
+]);
+```
+
+You need to register a Twitter application [here](https://apps.twitter.com) to get the consumer key and secret. The base URI is set to `https://api.twitter.com/1.1/` so you can use a relative URI instead:
+
+```php
+$response = $oauth1->request('GET', 'statuses/user_timeline.json');
+```
+
+### Upwork
+
+Use the `upwork` method to create an instance of `OAuth1` configured for Upwork.
+
+```php
+$oauth1 = Risan\OAuth1\ProviderFactory::upwork([
+    'client_credentials_identifier' => 'YOUR_API_KEY',
+    'client_credentials_secret' => 'YOUR_API_SECRET',
+    'callback_uri' => 'YOUR_CALLBACK_URI',
+]);
+```
+
+You need to register a Upwork application [here](https://www.upwork.com/services/api/apply) to get the API key and secret. The base URI is set to `https://www.upwork.com/` so you can use a relative URI instead:
+
+```php
+$response = $oauth1->request('GET', 'api/auth/v1/info.json');
+```
+
+## License
+
+MIT © [Risan Bagja Pradana](https://risan.io)
