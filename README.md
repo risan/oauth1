@@ -1,339 +1,298 @@
-# OAuth 1.0 Client Library for PHP
+# OAuth 1.0a Client for PHP
 
+[![CI](https://github.com/risan/oauth1/actions/workflows/ci.yml/badge.svg)](https://github.com/risan/oauth1/actions/workflows/ci.yml)
 [![Latest Stable Version](https://poser.pugx.org/risan/oauth1/v/stable?format=flat-square)](https://packagist.org/packages/risan/oauth1)
-[![Build Status](https://img.shields.io/travis/risan/oauth1.svg?style=flat-square)](https://travis-ci.org/risan/oauth1)
-[![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/risan/oauth1.svg?style=flat-square)](https://scrutinizer-ci.com/g/risan/oauth1/)
-[![Code Quality](https://img.shields.io/scrutinizer/g/risan/oauth1.svg?style=flat-square)](https://scrutinizer-ci.com/g/risan/oauth1/)
-[![StyleCI](https://styleci.io/repos/48460990/shield)](https://styleci.io/repos/48460990)
-[![SensioLabs Insight](https://img.shields.io/sensiolabs/i/258a9ce7-94cf-4a9d-a8ae-1add8fa5b8be.svg?style=flat-square)](https://insight.sensiolabs.com/projects/258a9ce7-94cf-4a9d-a8ae-1add8fa5b8be)
-[![License](https://img.shields.io/packagist/l/risan/oauth1.svg?style=flat-square)](LICENSE.md)
 [![Total Downloads](https://img.shields.io/packagist/dt/risan/oauth1.svg?style=flat-square)](https://packagist.org/packages/risan/oauth1)
+[![License](https://img.shields.io/packagist/l/risan/oauth1.svg?style=flat-square)](LICENSE.md)
 
-Simple, fluent and extensible OAuth 1.0 client library for PHP.
+A strict PHP 8.5 client for the three-legged OAuth 1.0a flow defined by [RFC 5849](https://www.rfc-editor.org/rfc/rfc5849). It obtains temporary credentials, redirects the resource owner for approval, exchanges the verifier for token credentials, and signs protected-resource requests.
 
-## Table of Contents
+The client sends OAuth protocol parameters in the `Authorization` header and supports `HMAC-SHA1`, `RSA-SHA1`, and `PLAINTEXT`. HMAC-SHA1 is the default because it remains the most widely supported OAuth 1 signature method.
 
-* [Installation](#installation)
-* [Quick Start Guide](#quick-start-guide)
-* [Configuration](#configuration)
-* [Signature](#signature)
-* [OAuth 1.0 Flow](#oauth-10-flow)
-    * [Step 1: Obtaining Temporary Credentials](#step-1-obtaining-temporary-credentials)
-    * [Step 2: Generate and Redirect User to Authorization URI](#step-2-generate-and-redirect-user-to-authorization-uri)
-    * [Step 3: Obtaining Token Credentials](#step-3-obtaining-token-credentials)
-    * [Step 4: Accessing the Protected Resource](#step-4-accessing-the-protected-resource)
-* [Making HTTP Request](#making-http-request)
-* [Working with the Response](#working-with-the-response)
-* [Built-In Providers](#built-in-providers)
-    * [Trello](#trello)
-    * [Tumblr](#tumblr)
-    * [Twitter](#twitter)
-    * [Upwork](#upwork)
+## Requirements
+
+- PHP `^8.5`
+- `ext-hash`
+- `ext-openssl`
+- Composer 2
+
+Older PHP versions are not supported.
 
 ## Installation
-
-The recommended way to install this package is through [Composer](https://getcomposer.org). Run the following command in your terminal to install this package:
 
 ```bash
 composer require risan/oauth1
 ```
 
-## Quick Start Guide
+## OAuth 1.0a in five steps
 
-This package is flexible. You can use it to interact with any providers that implement OAuth 1.0 protocol, like Twitter.
+The full flow uses three credential pairs:
 
-Here's a quick example of how to use this package to interact with Twitter API: fetching the authorized user's tweets.
+- **Client credentials** identify your application: consumer key and consumer secret.
+- **Temporary credentials** identify an authorization attempt: request token and request-token secret.
+- **Token credentials** represent the approved access grant: access token and access-token secret.
+
+The complete web flow is:
+
+1. The client signs a request to the temporary-credentials endpoint with its client credentials and callback URI.
+2. The server returns a temporary token, temporary secret, and `oauth_callback_confirmed=true`.
+3. The client redirects the resource owner to the authorization endpoint with the temporary token.
+4. The server redirects back with the same `oauth_token` and an `oauth_verifier`; the client exchanges both for token credentials.
+5. The client signs each protected-resource request with its client credentials and token credentials.
+
+Keep the temporary credentials in the same user session that started the flow. The library checks that the callback's `oauth_token` matches the stored temporary token before performing the exchange.
+
+## Configuration
+
+Create a client with the credentials and three OAuth endpoint URIs supplied by the server:
 
 ```php
 <?php
 
-// Includes the Composer autoload file.
-require 'vendor/autoload.php';
+declare(strict_types=1);
 
-// Start the session.
+use Risan\OAuth1\OAuth1Factory;
+
+require __DIR__.'/vendor/autoload.php';
+
+$oauth = OAuth1Factory::create([
+    'client_credentials_identifier' => $_ENV['OAUTH_CONSUMER_KEY'],
+    'client_credentials_secret' => $_ENV['OAUTH_CONSUMER_SECRET'],
+    'temporary_credentials_uri' => 'https://service.example/oauth/request_token',
+    'authorization_uri' => 'https://service.example/oauth/authorize',
+    'token_credentials_uri' => 'https://service.example/oauth/access_token',
+    'callback_uri' => 'https://client.example/oauth/callback',
+    'base_uri' => 'https://service.example/api/',
+]);
+```
+
+| Key | Required | Meaning |
+| --- | --- | --- |
+| `client_credentials_identifier` | yes | Consumer key / API key |
+| `client_credentials_secret` | yes | Consumer secret / API secret |
+| `temporary_credentials_uri` | yes | Request-token endpoint |
+| `authorization_uri` | yes | Resource-owner approval endpoint |
+| `token_credentials_uri` | yes | Access-token endpoint |
+| `callback_uri` | yes | Absolute callback URI, or the case-sensitive value `oob` for an out-of-band flow |
+| `base_uri` | no | Base used to resolve relative API URIs |
+| `temporary_credentials_method` | no | HTTP method for the request-token endpoint; defaults to `POST` |
+| `token_credentials_method` | no | HTTP method for the access-token endpoint; defaults to `POST`; `GET` puts the verifier in the query |
+
+Absolute endpoint URIs work without `base_uri`. Relative endpoint and resource URIs are resolved against it.
+
+RFC 5849 requires `oauth_callback` when obtaining temporary credentials, even when the provider already knows the callback; use `oob` when the client cannot receive a callback.
+
+## Start the authorization flow
+
+Obtain temporary credentials and store their scalar values. Avoid serializing PHP objects into cookies or sessions.
+
+```php
+<?php
+
+declare(strict_types=1);
+
 session_start();
 
-// Create an instance of Risan\OAuth1\OAuth1 class.
-$oauth1 = Risan\OAuth1\OAuth1Factory::create([
-    'client_credentials_identifier' => 'YOUR_TWITTER_API_KEY',
-    'client_credentials_secret' => 'YOUR_TWITTER_API_SECRET',
-    'temporary_credentials_uri' => 'https://api.twitter.com/oauth/request_token',
-    'authorization_uri' => 'https://api.twitter.com/oauth/authorize',
-    'token_credentials_uri' => 'https://api.twitter.com/oauth/access_token',
-    'callback_uri' => 'YOUR_CALLBACK_URI',
-]);
+$temporary = $oauth->requestTemporaryCredentials();
 
-if (isset($_SESSION['token_credentials'])) {
-    // Get back the previosuly obtain token credentials (step 3).
-    $tokenCredentials = unserialize($_SESSION['token_credentials']);
-    $oauth1->setTokenCredentials($tokenCredentials);
+$_SESSION['oauth1_temporary'] = [
+    'identifier' => $temporary->getIdentifier(),
+    'secret' => $temporary->getSecret(),
+];
 
-    // STEP 4: Retrieve the user's tweets.
-    // It will return the Psr\Http\Message\ResponseInterface instance.
-    $response = $oauth1->request('GET', 'https://api.twitter.com/1.1/statuses/user_timeline.json');
+header('Location: '.$oauth->buildAuthorizationUri($temporary), true, 302);
+exit;
+```
 
-    // Convert the response to array and display it.
-    var_dump(json_decode($response->getBody()->getContents(), true));
-} elseif (isset($_GET['oauth_token']) && isset($_GET['oauth_verifier'])) {
-    // Get back the previosuly generated temporary credentials (step 1).
-    $temporaryCredentials = unserialize($_SESSION['temporary_credentials']);
-    unset($_SESSION['temporary_credentials']);
+`requestTemporaryCredentials()` rejects responses that omit the token, token secret, or `oauth_callback_confirmed=true`.
 
-    // STEP 3: Obtain the token credentials (also known as access token).
-    $tokenCredentials = $oauth1->requestTokenCredentials($temporaryCredentials, $_GET['oauth_token'], $_GET['oauth_verifier']);
+## Handle the callback
 
-    // Store the token credentials in session for later use.
-    $_SESSION['token_credentials'] = serialize($tokenCredentials);
+Rebuild the temporary credentials from the server-side session, then exchange the verifier. Validate that both callback parameters exist before calling the library.
 
-    // this basically just redirecting to the current page so that the query string is removed.
-    header('Location: ' . (string) $oauth1->getConfig()->getCallbackUri());
-    exit();
-} else {
-    // STEP 1: Obtain a temporary credentials (also known as the request token)
-    $temporaryCredentials = $oauth1->requestTemporaryCredentials();
+```php
+<?php
 
-    // Store the temporary credentials in session so we can use it on step 3.
-    $_SESSION['temporary_credentials'] = serialize($temporaryCredentials);
+declare(strict_types=1);
 
-    // STEP 2: Generate and redirect user to authorization URI.
-    $authorizationUri = $oauth1->buildAuthorizationUri($temporaryCredentials);
-    header("Location: {$authorizationUri}");
-    exit();
+use Risan\OAuth1\Credentials\TemporaryCredentials;
+
+session_start();
+
+if (!isset($_GET['oauth_token'], $_GET['oauth_verifier'], $_SESSION['oauth1_temporary'])) {
+    throw new RuntimeException('The OAuth callback is incomplete.');
 }
+
+$stored = $_SESSION['oauth1_temporary'];
+unset($_SESSION['oauth1_temporary']);
+
+$temporary = new TemporaryCredentials($stored['identifier'], $stored['secret']);
+$token = $oauth->requestTokenCredentials(
+    $temporary,
+    (string) $_GET['oauth_token'],
+    (string) $_GET['oauth_verifier'],
+);
+
+$_SESSION['oauth1_token'] = [
+    'identifier' => $token->getIdentifier(),
+    'secret' => $token->getSecret(),
+];
 ```
 
-## Configuration
+Store long-lived token credentials encrypted at rest when the provider keeps them valid beyond the session.
 
-You can use the static `create` method on `Risan\OAuth1\OAuth1Factory` class to easily create an instance of `Risan\OAuth1\Auth1` class. It requires you to pass a configuration array with the following keys:
+## Call protected resources
 
-* `client_credentials_identifier`: The client credentials identifier, also known as a consumer key or API key.
-* `client_credentials_secret`: The client credentials secret, also known as a consumer secret or API secret.
-* `temporary_credentials_uri`: The URI for obtaining the temporary credentials (also known as request token).
-* `authorization_uri`: The URI for authorizing user.
-* `token_credentials_uri`: The URI for obtaining the token credentials (also known as access token).
-
-There are also two optional configuration that you can pass:
-* `callback_uri`: The URI where the user will be redirected to after successfull authorization.
-* `base_uri`: The base URI that will be used to build an absolute URI if you pass a relative URI to configuration array or when sending a request to the protected resource.
-
-## Signature
-
-Each HTTP request must include a signature so that the provider can verify the authenticity of that request. This signing process is handled by the signer instance that implements the `Risan\OAuth1\Signature\SignerInterface` interface. This package includes two signer classes that you can use:
-
-* `Risan\OAuth1\Signature\HmacSha1Signer`: for signing request with HMAC-SHA1 method.
-* `Risan\OAuth1\Signature\PlainTextSigner`: for signing request with PLAIN TEXT method.
-
-You can pass this signer instance as the second argument to the `create` static method on `Risan\OAuth1\OAuth1Factory` class:
+Restore the token credentials, set them on the client, and use `request()` or an HTTP-method shortcut:
 
 ```php
-$plainTextSigner = new Risan\OAuth1\Signature\PlainTextSigner();
+use Risan\OAuth1\Credentials\TokenCredentials;
 
-$oauth1 = Risan\OAuth1\OAuth1Factory::create($config, $plainTextSigner);
+$stored = $_SESSION['oauth1_token'];
+$oauth->setTokenCredentials(new TokenCredentials($stored['identifier'], $stored['secret']));
+
+$response = $oauth->get('account', [
+    'query' => ['include' => 'profile'],
+]);
+
+$data = json_decode((string) $response->getBody(), true, flags: JSON_THROW_ON_ERROR);
 ```
 
-If you do not pass any signer instance to the `create` method, the default HMAC-SHA1 signer will be used.
+The return value implements `Psr\Http\Message\ResponseInterface`. The available shortcuts are `get()`, `post()`, `put()`, `patch()`, and `delete()`.
 
-You can also create a custom signer class, as long as it impelements the `Risan\OAuth1\Signature\SignerInterface` interface.
+Request options are passed to Guzzle. The library owns the `Authorization` header and rejects attempts to replace it.
 
-## OAuth 1.0 Flow
+### Parameters and the signature
 
-In order to access a protected resource, the OAuth 1.0 flow can be broken down into four steps:
+OAuth 1 signatures depend on the exact decoded parameter name/value pairs sent in the request. This library collects:
 
-### Step 1: Obtaining Temporary Credentials
+- OAuth protocol parameters except `oauth_signature`
+- every parameter already present in the request URI query
+- the Guzzle `query` option
+- `form_params`, or a raw form body whose media type is `application/x-www-form-urlencoded`
 
-The very first step is to obtain the temporary credentials or mostly known as the access token. To obtain it, you need to call the `requestTemporaryCredentials` method on the `Risan\OAuth1\OAuth1` instance:
+JSON, multipart, and other entity bodies are not part of the RFC 5849 signature base string. Use HTTPS because OAuth 1 signatures do not cover most headers or non-form request bodies.
 
-```php
-$temporaryCredentials = $oauth1->requestTemporaryCredentials();
-```
-
-It will return an instance of `Risan\OAuth1\Credentials\TemporaryCredentials` class, which later you'll use to generate an authorization URI (Step 2) and to obtain the token credentials (Step 3).
-
-### Step 2: Generate and Redirect User to Authorization URI
-
-Once you've got the temporary credentials, the second step is to generate and redirect the user to the authorization page. This is where the user will be asked to grant their permission to your application. You need to pass the previously obtained `Risan\OAuth1\Credentials\TemporaryCredentials` class instance to the `buildAuthorizationUri` method to generate the authorization URI:
+Associative arrays are convenient when parameter names are unique:
 
 ```php
-$authorizationUri = $oauth1->buildAuthorizationUri($temporaryCredentials);
-
-// Redirect user to the authorization URI.
-header("Location: {$authorizationUri}");
-exit();
-```
-
-### Step 3: Obtaining Token Credentials
-
-The third step is to obtain the token credentials, or also known as the access token. Upon successful authorization, the provider will redirect the user to the defined callback URI along with at least two additional query parameters:
-
-* `oauth_token`
-* `oauth_verifier`
-
-Along with the previously obtained temporary credentials, you'll need to pass these two query parameters to `requestTokenCredentials` method to obtain token credentials:
-
-```php
-$tokenCredentials = $oauth1->requestTokenCredentials($temporaryCredentials, $_GET['oauth_token'], $_GET['oauth_verifier']);
-```
-
-This method will return an instance of `Risan\OAuth1\Credentials\TokenCredentials` class, which you're going to need to access the protected resource.
-
-### Step 4: Accessing the Protected Resource
-
-Finally, once you've got the token credentials instance, you can start making a request to the protected resource. Pass the obtained `Risan\OAuth1\Credentials\TokenCredentials` instance to the `setTokenCredentials` method before making any requests to the protected resource, or else an exception will be thrown.
-
-```php
-// Set the previously obtained token credentials.
-$oauth1->setTokenCredentials($tokenCredentials);
-
-// Make a request to the protected resource.
-$response = $oauth1->request('GET', 'https://api.twitter.com/1.1/statuses/user_timeline.json');
-```
-
-The `request` method will return an instance of `Psr\Http\Message\ResponseInterface` class.
-
-## Making HTTP Request
-
-Once you've set the obtained token credentials with the `setTokenCredentials` method, you can start making the HTTP request to the protected API endpoints. You can use the `request` method for this purpose:
-
-```php
-$response = $oauth1->request($method, $uri, $options);
-```
-
-This method accepts three parameters:
-
-* `method` (required): The HTTP method that you'd like to use (e.g. `GET`, `POST`, `PUT`, `PATCH`, `DELETE`)
-* `uri` (required): The URI of the API endpoint that you'd like to access. You can also pass a relative URI as long as you pass the `base_uri` in the configuration array.
-* `options` (optional): It's an optional array paramater to configure your request. It's the same [Request Options](https://guzzle.readthedocs.io/en/stable/request-options.html) that you'll pass when making an HTTP request using [Guzzle](https://guzzle.readthedocs.io). You can check all available options that you can pass on [Guzzle documentation](http://guzzle.readthedocs.io/en/stable/request-options.html).
-
-There are also shortcut methods for common HTTP methods:
-
-```php
-// GET method
-$oauth1->get($uri, $options);
-
-// POST method
-$oauth1->post($uri, $options);
-
-// PUT method
-$oauth1->put($uri, $options);
-
-// PATCH method
-$oauth1->patch($uri, $options);
-
-// DELETE method
-$oauth1->delete($uri, $options);
-```
-
-## Working with the Response
-
-The `request` method will return an instance of `Psr\Http\Message\ResponseInterface`. You can check the returned status code with the `getStatusCode` method:
-
-```php
-echo $response->getStatusCode();
-```
-
-Or you can also get the headers on the returned response like so:
-
-```php
-// Get all of the headers
-$headers = $response->getHeaders();
-
-// Or get a specific header
-$header = $response->getHeader('X-Foo');
-```
-
-And to get the response's body, you can use the `getBody` method. Note that it will return a `Psr\Http\Message\StreamInterface` instance. To convert the `StreamInterface` instace into a string, you can call the `getContents` method or simply cast it into a string.
-
-```php
-$bodyStream = $response->getBody();
-
-// Get the string representation of the stream
-$bodyStream = $bodyStream->getContents();
-
-// Or simply cast it
-$bodyString = (string) $bodyStream;
-```
-
-So if the API endpoint returns a JSON formatted response, you can covert the returned response into an associative array like this:
-
-```php
-$result = json_decode($response->getBody()->getContents(), true);
-```
-
-## Built-In Providers
-
-This package also offers some third-party providers that you can use.
-
-### Trello
-
-Use the `trello` method to create an instance of `OAuth1` configured for Trello.
-
-```php
-$oauth1 = Risan\OAuth1\ProviderFactory::trello([
-    'client_credentials_identifier' => 'YOUR_TRELLO_API_KEY',
-    'client_credentials_secret' => 'YOUR_TRELLO_SECRET',
-    'callback_uri' => 'YOUR_CALLBACK_URI',
+$response = $oauth->post('items', [
+    'form_params' => [
+        'name' => 'Example',
+        'enabled' => '1',
+    ],
 ]);
 ```
 
-You can get both of your API key and secret from [Developer API Keys](https://trello.com/app-key) page. The base URI is set to `https://api.trello.com/1/` so you can use a relative URI instead:
+Use an ordered list of `[name, value]` pairs when a query or form repeats a name. The library preserves these pairs both in the signature and on the wire:
 
 ```php
-$response = $oauth1->request('GET', 'members/johndoe/cards');
-```
-
-### Tumblr
-
-Use the `tumblr` method to create an instance of `OAuth1` configured for Tumblr.
-
-```php
-$oauth1 = Risan\OAuth1\ProviderFactory::tumblr([
-    'client_credentials_identifier' => 'YOUR_TUMBLR_CONSUMER_KEY',
-    'client_credentials_secret' => 'YOUR_TUMBLR_CONSUMER_SECRET',
-    'callback_uri' => 'YOUR_CALLBACK_URI',
+$response = $oauth->get('search', [
+    'query' => [
+        ['tag', 'php'],
+        ['tag', 'oauth'],
+        ['empty', ''],
+    ],
 ]);
 ```
 
-You need to register a Tumblr application [here](https://www.tumblr.com/oauth/apps) to get the consumer key and secret. The base URI is set to `https://api.tumblr.com/v2/` so you can use a relative URI instead:
+Nested arrays and `null` values are rejected because their wire encoding is ambiguous or omitted by Guzzle and cannot be normalized reliably under RFC 5849. Use an empty string for an empty value, encode structured data yourself as a scalar, or use JSON when the API accepts it.
+
+## Signature methods
+
+### HMAC-SHA1
+
+HMAC-SHA1 is the default:
 
 ```php
-$response = $oauth1->request('GET', 'user/info');
+$oauth = OAuth1Factory::create($config);
 ```
 
-### Twitter
+The signing key is the percent-encoded client secret, an ampersand, and the percent-encoded temporary or token secret.
 
-Use the `twitter` method to create an instance of `OAuth1` configured for Twitter.
+### RSA-SHA1
+
+RSA-SHA1 signs the RFC 5849 base string with an RSA private key. The client shared secret is not used by this method, but the configuration key must still be present and may be an empty string.
 
 ```php
-$oauth1 = Risan\OAuth1\ProviderFactory::twitter([
-    'client_credentials_identifier' => 'YOUR_TWITTER_CONSUMER_KEY',
-    'client_credentials_secret' => 'YOUR_TWITTER_CONSUMER_SECRET',
-    'callback_uri' => 'YOUR_CALLBACK_URI',
+use Risan\OAuth1\Signature\RsaSha1Signer;
+
+$privateKey = file_get_contents('/secure/path/oauth-private-key.pem');
+$oauth = OAuth1Factory::create($config, new RsaSha1Signer($privateKey, $_ENV['KEY_PASSPHRASE']));
+```
+
+### PLAINTEXT
+
+```php
+use Risan\OAuth1\Signature\PlainTextSigner;
+
+$oauth = OAuth1Factory::create($config, new PlainTextSigner());
+```
+
+Use only a method documented by the OAuth server. These OAuth 1 methods use legacy SHA-1-era protocol primitives, so transport security remains required.
+
+## Built-in provider configurations
+
+The built-in providers supply endpoint URIs and HMAC-SHA1. Pass your credentials and callback URI:
+
+```php
+use Risan\OAuth1\ProviderFactory;
+
+$oauth = ProviderFactory::tumblr([
+    'client_credentials_identifier' => $_ENV['TUMBLR_CONSUMER_KEY'],
+    'client_credentials_secret' => $_ENV['TUMBLR_CONSUMER_SECRET'],
+    'callback_uri' => 'https://client.example/oauth/callback',
 ]);
 ```
 
-You need to register a Twitter application [here](https://apps.twitter.com) to get the consumer key and secret. The base URI is set to `https://api.twitter.com/1.1/` so you can use a relative URI instead:
+Available factory methods are:
 
-```php
-$response = $oauth1->request('GET', 'statuses/user_timeline.json');
+- `ProviderFactory::trello()` for [Trello OAuth 1](https://developer.atlassian.com/cloud/trello/guides/rest-api/authorization/)
+- `ProviderFactory::tumblr()` for [Tumblr OAuth 1](https://github.com/tumblr/docs/blob/master/api.md); its access-token exchange uses `GET`
+- `ProviderFactory::twitter()` for [X OAuth 1.0a](https://docs.x.com/fundamentals/authentication/oauth-1-0a/overview) using the current `api.x.com` endpoints
+
+Provider products and endpoint policies can change independently of this package. Confirm API access, scopes, callback rules, and supported signature methods in the provider's current documentation. The former Upwork preset was removed because Upwork now documents OAuth 2.0 for its current API.
+
+## Exceptions
+
+- Invalid configuration or conflicting request options throw `InvalidArgumentException` or `TypeError`.
+- Missing or malformed OAuth credential responses throw `Risan\OAuth1\Credentials\CredentialsException`.
+- HTTP and transport failures use Guzzle's exception types.
+- RSA key loading and signing failures throw `InvalidArgumentException` or `RuntimeException`.
+
+## Development
+
+The project uses Pest 5 as the test runner, PHPUnit 13 configuration, Laravel Pint, PHPStan level 8, and GitHub Actions on PHP 8.5.
+
+```bash
+composer validate --strict
+composer install
+composer test
+composer format
+composer analyse
 ```
 
-### Upwork
+The integration suite runs the complete OAuth flow against Guzzle's HTTP mock handler and independently recomputes each captured request signature. It does not contact third-party providers or require live credentials.
 
-Use the `upwork` method to create an instance of `OAuth1` configured for Upwork.
+A reproducible PHP 8.5 CLI image is also provided:
 
-```php
-$oauth1 = Risan\OAuth1\ProviderFactory::upwork([
-    'client_credentials_identifier' => 'YOUR_API_KEY',
-    'client_credentials_secret' => 'YOUR_API_SECRET',
-    'callback_uri' => 'YOUR_CALLBACK_URI',
-]);
+```bash
+docker build -t oauth1-php85 -f docker/php85/Dockerfile .
+docker run --rm -v "$PWD":/app -w /app oauth1-php85 composer test
 ```
 
-You need to register a Upwork application [here](https://www.upwork.com/services/api/apply) to get the API key and secret. The base URI is set to `https://www.upwork.com/` so you can use a relative URI instead:
+## Releasing through Packagist
 
-```php
-$response = $oauth1->request('GET', 'api/auth/v1/info.json');
-```
+`risan/oauth1` is already registered on Packagist. Packagist reads versions from Git tags, so `composer.json` intentionally has no `version` field.
+
+For a release:
+
+1. Merge a commit that passes CI.
+2. Create and push a semantic version tag such as `v3.0.0`.
+3. Packagist discovers the tag automatically when its GitHub hook is connected. Without a hook, use the maintainer page's manual update action or wait for the periodic crawl.
+4. Verify that the new immutable tag and commit SHA appear on Packagist before announcing the release.
+
+Pushing an ordinary branch updates its development version; it does not create a stable release. Do not move a published stable tag to another commit.
 
 ## License
 

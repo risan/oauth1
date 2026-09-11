@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Signature;
 
 use Risan\OAuth1\Credentials\ClientCredentials;
@@ -9,34 +11,26 @@ trait CanGetSigningKey
 {
     /**
      * The ClientCredentials instance.
-     *
-     * @var \Risan\OAuth1\Credentials\ClientCredentials
      */
-    protected $clientCredentials;
+    protected ?ClientCredentials $clientCredentials = null;
 
     /**
      * The ServerIssuedCredentials instance.
-     *
-     * @var \Risan\OAuth1\Credentials\ServerIssuedCredentials
      */
-    protected $serverIssuedCredentials;
+    protected ?ServerIssuedCredentials $serverIssuedCredentials = null;
 
     /**
      * Check if the signer is key based.
-     *
-     * @return bool
      */
-    public function isKeyBased()
+    public function isKeyBased(): bool
     {
         return true;
     }
 
     /**
      * Get the key for signing.
-     *
-     * @return string
      */
-    public function getKey()
+    public function getKey(): string
     {
         $key = '';
 
@@ -57,9 +51,9 @@ trait CanGetSigningKey
     /**
      * Set the ClientCredentials instance for signing.
      *
-     * @return \Risan\OAuth1\Credentials\ClientCredentials
+     * @return $this
      */
-    public function setClientCredentials(ClientCredentials $clientCredentials)
+    public function setClientCredentials(ClientCredentials $clientCredentials): static
     {
         $this->clientCredentials = $clientCredentials;
 
@@ -68,10 +62,8 @@ trait CanGetSigningKey
 
     /**
      * Get the ClientCredentials instance for signing.
-     *
-     * @return \Risan\OAuth1\Credentials\ClientCredentials
      */
-    public function getClientCredentials()
+    public function getClientCredentials(): ?ClientCredentials
     {
         return $this->clientCredentials;
     }
@@ -79,9 +71,9 @@ trait CanGetSigningKey
     /**
      * Set the ServerIssuedCredentials instance for signing.
      *
-     * @param \Risan\OAuth1\Credentials\ServerIssuedCredentials $serverIssuedCredentials
+     * @return $this
      */
-    public function setServerIssuedCredentials(ServerIssuedCredentials $serverIssuedCredentials)
+    public function setServerIssuedCredentials(ServerIssuedCredentials $serverIssuedCredentials): static
     {
         $this->serverIssuedCredentials = $serverIssuedCredentials;
 
@@ -90,10 +82,8 @@ trait CanGetSigningKey
 
     /**
      * Get the ServerIssuedCredentials instance for signing.
-     *
-     * @return \Risan\OAuth1\Credentials\ServerIssuedCredentials
      */
-    public function getServerIssuedCredentials()
+    public function getServerIssuedCredentials(): ?ServerIssuedCredentials
     {
         return $this->serverIssuedCredentials;
     }

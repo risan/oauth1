@@ -1,32 +1,41 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Test\Unit\Signature;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Risan\OAuth1\Signature\CanGetSigningKey;
-use Risan\OAuth1\Credentials\TokenCredentials;
 use Risan\OAuth1\Credentials\ClientCredentials;
+use Risan\OAuth1\Credentials\TokenCredentials;
+use Risan\OAuth1\Signature\CanGetSigningKey;
 
 class CanGetSigningKeyTest extends TestCase
 {
     private $canGetSigningKeyStub;
+
     private $clientCredentials;
 
-    function setUp()
+    private $tokenCredentials;
+
+    protected function setUp(): void
     {
-        $this->canGetSigningKeyStub = $this->getMockForTrait(CanGetSigningKey::class);
+        $this->canGetSigningKeyStub = new class
+        {
+            use CanGetSigningKey;
+        };
         $this->clientCredentials = new ClientCredentials('client_id', 'client_secret');
         $this->tokenCredentials = new TokenCredentials('token_id', 'token_secret');
     }
 
-    /** @test */
-    function it_is_key_based()
+    #[Test]
+    public function it_is_key_based()
     {
         $this->assertTrue($this->canGetSigningKeyStub->isKeyBased());
     }
 
-    /** @test */
-    function it_can_set_and_get_client_credentials()
+    #[Test]
+    public function it_can_set_and_get_client_credentials()
     {
         $this->assertNull($this->canGetSigningKeyStub->getClientCredentials());
 
@@ -35,8 +44,8 @@ class CanGetSigningKeyTest extends TestCase
         $this->assertSame($this->clientCredentials, $this->canGetSigningKeyStub->getClientCredentials());
     }
 
-    /** @test */
-    function it_can_set_and_get_server_issued_credentials()
+    #[Test]
+    public function it_can_set_and_get_server_issued_credentials()
     {
         $this->assertNull($this->canGetSigningKeyStub->getServerIssuedCredentials());
 
@@ -45,8 +54,8 @@ class CanGetSigningKeyTest extends TestCase
         $this->assertSame($this->tokenCredentials, $this->canGetSigningKeyStub->getServerIssuedCredentials());
     }
 
-    /** @test */
-    function it_can_get_valid_key()
+    #[Test]
+    public function it_can_get_valid_key()
     {
         // Without any key.
         $this->assertEquals('&', $this->canGetSigningKeyStub->getKey());

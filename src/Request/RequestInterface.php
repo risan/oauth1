@@ -1,27 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Request;
 
 interface RequestInterface
 {
     /**
      * Get the request HTTP method.
-     *
-     * @return string
      */
-    public function getMethod();
+    public function getMethod(): string;
 
     /**
      * Get the request URI.
-     *
-     * @return string
      */
-    public function getUri();
+    public function getUri(): string;
 
     /**
      * Get the request options.
-     *
-     * @return array
      */
-    public function getOptions();
+    public function getOptions(): array;
 }

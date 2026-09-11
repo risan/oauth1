@@ -1,61 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Request;
 
-use Risan\OAuth1\Credentials\TokenCredentials;
+use Psr\Http\Message\UriInterface;
+use Risan\OAuth1\Config\ConfigInterface;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
+use Risan\OAuth1\Credentials\TokenCredentials;
 
 interface AuthorizationHeaderInterface
 {
     /**
      * Get the ProtocolParameterInterface instance.
-     *
-     * @return \Risan\OAuth1\Request\ProtocolParameterInterface
      */
-    public function getProtocolParameter();
+    public function getProtocolParameter(): ProtocolParameterInterface;
 
     /**
      * Get the ConfigInterface instance.
-     *
-     * @return \Risan\OAuth1\Config\ConfigInterface
      */
-    public function getConfig();
+    public function getConfig(): ConfigInterface;
 
     /**
      * Get authorization header for obtaining temporary credentials.
-     *
-     * @return string
      */
-    public function forTemporaryCredentials();
+    public function forTemporaryCredentials(): string;
 
     /**
      * Get authorization header for obtaining token credentials.
-     *
-     * @param \Risan\OAuth1\Credentials\TemporaryCredentials $temporaryCredentials
-     * @param string                                         $verificationCode
-     *
-     * @return string
      */
-    public function forTokenCredentials(TemporaryCredentials $temporaryCredentials, $verificationCode);
+    public function forTokenCredentials(TemporaryCredentials $temporaryCredentials, string $verificationCode): string;
 
     /**
      * Get authorization header for accessing protected resource.
      *
-     * @param \Risan\OAuth1\Credentials\TokenCredentials $tokenCredentials
-     * @param string                                     $httpMethod
-     * @param string                                     $uri
-     * @param array                                      $requestOptions
-     *
-     * @return string
+     * @param  string  $uri
      */
-    public function forProtectedResource(TokenCredentials $tokenCredentials, $httpMethod, $uri, array $requestOptions = []);
+    public function forProtectedResource(TokenCredentials $tokenCredentials, string $httpMethod, UriInterface|string $uri, array $requestOptions = []): string;
 
     /**
      * Normalize protocol parameters to be used as HTTP authorization header.
-     *
-     * @param array $parameters
-     *
-     * @return string
      */
-    public function normalizeProtocolParameters(array $parameters);
+    public function normalizeProtocolParameters(array $parameters): string;
 }

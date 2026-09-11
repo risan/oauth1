@@ -1,15 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Signature;
 
-class PlainTextSigner implements SignerInterface, KeyBasedSignerInterface
+use Psr\Http\Message\UriInterface;
+
+class PlainTextSigner implements KeyBasedSignerInterface, SignerInterface
 {
     use CanGetSigningKey;
 
     /**
      * {@inheritdoc}
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return 'PLAINTEXT';
     }
@@ -17,7 +21,7 @@ class PlainTextSigner implements SignerInterface, KeyBasedSignerInterface
     /**
      * {@inheritdoc}
      */
-    public function sign($uri, array $parameters = [], $httpMethod = 'POST')
+    public function sign(UriInterface|string $uri, array $parameters = [], string $httpMethod = 'POST'): string
     {
         return $this->getKey();
     }

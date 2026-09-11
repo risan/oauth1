@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Test\Unit\Signature;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\UriInterface;
 use Risan\OAuth1\Request\UriParser;
 use Risan\OAuth1\Signature\BaseStringBuilder;
 use Risan\OAuth1\Signature\BaseStringBuilderInterface;
@@ -11,30 +13,32 @@ use Risan\OAuth1\Signature\BaseStringBuilderInterface;
 class BaseStringBuilderTest extends TestCase
 {
     private $uriParser;
+
     private $baseStringBuilder;
+
     private $psrUri;
 
-    function setUp()
+    protected function setUp(): void
     {
         $this->uriParser = new UriParser;
         $this->baseStringBuilder = new BaseStringBuilder($this->uriParser);
         $this->psrUri = $this->uriParser->toPsrUri('http://example.com/path');
     }
 
-    /** @test */
-    function it_implements_base_string_builder_interface()
+    #[Test]
+    public function it_implements_base_string_builder_interface()
     {
         $this->assertInstanceOf(BaseStringBuilderInterface::class, $this->baseStringBuilder);
     }
 
-    /** @test */
-    function it_can_get_uri_parser()
+    #[Test]
+    public function it_can_get_uri_parser()
     {
         $this->assertSame($this->uriParser, $this->baseStringBuilder->getUriParser());
     }
 
-    /** @test */
-    function it_can_build_valid_method_component()
+    #[Test]
+    public function it_can_build_valid_method_component()
     {
         $this->assertEquals('POST', $this->baseStringBuilder->buildMethodComponent('POST'));
 
@@ -45,11 +49,11 @@ class BaseStringBuilderTest extends TestCase
         $this->assertEquals('CUSTOM METHOD', $this->baseStringBuilder->buildMethodComponent('Custom Method'));
     }
 
-    /** @test */
-    function it_can_build_valid_uri_component_from_string()
+    #[Test]
+    public function it_can_build_valid_uri_component_from_string()
     {
-        $this->assertEquals('http://example.com', $this->baseStringBuilder->buildUriComponent('http://example.com'));
-        $this->assertEquals('https://example.com', $this->baseStringBuilder->buildUriComponent('https://example.com'));
+        $this->assertEquals('http://example.com/', $this->baseStringBuilder->buildUriComponent('http://example.com'));
+        $this->assertEquals('https://example.com/', $this->baseStringBuilder->buildUriComponent('https://example.com'));
 
         // Can build from URI with path.
         $this->assertEquals('http://example.com/path', $this->baseStringBuilder->buildUriComponent('http://example.com/path'));
@@ -58,8 +62,8 @@ class BaseStringBuilderTest extends TestCase
         $this->assertEquals('http://example.com/path', $this->baseStringBuilder->buildUriComponent('http://example.com/path?foo=bar'));
     }
 
-    /** @test */
-    function it_can_build_valid_uri_component_with_port()
+    #[Test]
+    public function it_can_build_valid_uri_component_with_port()
     {
         // Can build from URI with default port.
         $this->assertEquals('http://example.com/path', $this->baseStringBuilder->buildUriComponent('http://example.com:80/path'));
@@ -69,8 +73,8 @@ class BaseStringBuilderTest extends TestCase
         $this->assertEquals('http://example.com:8080/path', $this->baseStringBuilder->buildUriComponent('http://example.com:8080/path'));
     }
 
-    /** @test */
-    function it_can_normalize_parameters()
+    #[Test]
+    public function it_can_normalize_parameters()
     {
         $normalizedParameters = $this->baseStringBuilder->normalizeParameters([
             'lang' => 'en',
@@ -79,37 +83,35 @@ class BaseStringBuilderTest extends TestCase
 
         // Can sort and encode the paramaters.
         $this->assertSame([
-            'full%20name' => 'John%20Doe',
-            'lang' => 'en',
+            ['full%20name', 'John%20Doe'],
+            ['lang', 'en'],
         ], $normalizedParameters);
     }
 
-    /** @test */
-    function it_can_normalize_multi_dimensional_parameters()
+    #[Test]
+    public function it_rejects_nested_parameters_that_cannot_match_the_wire_format()
     {
-        $normalizedParameters = $this->baseStringBuilder->normalizeParameters([
-            'lang' => 'en',
-            'full name' => 'John Doe',
-            'programming languages' => ['php', 'go lang'],
-            'location' => [
-                'home town' => 'Cimahi',
-                'home' => 'Stockholm Sweden',
-            ],
-        ]);
-
-        $this->assertSame([
-            'full%20name' => 'John%20Doe',
-            'lang' => 'en',
-            'location' => [
-                'home' => 'Stockholm%20Sweden',
-                'home%20town' => 'Cimahi',
-            ],
-            'programming%20languages' => ['php', 'go%20lang'],
-        ], $normalizedParameters);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->baseStringBuilder->normalizeParameters(['languages' => ['php', 'go']]);
     }
 
-    /** @test */
-    function it_can_build_query_string()
+    #[Test]
+    public function it_matches_php_form_encoding_for_boolean_values_and_rejects_null()
+    {
+        $this->assertSame([
+            ['disabled', '0'],
+            ['enabled', '1'],
+        ], $this->baseStringBuilder->normalizeParameters([
+            'enabled' => true,
+            'disabled' => false,
+        ]));
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->baseStringBuilder->normalizeParameters(['omitted_by_guzzle' => null]);
+    }
+
+    #[Test]
+    public function it_can_build_query_string()
     {
         $queryString = $this->baseStringBuilder->buildQueryString([
             'first_name' => 'john',
@@ -119,33 +121,30 @@ class BaseStringBuilderTest extends TestCase
         $this->assertEquals('first_name=john&last_name=doe', $queryString);
     }
 
-    /** @test */
-    function it_can_build_query_string_from_multi_dimensional_array()
+    #[Test]
+    public function it_can_build_query_string_from_repeated_parameter_pairs()
     {
         $queryString = $this->baseStringBuilder->buildQueryString([
-            'name' => 'john',
-            'languages' => ['php', 'js'],
-            'location' => [
-                'city' => 'stockholm',
-                'country' => 'sweden',
-            ],
+            ['name', 'john'],
+            ['languages', 'php'],
+            ['languages', 'js'],
         ]);
 
-        $this->assertEquals('name=john&languages[0]=php&languages[1]=js&location[city]=stockholm&location[country]=sweden', $queryString);
+        $this->assertEquals('name=john&languages=php&languages=js', $queryString);
     }
 
-    /** @test */
-    function it_can_build_parameters_components()
+    #[Test]
+    public function it_can_build_parameters_components()
     {
         $baseString = $this->baseStringBuilder->buildParametersComponent(['foo' => 'bar', 'baz' => 'qux']);
         $this->assertEquals('baz=qux&foo=bar', $baseString);
     }
 
-    /** @test */
-    function it_can_build_base_string()
+    #[Test]
+    public function it_can_build_base_string()
     {
         $baseString = $this->baseStringBuilder->build('POST', 'http://example.com', ['foo' => 'bar']);
-        $this->assertEquals('POST&http%3A%2F%2Fexample.com&foo%3Dbar', $baseString);
+        $this->assertEquals('POST&http%3A%2F%2Fexample.com%2F&foo%3Dbar', $baseString);
 
         // URI with path.
         $baseString = $this->baseStringBuilder->build('POST', 'http://example.com/path', ['foo' => 'bar']);

@@ -1,28 +1,34 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Test\Unit\Signature;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Risan\OAuth1\Signature\CanBuildBaseString;
 use Risan\OAuth1\Signature\BaseStringBuilderInterface;
+use Risan\OAuth1\Signature\CanBuildBaseString;
 
 class CanBuildBaseStringTest extends TestCase
 {
     private $canBuildBaseStringStub;
 
-    function setUp()
+    protected function setUp(): void
     {
-        $this->canBuildBaseStringStub = $this->getMockForTrait(CanBuildBaseString::class);
+        $this->canBuildBaseStringStub = new class
+        {
+            use CanBuildBaseString;
+        };
     }
 
-    /** @test */
-    function it_can_get_base_string_builder_interface_instance()
+    #[Test]
+    public function it_can_get_base_string_builder_interface_instance()
     {
         $this->assertInstanceOf(BaseStringBuilderInterface::class, $this->canBuildBaseStringStub->getBaseStringBuilder());
     }
 
-    /** @test */
-    function it_can_build_base_string()
+    #[Test]
+    public function it_can_build_base_string()
     {
         $baseString = $this->canBuildBaseStringStub->buildBaseString('http://example.com/path', ['foo' => 'bar'], 'POST');
 

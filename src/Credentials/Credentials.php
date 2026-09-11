@@ -1,30 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Credentials;
 
 abstract class Credentials implements CredentialsInterface
 {
     /**
      * The credentials identifier.
-     *
-     * @var string
      */
-    protected $identifier;
+    protected string $identifier;
 
     /**
      * The credentials shared-secret.
-     *
-     * @var string
      */
-    protected $secret;
+    protected string $secret;
 
     /**
      * Creaate the new Crendentials class instance.
-     *
-     * @param string $identifier
-     * @param string $secret
      */
-    public function __construct($identifier, $secret)
+    public function __construct(string $identifier, string $secret)
     {
         $this->identifier = $identifier;
         $this->secret = $secret;
@@ -33,7 +28,7 @@ abstract class Credentials implements CredentialsInterface
     /**
      * {@inheritdoc}
      */
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
         return $this->identifier;
     }
@@ -41,7 +36,7 @@ abstract class Credentials implements CredentialsInterface
     /**
      * {@inheritdoc}
      */
-    public function getSecret()
+    public function getSecret(): string
     {
         return $this->secret;
     }

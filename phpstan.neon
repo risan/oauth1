@@ -1,0 +1,7 @@
+parameters:
+    level: 8
+    paths:
+        - src
+    tmpDir: /tmp/oauth1-phpstan
+    ignoreErrors:
+        - identifier: missingType.iterableValue

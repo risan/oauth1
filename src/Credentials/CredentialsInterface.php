@@ -1,20 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Credentials;
 
 interface CredentialsInterface
 {
     /**
      * Get the credentials identifier.
-     *
-     * @return string
      */
-    public function getIdentifier();
+    public function getIdentifier(): string;
 
     /**
      * Get the credentials shared-secret.
-     *
-     * @return string
      */
-    public function getSecret();
+    public function getSecret(): string;
 }

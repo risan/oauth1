@@ -1,15 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Request;
 
 interface NonceGeneratorInterface
 {
     /**
      * Generate a random string for nonce.
-     *
-     * @param int $length
-     *
-     * @return string
      */
-    public function generate($length = 32);
+    public function generate(int $length = 32): string;
 }

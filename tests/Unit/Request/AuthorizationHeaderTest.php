@@ -1,21 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Test\Unit\Request;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Risan\OAuth1\Request\AuthorizationHeader;
-use Risan\OAuth1\Credentials\TokenCredentials;
+use Risan\OAuth1\Config\ConfigInterface;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
+use Risan\OAuth1\Credentials\TokenCredentials;
+use Risan\OAuth1\Request\AuthorizationHeader;
 use Risan\OAuth1\Request\ProtocolParameterInterface;
 
 class AuthorizationHeaderTest extends TestCase
 {
     private $protocolParameterStub;
+
     private $authorizationHeader;
+
     private $temporaryCredentialsStub;
+
     private $tokenCredentialsStub;
 
-    function setUp()
+    protected function setUp(): void
     {
         $this->protocolParameterStub = $this->createMock(ProtocolParameterInterface::class);
         $this->authorizationHeader = new AuthorizationHeader($this->protocolParameterStub);
@@ -23,25 +30,26 @@ class AuthorizationHeaderTest extends TestCase
         $this->tokenCredentialsStub = $this->createMock(TokenCredentials::class);
     }
 
-    /** @test */
-    function it_can_get_protocol_parameter()
+    #[Test]
+    public function it_can_get_protocol_parameter()
     {
         $this->assertSame($this->protocolParameterStub, $this->authorizationHeader->getProtocolParameter());
     }
 
-    /** @test */
-    function it_can_get_config()
+    #[Test]
+    public function it_can_get_config()
     {
+        $config = $this->createMock(ConfigInterface::class);
         $this->protocolParameterStub
             ->expects($this->once())
             ->method('getConfig')
-            ->willReturn(['foo' => 'bar']);
+            ->willReturn($config);
 
-        $this->assertSame(['foo' => 'bar'], $this->authorizationHeader->getConfig());
+        $this->assertSame($config, $this->authorizationHeader->getConfig());
     }
 
-    /** @test */
-    function it_can_normalize_protocol_parameters()
+    #[Test]
+    public function it_can_normalize_protocol_parameters()
     {
         $parameters = [
             'foo' => 'bar',
@@ -54,8 +62,8 @@ class AuthorizationHeaderTest extends TestCase
         );
     }
 
-    /** @test */
-    function it_can_build_for_temporary_credentials()
+    #[Test]
+    public function it_can_build_for_temporary_credentials()
     {
         $this->protocolParameterStub
             ->expects($this->once())
@@ -68,8 +76,8 @@ class AuthorizationHeaderTest extends TestCase
         );
     }
 
-    /** @test */
-    function it_can_build_for_token_credentials()
+    #[Test]
+    public function it_can_build_for_token_credentials()
     {
         $this->protocolParameterStub
             ->expects($this->once())
@@ -83,8 +91,8 @@ class AuthorizationHeaderTest extends TestCase
         );
     }
 
-    /** @test */
-    function it_can_build_for_protected_resource()
+    #[Test]
+    public function it_can_build_for_protected_resource()
     {
         $this->protocolParameterStub
             ->expects($this->once())

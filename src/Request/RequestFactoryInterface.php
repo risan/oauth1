@@ -1,68 +1,50 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Request;
 
-use Risan\OAuth1\Credentials\TokenCredentials;
+use Psr\Http\Message\UriInterface;
+use Risan\OAuth1\Config\ConfigInterface;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
+use Risan\OAuth1\Credentials\TokenCredentials;
 
 interface RequestFactoryInterface
 {
     /**
      * Get the AuthorizationHeaderInterface instance.
-     *
-     * @return \Risan\OAuth1\Request\AuthorizationHeaderInterface
      */
-    public function getAuthorizationHeader();
+    public function getAuthorizationHeader(): AuthorizationHeaderInterface;
 
     /**
      * Get the ConfigInterface instance.
-     *
-     * @return \Risan\OAuth1\Config\ConfigInterface
      */
-    public function getConfig();
+    public function getConfig(): ConfigInterface;
 
     /**
      * Get the UriParserInterface instance.
-     *
-     * @return \Risan\OAuth1\Request\UriParserInterface
      */
-    public function getUriParser();
+    public function getUriParser(): UriParserInterface;
 
     /**
      * Create request for obtaining temporary credentials.
-     *
-     * @return \Risan\OAuth1\Request\RequestInterface
      */
-    public function createForTemporaryCredentials();
+    public function createForTemporaryCredentials(): RequestInterface;
 
     /**
      * Build the authorization URI.
-     *
-     * @param \Risan\OAuth1\Credentials\TemporaryCredentials $temporaryCredentials
-     *
-     * @return \Psr\Http\Message\UriInterface
      */
-    public function buildAuthorizationUri(TemporaryCredentials $temporaryCredentials);
+    public function buildAuthorizationUri(TemporaryCredentials $temporaryCredentials): UriInterface;
 
     /**
      * Create request for obtaining token credentials.
-     *
-     * @param \Risan\OAuth1\Credentials\TemporaryCredentials $temporaryCredentials
-     * @param string                                         $verificationCode
-     *
-     * @return \Risan\OAuth1\Request\RequestInterface
      */
-    public function createForTokenCredentials(TemporaryCredentials $temporaryCredentials, $verificationCode);
+    public function createForTokenCredentials(TemporaryCredentials $temporaryCredentials, string $verificationCode): RequestInterface;
 
     /**
      * Create an authenticated request for obtaining protected resource.
      *
-     * @param \Risan\OAuth1\Credentials\TokenCredentials $tokenCredentials
-     * @param string                                     $method
-     * @param string                                     $uri
-     * @param array                                      $options
-     *
-     * @return \Risan\OAuth1\Request\RequestInterface
+     * @param  string  $uri
      */
-    public function createForProtectedResource(TokenCredentials $tokenCredentials, $method, $uri, array $options = []);
+    public function createForProtectedResource(TokenCredentials $tokenCredentials, string $method, UriInterface|string $uri, array $options = []): RequestInterface;
 }

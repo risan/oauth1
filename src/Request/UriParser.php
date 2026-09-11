@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Request;
 
 use GuzzleHttp\Psr7\Uri;
-use InvalidArgumentException;
 use GuzzleHttp\Psr7\UriResolver;
 use Psr\Http\Message\UriInterface;
 
@@ -12,7 +13,7 @@ class UriParser implements UriParserInterface
     /**
      * {@inheritdoc}
      */
-    public function isAbsolute(UriInterface $uri)
+    public function isAbsolute(UriInterface $uri): bool
     {
         return Uri::isAbsolute($uri);
     }
@@ -20,15 +21,15 @@ class UriParser implements UriParserInterface
     /**
      * {@inheritdoc}
      */
-    public function isMissingScheme(UriInterface $uri)
+    public function isMissingScheme(UriInterface $uri): bool
     {
-        return '' === $uri->getScheme() && '' !== $uri->getHost();
+        return $uri->getScheme() === '' && $uri->getHost() !== '';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildFromParts(array $parts)
+    public function buildFromParts(array $parts): UriInterface
     {
         return Uri::fromParts($parts);
     }
@@ -36,7 +37,7 @@ class UriParser implements UriParserInterface
     /**
      * {@inheritdoc}
      */
-    public function resolve(UriInterface $baseUri, UriInterface $uri)
+    public function resolve(UriInterface $baseUri, UriInterface $uri): UriInterface
     {
         return UriResolver::resolve($baseUri, $uri);
     }
@@ -44,26 +45,20 @@ class UriParser implements UriParserInterface
     /**
      * {@inheritdoc}
      */
-    public function appendQueryParameters(UriInterface $uri, array $parameters = [])
+    public function appendQueryParameters(UriInterface $uri, array $parameters = []): UriInterface
     {
-        parse_str($uri->getQuery(), $existedParameters);
+        $query = ParameterList::fromQueryString($uri->getQuery())
+            ->merge(ParameterList::fromArray($parameters))
+            ->toQueryString();
 
-        $mergedParameters = array_merge($existedParameters, $parameters);
-
-        return $uri->withQuery(http_build_query($mergedParameters));
+        return $uri->withQuery($query);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function toPsrUri($uri)
+    public function toPsrUri(UriInterface|string $uri): UriInterface
     {
-        if ($uri instanceof UriInterface) {
-            return $uri;
-        } elseif (is_string($uri)) {
-            return new Uri($uri);
-        }
-
-        throw new InvalidArgumentException('URI must be a string or an instance of \Psr\Http\Message\UriInterface.');
+        return $uri instanceof UriInterface ? $uri : new Uri($uri);
     }
 }

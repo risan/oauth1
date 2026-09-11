@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Signature;
 
-class HmacSha1Signer implements SignerInterface, BaseStringSignerInterface, KeyBasedSignerInterface
+use Psr\Http\Message\UriInterface;
+
+class HmacSha1Signer implements BaseStringSignerInterface, KeyBasedSignerInterface, SignerInterface
 {
     use CanBuildBaseString,
         CanGetSigningKey;
@@ -10,7 +14,7 @@ class HmacSha1Signer implements SignerInterface, BaseStringSignerInterface, KeyB
     /**
      * {@inheritdoc}
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return 'HMAC-SHA1';
     }
@@ -18,7 +22,7 @@ class HmacSha1Signer implements SignerInterface, BaseStringSignerInterface, KeyB
     /**
      * {@inheritdoc}
      */
-    public function sign($uri, array $parameters = [], $httpMethod = 'POST')
+    public function sign(UriInterface|string $uri, array $parameters = [], string $httpMethod = 'POST'): string
     {
         $baseString = $this->buildBaseString($uri, $parameters, $httpMethod);
 
@@ -27,12 +31,8 @@ class HmacSha1Signer implements SignerInterface, BaseStringSignerInterface, KeyB
 
     /**
      * Hash the data with HMAC method.
-     *
-     * @param string $data
-     *
-     * @return string
      */
-    public function hash($data)
+    public function hash(string $data): string
     {
         return hash_hmac('sha1', $data, $this->getKey(), true);
     }

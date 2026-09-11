@@ -1,94 +1,67 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Request;
 
-use Risan\OAuth1\Credentials\TokenCredentials;
-use Risan\OAuth1\Credentials\TemporaryCredentials;
+use Psr\Http\Message\UriInterface;
+use Risan\OAuth1\Config\ConfigInterface;
 use Risan\OAuth1\Credentials\ServerIssuedCredentials;
+use Risan\OAuth1\Credentials\TemporaryCredentials;
+use Risan\OAuth1\Credentials\TokenCredentials;
+use Risan\OAuth1\Signature\SignerInterface;
 
 interface ProtocolParameterInterface
 {
     /**
      * Get the ConfigInterface instance.
-     *
-     * @return \Risan\OAuth1\Config\ConfigInterface
      */
-    public function getConfig();
+    public function getConfig(): ConfigInterface;
 
     /**
      * Get the SignerInterface instance.
-     *
-     * @return \Risan\OAuth1\Signature\SignerInterface
      */
-    public function getSigner();
+    public function getSigner(): SignerInterface;
 
     /**
      * Get the NonceGeneratorInterface instance.
-     *
-     * @return \Risan\OAuth1\Request\NonceGeneratorInterface
      */
-    public function getNonceGenerator();
+    public function getNonceGenerator(): NonceGeneratorInterface;
 
     /**
      * Get the current timestamp in seconds since Unix Epoch.
-     *
-     * @return int
      */
-    public function getCurrentTimestamp();
+    public function getCurrentTimestamp(): int;
 
     /**
      * Get the OAuth1 protocol version.
-     *
-     * @return string
      */
-    public function getVersion();
+    public function getVersion(): string;
 
     /**
      * Get the base protocol parameters.
-     *
-     * @return array
      */
-    public function getBase();
+    public function getBase(): array;
 
     /**
      * Create the signature.
-     *
-     * @param array $protocolParameters
-     * @param string uri
-     * @param \Risan\OAuth1\Credentials\ServerIssuedCredentials|null $serverIssuedCredentials
-     * @param array                                                  $requestOptions
-     * @param string                                                 $httpMethod
-     *
-     * @return string
      */
-    public function getSignature(array $protocolParameters, $uri, ServerIssuedCredentials $serverIssuedCredentials = null, array $requestOptions = [], $httpMethod = 'POST');
+    public function getSignature(array $protocolParameters, UriInterface|string $uri, ?ServerIssuedCredentials $serverIssuedCredentials = null, array $requestOptions = [], string $httpMethod = 'POST'): string;
 
     /**
      * Get protocol parameters for obtaining temporary credentials.
-     *
-     * @return array
      */
-    public function forTemporaryCredentials();
+    public function forTemporaryCredentials(): array;
 
     /**
      * Get protocol parameters for obtaining token credentials.
-     *
-     * @param \Risan\OAuth1\Credentials\TemporaryCredentials $temporaryCredentials
-     * @param string                                         $verificationCode
-     *
-     * @return array
      */
-    public function forTokenCredentials(TemporaryCredentials $temporaryCredentials, $verificationCode);
+    public function forTokenCredentials(TemporaryCredentials $temporaryCredentials, string $verificationCode): array;
 
     /**
      * Get protocol parameters for accessing protected resource.
      *
-     * @param \Risan\OAuth1\Credentials\TokenCredentials $tokenCredentials
-     * @param string                                     $httpMethod
-     * @param string                                     $uri
-     * @param array                                      $requestOptions
-     *
-     * @return array
+     * @param  string  $uri
      */
-    public function forProtectedResource(TokenCredentials $tokenCredentials, $httpMethod, $uri, array $requestOptions = []);
+    public function forProtectedResource(TokenCredentials $tokenCredentials, string $httpMethod, UriInterface|string $uri, array $requestOptions = []): array;
 }

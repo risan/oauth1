@@ -1,138 +1,68 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Signature;
 
+use Psr\Http\Message\UriInterface;
+use Risan\OAuth1\Request\ParameterList;
 use Risan\OAuth1\Request\UriParserInterface;
 
 class BaseStringBuilder implements BaseStringBuilderInterface
 {
-    /**
-     * The UriParserInterface instance.
-     *
-     * @var \Risan\OAuth1\Request\UriParserInterface
-     */
-    protected $uriParser;
+    public function __construct(protected UriParserInterface $uriParser) {}
 
-    public function __construct(UriParserInterface $uriParser)
-    {
-        $this->uriParser = $uriParser;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getUriParser()
+    public function getUriParser(): UriParserInterface
     {
         return $this->uriParser;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function build($httpMethod, $uri, array $parameters = [])
+    public function build(string $httpMethod, UriInterface|string $uri, array $parameters = []): string
     {
         $uri = $this->uriParser->toPsrUri($uri);
+        $all = ParameterList::fromQueryString($uri->getQuery())->merge(ParameterList::fromArray($parameters));
 
-        $components = [];
-
-        $components[] = rawurlencode($this->buildMethodComponent($httpMethod));
-
-        $components[] = rawurlencode($this->buildUriComponent($uri));
-
-        parse_str($uri->getQuery(), $queryParameters);
-
-        $components[] = rawurlencode($this->buildParametersComponent(array_merge($queryParameters, $parameters)));
-
-        return implode('&', $components);
+        return implode('&', [
+            rawurlencode($this->buildMethodComponent($httpMethod)),
+            rawurlencode($this->buildUriComponent($uri)),
+            rawurlencode($this->buildParametersComponent($all->pairs())),
+        ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildMethodComponent($httpMethod)
+    public function buildMethodComponent(string $httpMethod): string
     {
         return strtoupper($httpMethod);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildUriComponent($uri)
+    public function buildUriComponent(UriInterface|string $uri): string
     {
         $uri = $this->uriParser->toPsrUri($uri);
+        $scheme = strtolower($uri->getScheme());
+        $authority = strtolower($uri->getHost());
+        $port = $uri->getPort();
 
-        return $this->uriParser->buildFromParts([
-            'scheme' => $uri->getScheme(),
-            'host' => $uri->getHost(),
-            'port' => $uri->getPort(),
-            'path' => $uri->getPath(),
-        ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildParametersComponent(array $parameters)
-    {
-        $parameters = $this->normalizeParameters($parameters);
-
-        return $this->buildQueryString($parameters);
-    }
-
-    /**
-     * Normalize the given request parameters.
-     *
-     * @param array $parameters
-     *
-     * @return array
-     */
-    public function normalizeParameters(array $parameters)
-    {
-        $normalized = [];
-
-        // [1] Encode both the keys and values.
-        // Decode it frist, in case the given data is already encoded.
-        foreach ($parameters as $key => $value) {
-            $key = rawurlencode(rawurldecode($key));
-
-            if (is_array($value)) {
-                $normalized[$key] = $this->normalizeParameters($value);
-            } else {
-                $normalized[$key] = rawurlencode(rawurldecode($value));
-            }
+        if ($port !== null && ! (($scheme === 'http' && $port === 80) || ($scheme === 'https' && $port === 443))) {
+            $authority .= ':'.$port;
         }
 
-        // [2] Sort by the encoded key.
-        ksort($normalized);
-
-        return $normalized;
+        return $scheme.'://'.$authority.($uri->getPath() === '' ? '/' : $uri->getPath());
     }
 
-    /**
-     * Build query string from the given parameters.
-     *
-     * @param array  $parameters
-     * @param array  $initialQueryParameters
-     * @param string $previousKey
-     *
-     * @return string
-     */
-    public function buildQueryString(array $parameters, array $initialQueryParameters = [], $previousKey = null)
+    public function buildParametersComponent(array $parameters): string
     {
-        $queryParameters = $initialQueryParameters;
+        return $this->buildQueryString($this->normalizeParameters($parameters));
+    }
 
-        foreach ($parameters as $key => $value) {
-            if (null !== $previousKey) {
-                $key = "{$previousKey}[{$key}]";
-            }
+    /** @return list<array{0: string, 1: string}> */
+    public function normalizeParameters(array $parameters): array
+    {
+        return ParameterList::fromArray($parameters)->normalizedPairs();
+    }
 
-            if (is_array($value)) {
-                $queryParameters = $this->buildQueryString($value, $queryParameters, $key);
-            } else {
-                $queryParameters[] = "{$key}={$value}";
-            }
-        }
+    public function buildQueryString(array $parameters): string
+    {
+        $pairs = ParameterList::fromArray($parameters)->pairs();
 
-        return null !== $previousKey ? $queryParameters : implode('&', $queryParameters);
+        return implode('&', array_map(static fn (array $pair): string => $pair[0].'='.$pair[1], $pairs));
     }
 }

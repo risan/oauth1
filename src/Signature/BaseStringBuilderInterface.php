@@ -1,57 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Signature;
+
+use Psr\Http\Message\UriInterface;
+use Risan\OAuth1\Request\UriParserInterface;
 
 interface BaseStringBuilderInterface
 {
     /**
      * Get the UriParserInterface instance.
-     *
-     * @return \Risan\OAuth1\Request\UriParserInterface
      */
-    public function getUriParser();
+    public function getUriParser(): UriParserInterface;
 
     /**
      * Build the signature base string.
      *
-     * @param string                                $httpMethod
-     * @param \Psr\Http\Message\UriInterface|string $uri
-     * @param array                                 $parameters
      *
      * @see https://tools.ietf.org/html/rfc5849#section-3.4.1
-     *
-     * @return string
      */
-    public function build($httpMethod, $uri, array $parameters = []);
+    public function build(string $httpMethod, UriInterface|string $uri, array $parameters = []): string;
 
     /**
      * Build the HTTP method component for base string.
-     *
-     * @param string $httpMethod
-     *
-     * @return string
      */
-    public function buildMethodComponent($httpMethod);
+    public function buildMethodComponent(string $httpMethod): string;
 
     /**
      * Build the URI component for base string.
      *
-     * @param \Psr\Http\Message\UriInterface|string $uri
      *
      * @see https://tools.ietf.org/html/rfc5849#section-3.4.1.2
-     *
-     * @return string
      */
-    public function buildUriComponent($uri);
+    public function buildUriComponent(UriInterface|string $uri): string;
 
     /**
      * Build the parameters component for base string.
      *
-     * @param array $parameters
      *
      * @see https://tools.ietf.org/html/rfc5849#section-3.4.1.3
-     *
-     * @return string
      */
-    public function buildParametersComponent(array $parameters);
+    public function buildParametersComponent(array $parameters): string;
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Credentials;
 
 use Psr\Http\Message\ResponseInterface;
@@ -9,7 +11,7 @@ class CredentialsFactory implements CredentialsFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createTemporaryCredentialsFromResponse(ResponseInterface $response)
+    public function createTemporaryCredentialsFromResponse(ResponseInterface $response): TemporaryCredentials
     {
         $parameters = $this->getParametersFromResponse($response);
 
@@ -19,11 +21,11 @@ class CredentialsFactory implements CredentialsFactoryInterface
             'oauth_callback_confirmed',
         ]);
 
-        if (null !== $missingParameterKey) {
+        if ($missingParameterKey !== null) {
             throw new CredentialsException("Unable to parse temporary credentials response. Missing parameter: {$missingParameterKey}.");
         }
 
-        if ('true' !== $parameters['oauth_callback_confirmed']) {
+        if ($parameters['oauth_callback_confirmed'] !== 'true') {
             throw new CredentialsException('Unable to parse temporary credentials response. Callback URI is not valid.');
         }
 
@@ -33,7 +35,7 @@ class CredentialsFactory implements CredentialsFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createTokenCredentialsFromResponse(ResponseInterface $response)
+    public function createTokenCredentialsFromResponse(ResponseInterface $response): TokenCredentials
     {
         $parameters = $this->getParametersFromResponse($response);
 
@@ -42,7 +44,7 @@ class CredentialsFactory implements CredentialsFactoryInterface
             'oauth_token_secret',
         ]);
 
-        if (null !== $missingParameterKey) {
+        if ($missingParameterKey !== null) {
             throw new CredentialsException("Unable to parse token credentials response. Missing parameter: {$missingParameterKey}.");
         }
 
@@ -51,12 +53,8 @@ class CredentialsFactory implements CredentialsFactoryInterface
 
     /**
      * Get parameters from response.
-     *
-     * @param \Psr\Http\Message\ResponseInterface $response
-     *
-     * @return array
      */
-    public function getParametersFromResponse(ResponseInterface $response)
+    public function getParametersFromResponse(ResponseInterface $response): array
     {
         $contents = $response->getBody()->getContents();
 
@@ -69,18 +67,15 @@ class CredentialsFactory implements CredentialsFactoryInterface
 
     /**
      * Get missing parameter's key.
-     *
-     * @param array $parameters
-     * @param array $requiredKeys
-     *
-     * @return string|null
      */
-    public function getMissingParameterKey(array $parameters, array $requiredKeys = [])
+    public function getMissingParameterKey(array $parameters, array $requiredKeys = []): ?string
     {
         foreach ($requiredKeys as $key) {
-            if (! isset($parameters[$key])) {
+            if (! isset($parameters[$key]) || ! is_string($parameters[$key]) || $parameters[$key] === '') {
                 return $key;
             }
         }
+
+        return null;
     }
 }

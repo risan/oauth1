@@ -1,33 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Config;
 
+use Psr\Http\Message\UriInterface;
 use Risan\OAuth1\Credentials\ClientCredentials;
 
 class Config implements ConfigInterface
 {
     /**
      * The ClientCredentials instance.
-     *
-     * @var \Risan\OAuth1\Credentials\ClientCredentials
      */
-    protected $clientCredentials;
+    protected ClientCredentials $clientCredentials;
 
     /**
      * The UriConfigInterface instance.
-     *
-     * @var \Risan\OAuth1\Config\UriConfigInterface
      */
-    protected $uri;
+    protected UriConfigInterface $uri;
 
     /**
      * Create new instance of Config class.
-     *
-     * @param \Risan\OAuth1\Credentials\ClientCredentials $clientCredentials
-     * @param \Risan\OAuth1\Config\UriConfigInterface     $uri
      */
-    public function __construct(ClientCredentials $clientCredentials, UriConfigInterface $uri)
-    {
+    public function __construct(
+        ClientCredentials $clientCredentials,
+        UriConfigInterface $uri,
+        protected string $temporaryCredentialsMethod = 'POST',
+        protected string $tokenCredentialsMethod = 'POST',
+    ) {
         $this->clientCredentials = $clientCredentials;
         $this->uri = $uri;
     }
@@ -35,7 +35,7 @@ class Config implements ConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getClientCredentials()
+    public function getClientCredentials(): ClientCredentials
     {
         return $this->clientCredentials;
     }
@@ -43,7 +43,7 @@ class Config implements ConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getClientCredentialsIdentifier()
+    public function getClientCredentialsIdentifier(): string
     {
         return $this->getClientCredentials()->getIdentifier();
     }
@@ -51,7 +51,7 @@ class Config implements ConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getClientCredentialsSecret()
+    public function getClientCredentialsSecret(): string
     {
         return $this->getClientCredentials()->getSecret();
     }
@@ -59,7 +59,7 @@ class Config implements ConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getUri()
+    public function getUri(): UriConfigInterface
     {
         return $this->uri;
     }
@@ -67,7 +67,7 @@ class Config implements ConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getTemporaryCredentialsUri()
+    public function getTemporaryCredentialsUri(): UriInterface
     {
         return $this->uri->forTemporaryCredentials();
     }
@@ -75,7 +75,7 @@ class Config implements ConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getAuthorizationUri()
+    public function getAuthorizationUri(): UriInterface
     {
         return $this->uri->forAuthorization();
     }
@@ -83,15 +83,25 @@ class Config implements ConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getTokenCredentialsUri()
+    public function getTokenCredentialsUri(): UriInterface
     {
         return $this->uri->forTokenCredentials();
+    }
+
+    public function getTemporaryCredentialsMethod(): string
+    {
+        return $this->temporaryCredentialsMethod;
+    }
+
+    public function getTokenCredentialsMethod(): string
+    {
+        return $this->tokenCredentialsMethod;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getCallbackUri()
+    public function getCallbackUri(): UriInterface
     {
         return $this->uri->callback();
     }
@@ -99,7 +109,7 @@ class Config implements ConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function hasCallbackUri()
+    public function hasCallbackUri(): bool
     {
         return $this->uri->hasCallback();
     }
@@ -107,7 +117,7 @@ class Config implements ConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function buildUri($uri)
+    public function buildUri(UriInterface|string $uri): UriInterface
     {
         return $this->uri->build($uri);
     }

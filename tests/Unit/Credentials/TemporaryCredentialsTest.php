@@ -1,41 +1,44 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Test\Unit\Credentials;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\Credentials\CredentialsInterface;
-use Risan\OAuth1\Credentials\TemporaryCredentials;
 use Risan\OAuth1\Credentials\ServerIssuedCredentials;
+use Risan\OAuth1\Credentials\TemporaryCredentials;
 
 class TemporaryCredentialsTest extends TestCase
 {
     private $temporaryCredentials;
 
-    function setUp()
+    protected function setUp(): void
     {
         $this->temporaryCredentials = new TemporaryCredentials('foo', 'bar');
     }
 
-    /** @test */
-    function it_implements_credentials_interface()
+    #[Test]
+    public function it_implements_credentials_interface()
     {
         $this->assertInstanceOf(CredentialsInterface::class, $this->temporaryCredentials);
     }
 
-    /** @test */
-    function it_must_be_a_subclass_of_server_issued_credentials_class()
+    #[Test]
+    public function it_must_be_a_subclass_of_server_issued_credentials_class()
     {
         $this->assertInstanceOf(ServerIssuedCredentials::class, $this->temporaryCredentials);
     }
 
-    /** @test */
-    function it_can_get_identifier()
+    #[Test]
+    public function it_can_get_identifier()
     {
         $this->assertEquals('foo', $this->temporaryCredentials->getIdentifier());
     }
 
-    /** @test */
-    function it_can_get_secret()
+    #[Test]
+    public function it_can_get_secret()
     {
         $this->assertEquals('bar', $this->temporaryCredentials->getSecret());
     }

@@ -1,145 +1,112 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1;
 
-use Risan\OAuth1\Credentials\TokenCredentials;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
+use Risan\OAuth1\Config\ConfigInterface;
+use Risan\OAuth1\Credentials\CredentialsException;
+use Risan\OAuth1\Credentials\CredentialsFactoryInterface;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
+use Risan\OAuth1\Credentials\TokenCredentials;
+use Risan\OAuth1\Request\RequestFactoryInterface;
 
 interface OAuth1Interface
 {
     /**
      * Get the HttpClientInterface instance.
-     *
-     * @return \Risan\OAuth1\HttpClientInterface
      */
-    public function getHttpClient();
+    public function getHttpClient(): HttpClientInterface;
 
     /**
      * Get the RequestFactoryInterface instance.
-     *
-     * @return \Risan\OAuth1\Request\RequestFactoryInterface
      */
-    public function getRequestFactory();
+    public function getRequestFactory(): RequestFactoryInterface;
 
     /**
      * Get the CredentialsFactoryInterface instance.
-     *
-     * @return \Risan\OAuth1\Credentials\CredentialsFactoryInterface
      */
-    public function getCredentialsFactory();
+    public function getCredentialsFactory(): CredentialsFactoryInterface;
 
     /**
      * Get the ConfigInterface instance.
-     *
-     * @return \Risan\OAuth1\Config\ConfigInterface
      */
-    public function getConfig();
+    public function getConfig(): ConfigInterface;
 
     /**
      * Get TokenCredentials instance.
-     *
-     * @return \Risan\OAuth1\Credentials\TokenCredentials|null
      */
-    public function getTokenCredentials();
+    public function getTokenCredentials(): ?TokenCredentials;
 
     /**
      * Set the granted token credentials.
      *
-     * @param \Risan\OAuth1\Credentials\TokenCredentials $tokenCredentials
      *
      * @return $this
      */
-    public function setTokenCredentials(TokenCredentials $tokenCredentials);
+    public function setTokenCredentials(TokenCredentials $tokenCredentials): static;
 
     /**
      * Send request for obtaining temporary credentials.
-     *
-     * @return \Risan\OAuth1\Credentials\TemporaryCredentials
      */
-    public function requestTemporaryCredentials();
+    public function requestTemporaryCredentials(): TemporaryCredentials;
 
     /**
      * Build the authorization URI.
-     *
-     * @param \Risan\OAuth1\Credentials\TemporaryCredentials $temporaryCredentials
-     *
-     * @return string
      */
-    public function buildAuthorizationUri(TemporaryCredentials $temporaryCredentials);
+    public function buildAuthorizationUri(TemporaryCredentials $temporaryCredentials): string;
 
     /**
      * Send request for obtaining token credentials.
      *
-     * @param \Risan\OAuth1\Credentials\TemporaryCredentials $temporaryCredentials
-     * @param string                                         $temporaryIdentifier
-     * @param string                                         $verificationCode
-     *
-     * @return \Risan\OAuth1\Credentials\TokenCredentials
      *
      * @throws \InvalidArgumentException
      */
-    public function requestTokenCredentials(TemporaryCredentials $temporaryCredentials, $temporaryIdentifier, $verificationCode);
+    public function requestTokenCredentials(TemporaryCredentials $temporaryCredentials, string $temporaryIdentifier, string $verificationCode): TokenCredentials;
 
     /**
      * Send HTTP GET request for accessing protected resource.
      *
-     * @param string $uri
-     * @param array  $options
-     *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @param  string  $uri
      */
-    public function get($uri, array $options = []);
+    public function get(UriInterface|string $uri, array $options = []): ResponseInterface;
 
     /**
      * Send HTTP POST request for accessing protected resource.
      *
-     * @param string $uri
-     * @param array  $options
-     *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @param  string  $uri
      */
-    public function post($uri, array $options = []);
+    public function post(UriInterface|string $uri, array $options = []): ResponseInterface;
 
     /**
      * Send HTTP PUT request for accessing protected resource.
      *
-     * @param string $uri
-     * @param array  $options
-     *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @param  string  $uri
      */
-    public function put($uri, array $options = []);
+    public function put(UriInterface|string $uri, array $options = []): ResponseInterface;
 
     /**
      * Send HTTP PATCH request for accessing protected resource.
      *
-     * @param string $uri
-     * @param array  $options
-     *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @param  string  $uri
      */
-    public function patch($uri, array $options = []);
+    public function patch(UriInterface|string $uri, array $options = []): ResponseInterface;
 
     /**
      * Send HTTP DELETE request for accessing protected resource.
      *
-     * @param string $uri
-     * @param array  $options
-     *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @param  string  $uri
      */
-    public function delete($uri, array $options = []);
+    public function delete(UriInterface|string $uri, array $options = []): ResponseInterface;
 
     /**
      * Send request for accessing protected resource.
      *
-     * @param string $method
-     * @param string $uri
-     * @param array  $options
+     * @param  string  $uri
      *
-     * @return \Psr\Http\Message\ResponseInterface
-     *
-     * @throws \Risan\OAuth1\Credentials\CredentialsException
+     * @throws CredentialsException
      */
-    public function request($method, $uri, array $options = []);
+    public function request(string $method, UriInterface|string $uri, array $options = []): ResponseInterface;
 }

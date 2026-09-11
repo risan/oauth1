@@ -1,24 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Signature;
+
+use Psr\Http\Message\UriInterface;
 
 interface BaseStringSignerInterface
 {
     /**
      * Build the signature base string.
-     *
-     * @param \Psr\Http\Message\UriInterface|string $uri
-     * @param array                                 $parameters
-     * @param string                                $httpMethod
-     *
-     * @return string
      */
-    public function buildBaseString($uri, array $parameters = [], $httpMethod = 'POST');
+    public function buildBaseString(UriInterface|string $uri, array $parameters = [], string $httpMethod = 'POST'): string;
 
     /**
      * Get the BaseStringBuilder instance.
-     *
-     * @return \Risan\OAuth1\Signature\BaseStringBuilderInterface
      */
-    public function getBaseStringBuilder();
+    public function getBaseStringBuilder(): BaseStringBuilderInterface;
 }

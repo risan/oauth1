@@ -1,31 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Signature;
+
+use Psr\Http\Message\UriInterface;
 
 interface SignerInterface
 {
     /**
      * Get signer method name.
-     *
-     * @return string
      */
-    public function getMethod();
+    public function getMethod(): string;
 
     /**
      * Check if the signer is key based.
-     *
-     * @return bool
      */
-    public function isKeyBased();
+    public function isKeyBased(): bool;
 
     /**
      * Create a signature for given request parameters.
      *
-     * @param string $uri
-     * @param array  $parameters
-     * @param string $httpMethod
-     *
-     * @return string
+     * @param  string  $uri
      */
-    public function sign($uri, array $parameters = [], $httpMethod = 'POST');
+    public function sign(UriInterface|string $uri, array $parameters = [], string $httpMethod = 'POST'): string;
 }

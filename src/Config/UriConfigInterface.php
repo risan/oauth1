@@ -1,73 +1,58 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Config;
+
+use Psr\Http\Message\UriInterface;
+use Risan\OAuth1\Request\UriParserInterface;
 
 interface UriConfigInterface
 {
     /**
      * Get the UriParserInterface implementation.
-     *
-     * @return \Risan\OAuth1\Request\UriParserInterface
      */
-    public function getParser();
+    public function getParser(): UriParserInterface;
 
     /**
      * Get the base URI.
-     *
-     * @return \Psr\Http\Message\UriInterface|null
      */
-    public function base();
+    public function base(): ?UriInterface;
 
     /**
      * Check if base URI is set.
-     *
-     * @return bool
      */
-    public function hasBase();
+    public function hasBase(): bool;
 
     /**
      * Get the URI for obtaining temporary credentials. Also known as request
      * token URI.
-     *
-     * @return \Psr\Http\Message\UriInterface
      */
-    public function forTemporaryCredentials();
+    public function forTemporaryCredentials(): UriInterface;
 
     /**
      * Get the URI for asking user to authorize the request.
-     *
-     * @return \Psr\Http\Message\UriInterface
      */
-    public function forAuthorization();
+    public function forAuthorization(): UriInterface;
 
     /**
      * Get the URI for obtaining token credentials. Also known as access token
      * URI.
-     *
-     * @return \Psr\Http\Message\UriInterface
      */
-    public function forTokenCredentials();
+    public function forTokenCredentials(): UriInterface;
 
     /**
      * Get the callback URI.
-     *
-     * @return \Psr\Http\Message\UriInterface|null
      */
-    public function callback();
+    public function callback(): UriInterface;
 
     /**
      * Check if callback URI is set.
-     *
-     * @return bool
      */
-    public function hasCallback();
+    public function hasCallback(): bool;
 
     /**
      * Parse and build the given URI.
-     *
-     * @param \Psr\Http\Message\UriInterface|string $uri
-     *
-     * @return \Psr\Http\Message\UriInterface
      */
-    public function build($uri);
+    public function build(UriInterface|string $uri): UriInterface;
 }

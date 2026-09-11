@@ -1,23 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Request;
 
-use Risan\OAuth1\Credentials\TokenCredentials;
+use Psr\Http\Message\UriInterface;
+use Risan\OAuth1\Config\ConfigInterface;
 use Risan\OAuth1\Credentials\TemporaryCredentials;
+use Risan\OAuth1\Credentials\TokenCredentials;
 
 class AuthorizationHeader implements AuthorizationHeaderInterface
 {
     /**
      * The ProtocolParameterInterface instance.
-     *
-     * @var \Risan\OAuth1\Request\ProtocolParameterInterface
      */
-    protected $protocolParameter;
+    protected ProtocolParameterInterface $protocolParameter;
 
     /**
      * Create a new instance of AuthorizationHeader class.
-     *
-     * @param \Risan\OAuth1\Request\ProtocolParameterInterface $protocolParameter
      */
     public function __construct(ProtocolParameterInterface $protocolParameter)
     {
@@ -27,7 +27,7 @@ class AuthorizationHeader implements AuthorizationHeaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getProtocolParameter()
+    public function getProtocolParameter(): ProtocolParameterInterface
     {
         return $this->protocolParameter;
     }
@@ -35,7 +35,7 @@ class AuthorizationHeader implements AuthorizationHeaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getConfig()
+    public function getConfig(): ConfigInterface
     {
         return $this->protocolParameter->getConfig();
     }
@@ -43,7 +43,7 @@ class AuthorizationHeader implements AuthorizationHeaderInterface
     /**
      * {@inheritdoc}
      */
-    public function forTemporaryCredentials()
+    public function forTemporaryCredentials(): string
     {
         return $this->normalizeProtocolParameters(
             $this->protocolParameter->forTemporaryCredentials()
@@ -53,7 +53,7 @@ class AuthorizationHeader implements AuthorizationHeaderInterface
     /**
      * {@inheritdoc}
      */
-    public function forTokenCredentials(TemporaryCredentials $temporaryCredentials, $verificationCode)
+    public function forTokenCredentials(TemporaryCredentials $temporaryCredentials, string $verificationCode): string
     {
         return $this->normalizeProtocolParameters(
             $this->protocolParameter->forTokenCredentials($temporaryCredentials, $verificationCode)
@@ -63,7 +63,7 @@ class AuthorizationHeader implements AuthorizationHeaderInterface
     /**
      * {@inheritdoc}
      */
-    public function forProtectedResource(TokenCredentials $tokenCredentials, $httpMethod, $uri, array $requestOptions = [])
+    public function forProtectedResource(TokenCredentials $tokenCredentials, string $httpMethod, UriInterface|string $uri, array $requestOptions = []): string
     {
         return $this->normalizeProtocolParameters(
             $this->protocolParameter->forProtectedResource($tokenCredentials, $httpMethod, $uri, $requestOptions)
@@ -73,12 +73,12 @@ class AuthorizationHeader implements AuthorizationHeaderInterface
     /**
      * {@inheritdoc}
      */
-    public function normalizeProtocolParameters(array $parameters)
+    public function normalizeProtocolParameters(array $parameters): string
     {
         array_walk($parameters, function (&$value, $key) {
-            $value = rawurlencode($key) . '="' . rawurlencode($value) . '"';
+            $value = rawurlencode((string) $key).'="'.rawurlencode((string) $value).'"';
         });
 
-        return 'OAuth ' . implode(', ', $parameters);
+        return 'OAuth '.implode(', ', $parameters);
     }
 }

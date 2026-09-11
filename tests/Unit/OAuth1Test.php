@@ -1,36 +1,48 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Test\Unit;
 
-use Risan\OAuth1\OAuth1;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Risan\OAuth1\OAuth1Interface;
-use Psr\Http\Message\UriInterface;
-use Risan\OAuth1\HttpClientInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
 use Risan\OAuth1\Config\ConfigInterface;
-use Risan\OAuth1\Request\RequestInterface;
-use Risan\OAuth1\Credentials\TokenCredentials;
-use Risan\OAuth1\Request\RequestFactoryInterface;
 use Risan\OAuth1\Credentials\CredentialsException;
-use Risan\OAuth1\Credentials\TemporaryCredentials;
 use Risan\OAuth1\Credentials\CredentialsFactoryInterface;
+use Risan\OAuth1\Credentials\TemporaryCredentials;
+use Risan\OAuth1\Credentials\TokenCredentials;
+use Risan\OAuth1\HttpClientInterface;
+use Risan\OAuth1\OAuth1;
+use Risan\OAuth1\OAuth1Interface;
+use Risan\OAuth1\Request\RequestFactoryInterface;
+use Risan\OAuth1\Request\RequestInterface;
 
 class OAuth1Test extends TestCase
 {
     private $httpClientStub;
+
     private $requestFactoryStub;
+
     private $configStub;
+
     private $credentialsFactoryStub;
+
     private $temporaryCredentialsStub;
+
     private $tokenCredentialsStub;
+
     private $oauth1;
+
     private $requestStub;
+
     private $responseStub;
+
     private $psrUriStub;
 
-    function setUp()
+    protected function setUp(): void
     {
         $this->httpClientStub = $this->createMock(HttpClientInterface::class);
         $this->requestFactoryStub = $this->createMock(RequestFactoryInterface::class);
@@ -44,32 +56,32 @@ class OAuth1Test extends TestCase
         $this->oauth1 = new OAuth1($this->httpClientStub, $this->requestFactoryStub, $this->credentialsFactoryStub);
     }
 
-    /** @test */
-    function it_implements_oauth1_interface()
+    #[Test]
+    public function it_implements_oauth1_interface()
     {
         $this->assertInstanceOf(OAuth1Interface::class, $this->oauth1);
     }
 
-    /** @test */
-    function it_can_get_http_client()
+    #[Test]
+    public function it_can_get_http_client()
     {
         $this->assertSame($this->httpClientStub, $this->oauth1->getHttpClient());
     }
 
-    /** @test */
-    function it_can_get_request_factory()
+    #[Test]
+    public function it_can_get_request_factory()
     {
         $this->assertSame($this->requestFactoryStub, $this->oauth1->getRequestFactory());
     }
 
-    /** @test */
-    function it_can_get_credentials_factory()
+    #[Test]
+    public function it_can_get_credentials_factory()
     {
         $this->assertSame($this->credentialsFactoryStub, $this->oauth1->getCredentialsFactory());
     }
 
-    /** @test */
-    function it_can_get_config()
+    #[Test]
+    public function it_can_get_config()
     {
         $this->requestFactoryStub
             ->expects($this->once())
@@ -79,8 +91,8 @@ class OAuth1Test extends TestCase
         $this->assertSame($this->configStub, $this->oauth1->getConfig());
     }
 
-    /** @test */
-    function it_can_get_and_set_token_credentials()
+    #[Test]
+    public function it_can_get_and_set_token_credentials()
     {
         $this->assertNull($this->oauth1->getTokenCredentials());
 
@@ -89,8 +101,8 @@ class OAuth1Test extends TestCase
         $this->assertSame($this->tokenCredentialsStub, $this->oauth1->getTokenCredentials());
     }
 
-    /** @test */
-    function it_can_request_for_temporary_credentials()
+    #[Test]
+    public function it_can_request_for_temporary_credentials()
     {
         $this->requestFactoryStub
             ->expects($this->once())
@@ -112,8 +124,8 @@ class OAuth1Test extends TestCase
         $this->assertSame($this->temporaryCredentialsStub, $this->oauth1->requestTemporaryCredentials());
     }
 
-    /** @test */
-    function it_can_build_authorization_uri()
+    #[Test]
+    public function it_can_build_authorization_uri()
     {
         $this->requestFactoryStub
             ->expects($this->once())
@@ -132,8 +144,8 @@ class OAuth1Test extends TestCase
         );
     }
 
-    /** @test */
-    function it_throws_exception_when_requesting_token_credentials_but_temporary_credentials_identifier_does_not_match()
+    #[Test]
+    public function it_throws_exception_when_requesting_token_credentials_but_temporary_credentials_identifier_does_not_match()
     {
         $this->temporaryCredentialsStub
             ->expects($this->once())
@@ -145,8 +157,8 @@ class OAuth1Test extends TestCase
         $this->oauth1->requestTokenCredentials($this->temporaryCredentialsStub, 'temporary_id', 'verification_code');
     }
 
-    /** @test */
-    function it_can_request_for_token_credentials()
+    #[Test]
+    public function it_can_request_for_token_credentials()
     {
         $this->temporaryCredentialsStub
             ->expects($this->once())
@@ -177,15 +189,15 @@ class OAuth1Test extends TestCase
         );
     }
 
-    /** @test */
-    function it_throws_exception_if_token_credential_is_not_set()
+    #[Test]
+    public function it_throws_exception_if_token_credential_is_not_set()
     {
         $this->expectException(CredentialsException::class);
         $this->oauth1->request('GET', 'http://example.com', ['foo' => 'bar']);
     }
 
-    /** @test */
-    function it_can_request_for_protected_resource()
+    #[Test]
+    public function it_can_request_for_protected_resource()
     {
         $this->oauth1->setTokenCredentials($this->tokenCredentialsStub);
 
@@ -207,8 +219,8 @@ class OAuth1Test extends TestCase
         );
     }
 
-    /** @test */
-    function it_can_send_get_request()
+    #[Test]
+    public function it_can_send_get_request()
     {
         $oauth1 = $this->getStubWithRequestMethod();
 
@@ -217,15 +229,15 @@ class OAuth1Test extends TestCase
             ->method('request')
             ->with('GET', 'http://example.com', ['foo' => 'bar'])
             ->willReturn($this->responseStub);
-        
+
         $this->assertSame(
             $this->responseStub,
             $oauth1->get('http://example.com', ['foo' => 'bar'])
         );
     }
 
-    /** @test */
-    function it_can_send_post_request()
+    #[Test]
+    public function it_can_send_post_request()
     {
         $oauth1 = $this->getStubWithRequestMethod();
 
@@ -234,15 +246,15 @@ class OAuth1Test extends TestCase
             ->method('request')
             ->with('POST', 'http://example.com', ['foo' => 'bar'])
             ->willReturn($this->responseStub);
-        
+
         $this->assertSame(
             $this->responseStub,
             $oauth1->post('http://example.com', ['foo' => 'bar'])
         );
     }
 
-    /** @test */
-    function it_can_send_put_request()
+    #[Test]
+    public function it_can_send_put_request()
     {
         $oauth1 = $this->getStubWithRequestMethod();
 
@@ -251,15 +263,15 @@ class OAuth1Test extends TestCase
             ->method('request')
             ->with('PUT', 'http://example.com', ['foo' => 'bar'])
             ->willReturn($this->responseStub);
-        
+
         $this->assertSame(
             $this->responseStub,
             $oauth1->put('http://example.com', ['foo' => 'bar'])
         );
     }
 
-    /** @test */
-    function it_can_send_patch_request()
+    #[Test]
+    public function it_can_send_patch_request()
     {
         $oauth1 = $this->getStubWithRequestMethod();
 
@@ -268,15 +280,15 @@ class OAuth1Test extends TestCase
             ->method('request')
             ->with('PATCH', 'http://example.com', ['foo' => 'bar'])
             ->willReturn($this->responseStub);
-        
+
         $this->assertSame(
             $this->responseStub,
             $oauth1->patch('http://example.com', ['foo' => 'bar'])
         );
     }
 
-    /** @test */
-    function it_can_send_delete_request()
+    #[Test]
+    public function it_can_send_delete_request()
     {
         $oauth1 = $this->getStubWithRequestMethod();
 
@@ -285,21 +297,18 @@ class OAuth1Test extends TestCase
             ->method('request')
             ->with('DELETE', 'http://example.com', ['foo' => 'bar'])
             ->willReturn($this->responseStub);
-        
+
         $this->assertSame(
             $this->responseStub,
             $oauth1->delete('http://example.com', ['foo' => 'bar'])
         );
     }
 
-    function getStubWithRequestMethod()
+    private function getStubWithRequestMethod()
     {
         return $this->getMockBuilder(OAuth1::class)
             ->setConstructorArgs([$this->httpClientStub, $this->requestFactoryStub, $this->credentialsFactoryStub])
-            ->setMethods(['request'])
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes()
+            ->onlyMethods(['request'])
             ->getMock();
     }
 }

@@ -1,50 +1,43 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1;
 
 use InvalidArgumentException;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
+use Risan\OAuth1\Config\ConfigInterface;
+use Risan\OAuth1\Credentials\CredentialsException;
+use Risan\OAuth1\Credentials\CredentialsFactoryInterface;
+use Risan\OAuth1\Credentials\TemporaryCredentials;
 use Risan\OAuth1\Credentials\TokenCredentials;
 use Risan\OAuth1\Request\RequestFactoryInterface;
-use Risan\OAuth1\Credentials\CredentialsException;
-use Risan\OAuth1\Credentials\TemporaryCredentials;
-use Risan\OAuth1\Credentials\CredentialsFactoryInterface;
 
 class OAuth1 implements OAuth1Interface
 {
     /**
      * The HttpClientInterface instance.
-     *
-     * @var \Risan\OAuth1\HttpClientInterface
      */
-    protected $httpClient;
+    protected HttpClientInterface $httpClient;
 
     /**
      * The RequestFactoryInterface instance.
-     *
-     * @var \Risan\OAuth1\Request\RequestFactoryInterface
      */
-    protected $requestFactory;
+    protected RequestFactoryInterface $requestFactory;
 
     /**
      * The CredentialsFactoryInterface instance.
-     *
-     * @var \Risan\OAuth1\Credentials\CredentialsFactoryInterface
      */
-    protected $credentialsFactory;
+    protected CredentialsFactoryInterface $credentialsFactory;
 
     /**
      * The TokenCredentials instance.
-     *
-     * @var \Risan\OAuth1\Credentials\TokenCredentials
      */
-    protected $tokenCredentials;
+    protected ?TokenCredentials $tokenCredentials = null;
 
     /**
      * Create a new OAuth1 instance.
-     *
-     * @param \Risan\OAuth1\HttpClientInterface                     $httpClient
-     * @param \Risan\OAuth1\Request\RequestFactoryInterface         $requestFactory
-     * @param \Risan\OAuth1\Credentials\CredentialsFactoryInterface $credentialsFactory
      */
     public function __construct(HttpClientInterface $httpClient, RequestFactoryInterface $requestFactory, CredentialsFactoryInterface $credentialsFactory)
     {
@@ -56,7 +49,7 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritdoc}
      */
-    public function getHttpClient()
+    public function getHttpClient(): HttpClientInterface
     {
         return $this->httpClient;
     }
@@ -64,7 +57,7 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritdoc}
      */
-    public function getRequestFactory()
+    public function getRequestFactory(): RequestFactoryInterface
     {
         return $this->requestFactory;
     }
@@ -72,7 +65,7 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritdoc}
      */
-    public function getCredentialsFactory()
+    public function getCredentialsFactory(): CredentialsFactoryInterface
     {
         return $this->credentialsFactory;
     }
@@ -80,7 +73,7 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritdoc}
      */
-    public function getConfig()
+    public function getConfig(): ConfigInterface
     {
         return $this->requestFactory->getConfig();
     }
@@ -88,7 +81,7 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritdoc}
      */
-    public function getTokenCredentials()
+    public function getTokenCredentials(): ?TokenCredentials
     {
         return $this->tokenCredentials;
     }
@@ -96,7 +89,7 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritdoc}
      */
-    public function setTokenCredentials(TokenCredentials $tokenCredentials)
+    public function setTokenCredentials(TokenCredentials $tokenCredentials): static
     {
         $this->tokenCredentials = $tokenCredentials;
 
@@ -106,7 +99,7 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritdoc}
      */
-    public function requestTemporaryCredentials()
+    public function requestTemporaryCredentials(): TemporaryCredentials
     {
         $response = $this->httpClient->send($this->requestFactory->createForTemporaryCredentials());
 
@@ -116,7 +109,7 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritdoc}
      */
-    public function buildAuthorizationUri(TemporaryCredentials $temporaryCredentials)
+    public function buildAuthorizationUri(TemporaryCredentials $temporaryCredentials): string
     {
         return (string) $this->requestFactory->buildAuthorizationUri($temporaryCredentials);
     }
@@ -124,7 +117,7 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritdoc}
      */
-    public function requestTokenCredentials(TemporaryCredentials $temporaryCredentials, $temporaryIdentifier, $verificationCode)
+    public function requestTokenCredentials(TemporaryCredentials $temporaryCredentials, string $temporaryIdentifier, string $verificationCode): TokenCredentials
     {
         if ($temporaryCredentials->getIdentifier() !== $temporaryIdentifier) {
             throw new InvalidArgumentException('The given temporary credentials identifier does not match the temporary credentials.');
@@ -140,7 +133,7 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritdoc}
      */
-    public function get($uri, array $options = [])
+    public function get(UriInterface|string $uri, array $options = []): ResponseInterface
     {
         return $this->request('GET', $uri, $options);
     }
@@ -148,7 +141,7 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritdoc}
      */
-    public function post($uri, array $options = [])
+    public function post(UriInterface|string $uri, array $options = []): ResponseInterface
     {
         return $this->request('POST', $uri, $options);
     }
@@ -156,7 +149,7 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritdoc}
      */
-    public function put($uri, array $options = [])
+    public function put(UriInterface|string $uri, array $options = []): ResponseInterface
     {
         return $this->request('PUT', $uri, $options);
     }
@@ -164,7 +157,7 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritdoc}
      */
-    public function patch($uri, array $options = [])
+    public function patch(UriInterface|string $uri, array $options = []): ResponseInterface
     {
         return $this->request('PATCH', $uri, $options);
     }
@@ -172,7 +165,7 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritdoc}
      */
-    public function delete($uri, array $options = [])
+    public function delete(UriInterface|string $uri, array $options = []): ResponseInterface
     {
         return $this->request('DELETE', $uri, $options);
     }
@@ -180,9 +173,9 @@ class OAuth1 implements OAuth1Interface
     /**
      * {@inheritdoc}
      */
-    public function request($method, $uri, array $options = [])
+    public function request(string $method, UriInterface|string $uri, array $options = []): ResponseInterface
     {
-        if (null === $this->getTokenCredentials()) {
+        if ($this->getTokenCredentials() === null) {
             throw new CredentialsException('No token credential has been set.');
         }
 

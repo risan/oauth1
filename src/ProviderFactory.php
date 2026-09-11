@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1;
 
 use InvalidArgumentException;
@@ -15,7 +17,7 @@ class ProviderFactory
      *
      * @return \Risan\OAuth1\OAuth1Interface
      */
-    public static function create(ProviderInterface $provider, array $config)
+    public static function create(ProviderInterface $provider, array $config): OAuth1Interface
     {
         return OAuth1Factory::create(
             array_merge($provider->getUriConfig(), $config),
@@ -32,9 +34,9 @@ class ProviderFactory
     * @return \Risan\OAuth1\OAuth1Interface
     * @throws \InvalidArgumentException
     */
-    public static function __callStatic($name, array $arguments)
+    public static function __callStatic(string $name, array $arguments): OAuth1Interface
     {
-        $providerClassName = '\\Risan\\OAuth1\\Provider\\' . ucfirst($name);
+        $providerClassName = '\\Risan\\OAuth1\\Provider\\'.ucfirst($name);
 
         if (! class_exists($providerClassName)) {
             throw new InvalidArgumentException("Class {$providerClassName} is not exists.");
@@ -48,6 +50,11 @@ class ProviderFactory
             throw new InvalidArgumentException('The configuration parameter must be an array.');
         }
 
-        return static::create(new $providerClassName(), $arguments[0]);
+        $provider = new $providerClassName;
+        if (! $provider instanceof ProviderInterface) {
+            throw new InvalidArgumentException("Class {$providerClassName} must implement ProviderInterface.");
+        }
+
+        return static::create($provider, $arguments[0]);
     }
 }

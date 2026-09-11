@@ -1,38 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Request;
 
 class Request implements RequestInterface
 {
     /**
      * The request HTTP method.
-     *
-     * @var string
      */
-    protected $method;
+    protected string $method;
 
     /**
      * The request URI.
-     *
-     * @var string
      */
-    protected $uri;
+    protected string $uri;
 
     /**
      * The request options.
-     *
-     * @var array
      */
-    protected $options;
+    protected array $options;
 
     /**
      * Create a new instance of Request class.
-     *
-     * @param string $method
-     * @param string $uri
-     * @param array  $options
      */
-    public function __construct($method, $uri, $options = [])
+    public function __construct(string $method, string $uri, array $options = [])
     {
         $this->method = $method;
         $this->uri = $uri;
@@ -42,7 +34,7 @@ class Request implements RequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
@@ -50,7 +42,7 @@ class Request implements RequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getUri()
+    public function getUri(): string
     {
         return $this->uri;
     }
@@ -58,7 +50,7 @@ class Request implements RequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }

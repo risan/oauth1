@@ -1,24 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Test\Unit;
 
-use Risan\OAuth1\HttpClient;
-use GuzzleHttp\Psr7\Response;
-use PHPUnit\Framework\TestCase;
 use GuzzleHttp\Client as Guzzle;
-use Risan\OAuth1\HttpClientInterface;
+use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
+use Risan\OAuth1\HttpClient;
+use Risan\OAuth1\HttpClientInterface;
 use Risan\OAuth1\Request\RequestInterface;
 
 class HttpClientTest extends TestCase
 {
     private $guzzleStub;
+
     private $requestStub;
+
     private $responseStub;
+
     private $httpClient;
+
     private $httpClientStub;
 
-    function setUp()
+    protected function setUp(): void
     {
         $this->guzzleStub = $this->createMock(Guzzle::class);
         $this->responseStub = $this->createMock(Response::class);
@@ -27,27 +34,24 @@ class HttpClientTest extends TestCase
 
         $this->httpClientStub = $this->getMockBuilder(HttpClient::class)
             ->setConstructorArgs([$this->guzzleStub])
-            ->setMethods(['request'])
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->disallowMockingUnknownTypes()
+            ->onlyMethods(['request'])
             ->getMock();
     }
 
-    /** @test */
-    function it_implements_http_client_interface()
+    #[Test]
+    public function it_implements_http_client_interface()
     {
         $this->assertInstanceOf(HttpClientInterface::class, $this->httpClient);
     }
 
-    /** @test */
-    function it_can_get_guzzle_instance()
+    #[Test]
+    public function it_can_get_guzzle_instance()
     {
         $this->assertInstanceOf(Guzzle::class, $this->httpClient->getGuzzle());
     }
 
-    /** @test */
-    function it_can_send_request()
+    #[Test]
+    public function it_can_send_request()
     {
         $this->guzzleStub
             ->expects($this->once())
@@ -61,8 +65,8 @@ class HttpClientTest extends TestCase
         );
     }
 
-    /** @test */
-    function it_can_send_request_with_request_instance()
+    #[Test]
+    public function it_can_send_request_with_request_instance()
     {
         $this->requestStub
             ->expects($this->once())
@@ -91,8 +95,8 @@ class HttpClientTest extends TestCase
         );
     }
 
-    /** @test */
-    function it_can_send_post_request()
+    #[Test]
+    public function it_can_send_post_request()
     {
         $this->httpClientStub
             ->expects($this->once())

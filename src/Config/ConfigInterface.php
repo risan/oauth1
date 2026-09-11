@@ -1,80 +1,69 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Config;
+
+use Psr\Http\Message\UriInterface;
+use Risan\OAuth1\Credentials\ClientCredentials;
 
 interface ConfigInterface
 {
     /**
      * Get the ClientCredentials instance.
-     *
-     * @return \Risan\OAuth1\Credentials\ClientCredentials
      */
-    public function getClientCredentials();
+    public function getClientCredentials(): ClientCredentials;
 
     /**
      * Get the client credentials identifer.
-     *
-     * @return string
      */
-    public function getClientCredentialsIdentifier();
+    public function getClientCredentialsIdentifier(): string;
 
     /**
      * Get the client credentials secret.
-     *
-     * @return string
      */
-    public function getClientCredentialsSecret();
+    public function getClientCredentialsSecret(): string;
 
     /**
      * Get the UriConfigInterface instance.
-     *
-     * @return \Risan\OAuth1\Config\UriConfigInterface
      */
-    public function getUri();
+    public function getUri(): UriConfigInterface;
 
     /**
      * Get the URI for obtaining temporary credentials. Also known as request
      * token URI.
-     *
-     * @return \Psr\Http\Message\UriInterface
      */
-    public function getTemporaryCredentialsUri();
+    public function getTemporaryCredentialsUri(): UriInterface;
 
     /**
      * Get the URI for asking user to authorize the request.
-     *
-     * @return \Psr\Http\Message\UriInterface
      */
-    public function getAuthorizationUri();
+    public function getAuthorizationUri(): UriInterface;
 
     /**
      * Get the URI for obtaining token credentials. Also known as access token
      * URI.
-     *
-     * @return \Psr\Http\Message\UriInterface
      */
-    public function getTokenCredentialsUri();
+    public function getTokenCredentialsUri(): UriInterface;
+
+    /** Get the HTTP method used to obtain temporary credentials. */
+    public function getTemporaryCredentialsMethod(): string;
+
+    /** Get the HTTP method used to obtain token credentials. */
+    public function getTokenCredentialsMethod(): string;
 
     /**
      * Get the callback URI.
-     *
-     * @return \Psr\Http\Message\UriInterface|null
      */
-    public function getCallbackUri();
+    public function getCallbackUri(): UriInterface;
 
     /**
      * Check if callback URI is set.
-     *
-     * @return bool
      */
-    public function hasCallbackUri();
+    public function hasCallbackUri(): bool;
 
     /**
      * Parse and build the given URI.
-     *
-     * @param \Psr\Http\Message\UriInterface|string $uri
-     *
-     * @return \Psr\Http\Message\UriInterface
      */
-    public function buildUri($uri);
+    public function buildUri(UriInterface|string $uri): UriInterface;
 }

@@ -1,38 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1;
 
+use Psr\Http\Message\ResponseInterface;
 use Risan\OAuth1\Request\RequestInterface;
 
 interface HttpClientInterface
 {
     /**
      * Create and send HTTP request.
-     *
-     * @param string $method
-     * @param string $uri
-     * @param array  $options
-     *
-     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function request($method, $uri, array $options = []);
+    public function request(string $method, string $uri, array $options = []): ResponseInterface;
 
     /**
      * Send HTTP request.
-     *
-     * @param \Risan\OAuth1\Request\RequestInterface $request
-     *
-     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function send(RequestInterface $request);
+    public function send(RequestInterface $request): ResponseInterface;
 
     /**
      * Create and send HTTP POST request.
-     *
-     * @param string $uri
-     * @param array  $options
-     *
-     * @return Psr\Http\Message\ResponseInterface
      */
-    public function post($uri, array $options = []);
+    public function post(string $uri, array $options = []): ResponseInterface;
 }

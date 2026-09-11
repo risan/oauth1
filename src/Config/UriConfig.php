@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Config;
 
 use InvalidArgumentException;
@@ -11,52 +13,39 @@ class UriConfig implements UriConfigInterface
     /**
      * The UriParserInterface implementation.
      *
-     * @return \Risan\OAuth1\Request\UriParserInterface
+     * @return UriParserInterface
      */
-    protected $parser;
+    protected UriParserInterface $parser;
 
     /**
      * The base URI.
-     *
-     * @var \Psr\Http\Message\UriInterface|null
      */
-    protected $base;
+    protected ?UriInterface $base = null;
 
     /**
      * The URI for obtaining temporary credentials. Also known as request token
      * URI.
-     *
-     * @var \Psr\Http\Message\UriInterface
      */
-    protected $temporaryCredentials;
+    protected UriInterface $temporaryCredentials;
 
     /**
      * The URI for asking user to authorize the request.
-     *
-     * @var \Psr\Http\Message\UriInterface
      */
-    protected $authorization;
+    protected UriInterface $authorization;
 
     /**
      * The URI for obtaining token credentials. Also known as access token
      * URI.
-     *
-     * @var \Psr\Http\Message\UriInterface
      */
-    protected $tokenCredentials;
+    protected UriInterface $tokenCredentials;
 
     /**
      * The callback URI.
-     *
-     * @var \Psr\Http\Message\UriInterface|null
      */
-    protected $callback;
+    protected UriInterface $callback;
 
     /**
      * Create UriConfig instance.
-     *
-     * @param array                                    $uris
-     * @param \Risan\OAuth1\Request\UriParserInterface $parser
      */
     public function __construct(array $uris, UriParserInterface $parser)
     {
@@ -67,7 +56,7 @@ class UriConfig implements UriConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getParser()
+    public function getParser(): UriParserInterface
     {
         return $this->parser;
     }
@@ -75,11 +64,10 @@ class UriConfig implements UriConfigInterface
     /**
      * Set URIs from an array.
      *
-     * @param array $uris
      *
-     * @return \Risan\OAuth1\Config\UriConfig
+     * @return $this
      */
-    public function setFromArray(array $uris)
+    public function setFromArray(array $uris): static
     {
         $this->validateUris($uris);
 
@@ -91,9 +79,7 @@ class UriConfig implements UriConfigInterface
             $this->setBase($this->parser->toPsrUri($uris['base_uri']));
         }
 
-        if (isset($uris['callback_uri'])) {
-            $this->callback = $this->parser->toPsrUri($uris['callback_uri']);
-        }
+        $this->callback = $this->parser->toPsrUri($uris['callback_uri']);
 
         return $this;
     }
@@ -101,23 +87,33 @@ class UriConfig implements UriConfigInterface
     /**
      * Validate the given URI array.
      *
-     * @param array $uris
      *
-     * @return bool
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public function validateUris(array $uris)
+    public function validateUris(array $uris): bool
     {
         $requiredParams = [
             'temporary_credentials_uri',
             'authorization_uri',
             'token_credentials_uri',
+            'callback_uri',
         ];
 
         foreach ($requiredParams as $param) {
-            if (! isset($uris[$param])) {
+            if (! isset($uris[$param]) || (! $uris[$param] instanceof UriInterface && ! is_string($uris[$param])) || (string) $uris[$param] === '') {
                 throw new InvalidArgumentException("Missing URI configuration: {$param}.");
+            }
+        }
+
+        $callback = $this->parser->toPsrUri($uris['callback_uri']);
+        if ((string) $callback !== 'oob' && ! $this->parser->isAbsolute($callback)) {
+            throw new InvalidArgumentException('The callback URI must be absolute or the case-sensitive value "oob".');
+        }
+
+        foreach (['base_uri'] as $param) {
+            if (isset($uris[$param]) && ! $uris[$param] instanceof UriInterface && (! is_string($uris[$param]) || $uris[$param] === '')) {
+                throw new InvalidArgumentException("Invalid URI configuration: {$param}.");
             }
         }
 
@@ -127,13 +123,12 @@ class UriConfig implements UriConfigInterface
     /**
      * Set the base URI.
      *
-     * @param \Psr\Http\Message\UriInterface $uri
      *
-     * @return \Risan\OAuth1\Config\UriConfig
+     * @return $this
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public function setBase(UriInterface $uri)
+    public function setBase(UriInterface $uri): static
     {
         if (! $this->parser->isAbsolute($uri)) {
             throw new InvalidArgumentException('The base URI must be absolute.');
@@ -147,7 +142,7 @@ class UriConfig implements UriConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function base()
+    public function base(): ?UriInterface
     {
         return $this->hasBase() ? $this->base : null;
     }
@@ -155,15 +150,15 @@ class UriConfig implements UriConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function hasBase()
+    public function hasBase(): bool
     {
-        return null !== $this->base;
+        return $this->base !== null;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function forTemporaryCredentials()
+    public function forTemporaryCredentials(): UriInterface
     {
         return $this->build($this->temporaryCredentials);
     }
@@ -171,7 +166,7 @@ class UriConfig implements UriConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function forAuthorization()
+    public function forAuthorization(): UriInterface
     {
         return $this->build($this->authorization);
     }
@@ -179,7 +174,7 @@ class UriConfig implements UriConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function forTokenCredentials()
+    public function forTokenCredentials(): UriInterface
     {
         return $this->build($this->tokenCredentials);
     }
@@ -187,41 +182,46 @@ class UriConfig implements UriConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function callback()
+    public function callback(): UriInterface
     {
-        return $this->hasCallback() ? $this->build($this->callback) : null;
+        if ((string) $this->callback === 'oob') {
+            return $this->callback;
+        }
+
+        return $this->build($this->callback);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function hasCallback()
+    public function hasCallback(): bool
     {
-        return null !== $this->callback;
+        return true;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function build($uri)
+    public function build(UriInterface|string $uri): UriInterface
     {
         $uri = $this->parser->toPsrUri($uri);
 
-        if ($this->shouldBeResolvedToAbsoluteUri($uri)) {
-            $uri = $this->parser->resolve($this->base(), $uri);
+        if ($this->parser->isAbsolute($uri)) {
+            return $uri;
         }
 
-        return $this->parser->isMissingScheme($uri) ? $uri->withScheme('http') : $uri;
+        $base = $this->base();
+        if ($base === null) {
+            throw new InvalidArgumentException('A base URI is required when using a relative URI.');
+        }
+
+        return $this->parser->resolve($base, $uri);
     }
 
     /**
      * Check if the given URI should be resolved to absolute URI.
-     *
-     * @param \Psr\Http\Message\UriInterface $uri
-     *
-     * @return bool
      */
-    public function shouldBeResolvedToAbsoluteUri(UriInterface $uri)
+    public function shouldBeResolvedToAbsoluteUri(UriInterface $uri): bool
     {
         return ! $this->parser->isAbsolute($uri) && $this->hasBase();
     }

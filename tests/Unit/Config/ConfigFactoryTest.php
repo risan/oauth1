@@ -1,19 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Risan\OAuth1\Test\Unit\Config;
 
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Risan\OAuth1\Config\ConfigFactory;
-use Risan\OAuth1\Config\ConfigInterface;
 use Risan\OAuth1\Config\ConfigFactoryInterface;
+use Risan\OAuth1\Config\ConfigInterface;
 
 class ConfigFactoryTest extends TestCase
 {
     private $configFactory;
+
     private $config;
 
-    function setUp()
+    protected function setUp(): void
     {
         $this->configFactory = new ConfigFactory;
 
@@ -28,14 +32,14 @@ class ConfigFactoryTest extends TestCase
         ];
     }
 
-    /** @test */
-    function it_implements_config_factory_interface()
+    #[Test]
+    public function it_implements_config_factory_interface()
     {
         $this->assertInstanceOf(ConfigFactoryInterface::class, $this->configFactory);
     }
 
-    /** @test */
-    function it_can_create_config_instance_from_array()
+    #[Test]
+    public function it_can_create_config_instance_from_array()
     {
         $config = $this->configFactory->createFromArray($this->config);
 
@@ -51,13 +55,16 @@ class ConfigFactoryTest extends TestCase
 
         $this->assertEquals('http://example.com/access_token', (string) $config->getTokenCredentialsUri());
 
+        $this->assertSame('POST', $config->getTemporaryCredentialsMethod());
+        $this->assertSame('POST', $config->getTokenCredentialsMethod());
+
         $this->assertTrue($config->hasCallbackUri());
 
         $this->assertEquals('http://johndoe.net', (string) $config->getCallbackUri());
     }
 
-    /** @test */
-    function it_throws_exception_if_client_credentials_identifier_is_missing()
+    #[Test]
+    public function it_throws_exception_if_client_credentials_identifier_is_missing()
     {
         unset($this->config['client_credentials_identifier']);
 
@@ -65,8 +72,17 @@ class ConfigFactoryTest extends TestCase
         $this->configFactory->createFromArray($this->config);
     }
 
-    /** @test */
-    function it_throws_exception_if_client_credentials_secret_is_missing()
+    #[Test]
+    public function it_throws_exception_if_client_credentials_identifier_is_empty()
+    {
+        $this->config['client_credentials_identifier'] = '';
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->configFactory->createFromArray($this->config);
+    }
+
+    #[Test]
+    public function it_throws_exception_if_client_credentials_secret_is_missing()
     {
         unset($this->config['client_credentials_secret']);
 
@@ -74,8 +90,8 @@ class ConfigFactoryTest extends TestCase
         $this->configFactory->createFromArray($this->config);
     }
 
-    /** @test */
-    function it_throws_exception_if_temporary_credentials_uri_is_missing()
+    #[Test]
+    public function it_throws_exception_if_temporary_credentials_uri_is_missing()
     {
         unset($this->config['temporary_credentials_uri']);
 
@@ -83,8 +99,8 @@ class ConfigFactoryTest extends TestCase
         $this->configFactory->createFromArray($this->config);
     }
 
-     /** @test */
-    function it_throws_exception_if_authorization_uri_is_missing()
+    #[Test]
+    public function it_throws_exception_if_authorization_uri_is_missing()
     {
         unset($this->config['authorization_uri']);
 
@@ -92,12 +108,61 @@ class ConfigFactoryTest extends TestCase
         $this->configFactory->createFromArray($this->config);
     }
 
-     /** @test */
-    function it_throws_exception_if_token_credentials_uri_is_missing()
+    #[Test]
+    public function it_throws_exception_if_token_credentials_uri_is_missing()
     {
         unset($this->config['token_credentials_uri']);
 
         $this->expectException(InvalidArgumentException::class);
+        $this->configFactory->createFromArray($this->config);
+    }
+
+    #[Test]
+    public function it_throws_exception_if_callback_uri_is_missing()
+    {
+        unset($this->config['callback_uri']);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->configFactory->createFromArray($this->config);
+    }
+
+    #[Test]
+    public function it_supports_the_out_of_band_callback_value()
+    {
+        $this->config['callback_uri'] = 'oob';
+
+        $config = $this->configFactory->createFromArray($this->config);
+
+        $this->assertSame('oob', (string) $config->getCallbackUri());
+    }
+
+    #[Test]
+    public function it_throws_exception_if_a_required_uri_is_empty()
+    {
+        $this->config['token_credentials_uri'] = '';
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->configFactory->createFromArray($this->config);
+    }
+
+    #[Test]
+    public function it_normalizes_custom_credential_endpoint_methods()
+    {
+        $this->config['temporary_credentials_method'] = 'get';
+        $this->config['token_credentials_method'] = 'put';
+
+        $config = $this->configFactory->createFromArray($this->config);
+
+        $this->assertSame('GET', $config->getTemporaryCredentialsMethod());
+        $this->assertSame('PUT', $config->getTokenCredentialsMethod());
+    }
+
+    #[Test]
+    public function it_rejects_an_invalid_credential_endpoint_method()
+    {
+        $this->config['token_credentials_method'] = 'GET /injected';
+        $this->expectException(InvalidArgumentException::class);
+
         $this->configFactory->createFromArray($this->config);
     }
 }
