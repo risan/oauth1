@@ -1,10 +1,13 @@
 {
     "preset": "laravel",
     "rules": {
+        "braces_position": false,
+        "class_definition": false,
         "declare_strict_types": true,
         "ordered_imports": {
             "sort_algorithm": "alpha"
         },
-        "single_line_empty_body": false
+        "single_line_empty_body": false,
+        "single_space_around_construct": false
     }
 }
