@@ -1,0 +1,10 @@
+preset: laravel
+version: 8.4
+
+enabled:
+  - declare_strict_types
+
+finder:
+  path:
+    - src
+    - tests
