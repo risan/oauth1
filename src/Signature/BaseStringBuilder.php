@@ -10,7 +10,9 @@ use Risan\OAuth1\Request\UriParserInterface;
 
 class BaseStringBuilder implements BaseStringBuilderInterface
 {
-    public function __construct(protected UriParserInterface $uriParser) {}
+    public function __construct(protected UriParserInterface $uriParser)
+    {
+    }
 
     public function getUriParser(): UriParserInterface
     {

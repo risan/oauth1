@@ -9,7 +9,9 @@ use InvalidArgumentException;
 final class ParameterList
 {
     /** @param list<array{0: string, 1: string}> $pairs */
-    private function __construct(private array $pairs) {}
+    private function __construct(private array $pairs)
+    {
+    }
 
     public static function empty(): self
     {

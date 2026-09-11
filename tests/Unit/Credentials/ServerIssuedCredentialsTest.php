@@ -15,7 +15,9 @@ class ServerIssuedCredentialsTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->serverIssuedCredentialsStub = new class('foo', 'bar') extends ServerIssuedCredentials {};
+        $this->serverIssuedCredentialsStub = new class('foo', 'bar') extends ServerIssuedCredentials
+        {
+        };
     }
 
     #[Test]

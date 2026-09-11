@@ -4,6 +4,7 @@
         "declare_strict_types": true,
         "ordered_imports": {
             "sort_algorithm": "alpha"
-        }
+        },
+        "single_line_empty_body": false
     }
 }
